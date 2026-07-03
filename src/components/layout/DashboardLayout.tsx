@@ -34,6 +34,24 @@ function InfluencerNav(): NavItem[] {
   ]
 }
 
+function EventNav(): NavItem[] {
+  return [
+    { href: '/evenement/tableau-de-bord', label: 'Dashboard', icon: LayoutDashboard },
+    { href: '/evenement/profil', label: 'Mon Événement', icon: User },
+    { href: '/evenement/sponsors', label: 'Sponsors', icon: Wallet },
+    { href: '/evenement/collaborations', label: 'Collaborations', icon: Users },
+  ]
+}
+
+function ProjectNav(): NavItem[] {
+  return [
+    { href: '/projet/tableau-de-bord', label: 'Dashboard', icon: LayoutDashboard },
+    { href: '/projet/profil', label: 'Mon Projet', icon: User },
+    { href: '/projet/sponsors', label: 'Sponsors', icon: Wallet },
+    { href: '/projet/collaborations', label: 'Collaborations', icon: Users },
+  ]
+}
+
 function AdminNav(): NavItem[] {
   return [
     { href: '/admin', label: 'Dashboard', icon: LayoutDashboard },
@@ -52,8 +70,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const role = (session?.user as { role?: string })?.role
 
-  const navItems = role === 'ADMIN' ? AdminNav() : role === 'BRAND' ? BrandNav() : InfluencerNav()
-  const roleLabel = role === 'ADMIN' ? 'Administration' : role === 'BRAND' ? 'Espace Marque' : 'Espace Influenceur'
+  const navItems = role === 'ADMIN' ? AdminNav() : role === 'BRAND' ? BrandNav() : role === 'EVENT' ? EventNav() : role === 'PROJECT' ? ProjectNav() : InfluencerNav()
+  const roleLabel = role === 'ADMIN' ? 'Administration' : role === 'BRAND' ? 'Espace Marque' : role === 'EVENT' ? 'Espace Événement' : role === 'PROJECT' ? 'Espace Projet' : 'Espace Influenceur'
 
   const SidebarContent = () => (
     <>
