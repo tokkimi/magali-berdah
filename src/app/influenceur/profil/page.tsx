@@ -1,11 +1,12 @@
 'use client'
 
 import { useState } from 'react'
-import { Save, Plus, Instagram, Youtube } from 'lucide-react'
+import { Save, Plus, Instagram, Youtube, Eye, EyeOff } from 'lucide-react'
 
 export default function ProfilInfluenceur() {
   const [saved, setSaved] = useState(false)
   const [plan, setPlan] = useState('PRO')
+  const [isPublic, setIsPublic] = useState(true)
   const [form, setForm] = useState({
     name: 'Marie Dupont',
     bio: 'Influenceuse lifestyle et mode. Basée à Paris.',
@@ -38,7 +39,21 @@ export default function ProfilInfluenceur() {
 
   return (
     <div className="max-w-3xl">
-      <h1 className="text-2xl font-bold text-white mb-8">Mon profil influenceur</h1>
+      <h1 className="text-2xl font-bold text-white mb-4">Mon profil influenceur</h1>
+
+      {/* Public/Private toggle */}
+      <div style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '1rem', padding: '1rem 1.25rem', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', flexWrap: 'wrap' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+          {isPublic ? <Eye size={18} color="#F37021" /> : <EyeOff size={18} color="rgba(255,255,255,0.3)" />}
+          <div>
+            <p style={{ fontWeight: 600, fontSize: '0.875rem', color: 'white' }}>{isPublic ? 'Profil public' : 'Profil privé'}</p>
+            <p style={{ fontSize: '0.72rem', color: 'rgba(255,255,255,0.4)' }}>{isPublic ? 'Visible dans la galerie et accessible aux marques' : 'Uniquement visible par vous'}</p>
+          </div>
+        </div>
+        <button onClick={() => setIsPublic(!isPublic)} style={{ position: 'relative', width: 48, height: 26, borderRadius: 13, border: 'none', background: isPublic ? '#F37021' : 'rgba(255,255,255,0.1)', cursor: 'pointer', transition: 'background 0.2s', flexShrink: 0 }}>
+          <span style={{ position: 'absolute', top: 3, left: isPublic ? 25 : 3, width: 20, height: 20, borderRadius: '50%', background: 'white', transition: 'left 0.2s' }} />
+        </button>
+      </div>
 
       <form onSubmit={handleSave} className="space-y-6">
         {/* Abonnement */}

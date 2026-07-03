@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Save, Upload } from 'lucide-react'
+import { Save, Upload, Eye, EyeOff } from 'lucide-react'
 
 function GlassCard({ children }: { children: React.ReactNode }) {
   return <div style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '1rem', padding: '1.25rem' }}>{children}</div>
@@ -17,6 +17,7 @@ export default function MarqueProfilPage() {
   const [description, setDescription] = useState('Mode et élégance française')
   const [contactEmail, setContactEmail] = useState('contact@maison-elegance.fr')
   const [contactPhone, setContactPhone] = useState('+33 1 23 45 67 89')
+  const [isPublic, setIsPublic] = useState(true)
   const [saved, setSaved] = useState(false)
 
   const save = () => { setSaved(true); setTimeout(() => setSaved(false), 3000) }
@@ -35,6 +36,20 @@ export default function MarqueProfilPage() {
       )}
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+        {/* Public/Private toggle */}
+        <div style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '1rem', padding: '1rem 1.25rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+            {isPublic ? <Eye size={18} color="#F37021" /> : <EyeOff size={18} color="rgba(255,255,255,0.3)" />}
+            <div>
+              <p style={{ fontWeight: 600, fontSize: '0.875rem' }}>{isPublic ? 'Profil public' : 'Profil privé'}</p>
+              <p style={{ fontSize: '0.72rem', color: 'rgba(255,255,255,0.4)' }}>{isPublic ? 'Visible dans la galerie et sur la home' : 'Uniquement visible par vous'}</p>
+            </div>
+          </div>
+          <button onClick={() => setIsPublic(!isPublic)} style={{ position: 'relative', width: 48, height: 26, borderRadius: 13, border: 'none', background: isPublic ? '#F37021' : 'rgba(255,255,255,0.1)', cursor: 'pointer', transition: 'background 0.2s', flexShrink: 0 }}>
+            <span style={{ position: 'absolute', top: 3, left: isPublic ? 25 : 3, width: 20, height: 20, borderRadius: '50%', background: 'white', transition: 'left 0.2s' }} />
+          </button>
+        </div>
+
         <GlassCard>
           <h2 style={{ fontSize: '0.875rem', fontWeight: 700, marginBottom: '1rem' }}>Logo de la marque</h2>
           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
