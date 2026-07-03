@@ -31,6 +31,9 @@ export default function Navbar() {
           <Link href="/" onClick={() => window.scrollTo(0,0)}><LogoMark /></Link>
 
           <div className="hidden md:flex items-center gap-3">
+            <Link href="/galerie" className="text-sm text-secondary hover:text-[#0f0f0f] px-4 py-2 font-medium transition-all">
+              Galerie
+            </Link>
             <button onClick={() => setLang(lang === 'fr' ? 'en' : 'fr')} className="text-xs font-medium text-secondary hover:text-[#0f0f0f] border border-black/10 hover:border-black/25 rounded-full px-3 py-1.5 transition-all">
               {lang === 'fr' ? 'EN' : 'FR'}
             </button>
@@ -49,6 +52,7 @@ export default function Navbar() {
 
         {isOpen && (
           <div className="md:hidden py-4 space-y-2 border-t border-black/5">
+            <Link href="/galerie" className="block text-center text-[#0f0f0f] border border-black/10 px-4 py-2.5 rounded-xl text-sm" onClick={() => setIsOpen(false)}>Galerie</Link>
             <button onClick={() => { setLang(lang === 'fr' ? 'en' : 'fr'); setIsOpen(false) }} className="w-full text-xs text-secondary border border-black/10 rounded-full py-2">
               {lang === 'fr' ? 'Switch to English' : 'Passer en Français'}
             </button>
