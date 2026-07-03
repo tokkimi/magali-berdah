@@ -58,6 +58,8 @@ function AdminNav(): NavItem[] {
     { href: '/admin/influenceurs', label: 'Influenceurs', icon: Users },
     { href: '/admin/marques', label: 'Marques', icon: Building2 },
     { href: '/admin/campagnes', label: 'Campagnes', icon: List },
+    { href: '/admin/evenements', label: 'Événements', icon: Bell },
+    { href: '/admin/projets', label: 'Projets', icon: Briefcase },
     { href: '/admin/transactions', label: 'Transactions', icon: ArrowLeftRight },
     { href: '/admin/newsletter', label: 'Newsletter', icon: Mail },
     { href: '/admin/seo', label: 'SEO', icon: Search },
