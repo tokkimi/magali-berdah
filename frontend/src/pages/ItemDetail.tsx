@@ -116,9 +116,12 @@ export default function ItemDetail() {
     try { const w = JSON.parse(localStorage.getItem('mb_wallet') || '{}'); return w[user.email] || { available: 0 }; } catch { return { available: 0 }; }
   })();
 
-  const handleBuyNow = async (useWallet = false) => {
+  // walletAmount: how much of the wallet to use (0 = card only, full price = wallet only, in between = split)
+  const handleBuyNow = async (walletAmount = 0) => {
     if (!user) { alert('Connectez-vous pour acheter.'); return; }
-    if (useWallet && userWallet.available < item.fixed_price) return;
+    const price = item.fixed_price;
+    const usedWallet = Math.min(walletAmount, userWallet.available, price);
+    const cardAmount = price - usedWallet;
     setBuying(true);
     try {
       const orders = JSON.parse(localStorage.getItem('mb_orders') || '[]');
@@ -127,9 +130,11 @@ export default function ItemDetail() {
         item_id: id, item_title: item.title,
         buyer_id: user.id, buyer_email: user.email, buyer_name: user.name,
         buyer_address: user.address || '', buyer_city: user.city || '',
-        amount: item.fixed_price,
+        amount: price,
+        wallet_amount: usedWallet,
+        card_amount: cardAmount,
         payment_status: 'paid',
-        payment_via_wallet: useWallet,
+        payment_via_wallet: usedWallet > 0,
         shipping_status: 'pending',
         tracking_number: null,
         seller_email: item.seller_email || null,
@@ -141,14 +146,14 @@ export default function ItemDetail() {
       orders.push(order);
       localStorage.setItem('mb_orders', JSON.stringify(orders));
 
-      // Deduct from buyer's wallet if paid via wallet
-      if (useWallet) {
+      // Deduct wallet portion from buyer's wallet
+      if (usedWallet > 0) {
         const allWallets = JSON.parse(localStorage.getItem('mb_wallet') || '{}');
         const w = allWallets[user.email] || { pending: 0, available: 0, transactions: [] };
-        w.available = Math.max(0, (w.available || 0) - item.fixed_price);
+        w.available = Math.max(0, (w.available || 0) - usedWallet);
         w.transactions = [...(w.transactions || []), {
           id: `tx-${Date.now()}`, item_title: item.title,
-          amount: item.fixed_price, type: 'purchase', status: 'used', date: new Date().toISOString(),
+          amount: usedWallet, type: 'purchase', status: 'used', date: new Date().toISOString(),
         }];
         allWallets[user.email] = w;
         localStorage.setItem('mb_wallet', JSON.stringify(allWallets));
@@ -228,8 +233,20 @@ export default function ItemDetail() {
             <h2 style={{ fontFamily: 'Georgia, serif', fontSize: '1.4rem', fontWeight: 400, color: '#1a1a1a', marginBottom: '0.5rem' }}>{orderConfirm.item_title}</h2>
             <p style={{ fontFamily: 'Georgia, serif', fontSize: '1.6rem', color: '#1a1a1a', marginBottom: '1.5rem' }}>{(orderConfirm.amount || 0).toLocaleString('fr-FR')} €</p>
             <div style={{ backgroundColor: '#f8f4ef', padding: '1rem', marginBottom: '1.5rem', textAlign: 'left' }}>
-              <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.75rem', color: '#1a1a1a', lineHeight: 1.7 }}>
-                Votre commande a bien été enregistrée. Vous recevrez une confirmation par email et pourrez suivre l'envoi depuis votre compte.
+              {orderConfirm.wallet_amount > 0 && (
+                <div style={{ marginBottom: '8px', display: 'flex', justifyContent: 'space-between', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.78rem' }}>
+                  <span style={{ color: '#a8834a' }}>💰 Cagnotte</span>
+                  <span style={{ color: '#a8834a', fontWeight: 700 }}>−{orderConfirm.wallet_amount.toLocaleString('fr-FR')} €</span>
+                </div>
+              )}
+              {orderConfirm.card_amount > 0 && (
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.78rem' }}>
+                  <span style={{ color: '#9e8e7e' }}>💳 Carte bancaire</span>
+                  <span style={{ color: '#1a1a1a', fontWeight: 700 }}>{orderConfirm.card_amount.toLocaleString('fr-FR')} €</span>
+                </div>
+              )}
+              <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.72rem', color: '#9e8e7e', marginTop: '10px', lineHeight: 1.6 }}>
+                Commande enregistrée. Suivez l'état de votre livraison depuis votre compte.
               </p>
             </div>
             <div style={{ display: 'flex', gap: '0.75rem' }}>
@@ -362,16 +379,50 @@ export default function ItemDetail() {
                 </p>
                 {user ? (
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                    <button onClick={() => handleBuyNow(false)} disabled={buying || item.status === 'sold'} className="btn-gold"
-                      style={{ width: '100%', fontSize: '0.85rem', padding: '1rem', letterSpacing: '0.1em' }}>
-                      {item.status === 'sold' ? 'VENDU' : buying ? 'Traitement...' : 'ACHETER MAINTENANT'}
-                    </button>
-                    {userWallet.available >= item.fixed_price && item.status !== 'sold' && (
-                      <button onClick={() => handleBuyNow(true)} disabled={buying}
-                        style={{ width: '100%', padding: '0.9rem', border: '1px solid #c9a96e', background: '#fff8e6', cursor: 'pointer', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.82rem', color: '#a8834a', letterSpacing: '0.05em' }}>
-                        💰 PAYER AVEC MA CAGNOTTE ({userWallet.available.toLocaleString('fr-FR')} € disponible)
-                      </button>
-                    )}
+                    {item.status === 'sold' ? (
+                      <button disabled className="btn-gold" style={{ width: '100%', fontSize: '0.85rem', padding: '1rem', opacity: 0.5 }}>VENDU</button>
+                    ) : buying ? (
+                      <button disabled className="btn-gold" style={{ width: '100%', fontSize: '0.85rem', padding: '1rem' }}>Traitement...</button>
+                    ) : (() => {
+                      const price = item.fixed_price;
+                      const avail = userWallet.available || 0;
+                      const cardOnly = avail === 0;
+                      const walletOnly = avail >= price;
+                      const split = avail > 0 && avail < price;
+                      const cardPart = price - avail;
+                      return (
+                        <>
+                          {/* Toujours : payer par carte */}
+                          <button onClick={() => handleBuyNow(0)} className="btn-gold"
+                            style={{ width: '100%', fontSize: '0.85rem', padding: '1rem', letterSpacing: '0.1em' }}>
+                            ACHETER MAINTENANT
+                          </button>
+
+                          {/* Paiement intégral cagnotte */}
+                          {walletOnly && (
+                            <button onClick={() => handleBuyNow(price)}
+                              style={{ width: '100%', padding: '0.9rem', border: '1px solid #c9a96e', background: '#fff8e6', cursor: 'pointer', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.82rem', color: '#a8834a' }}>
+                              💰 Payer intégralement par cagnotte ({avail.toLocaleString('fr-FR')} € disponible)
+                            </button>
+                          )}
+
+                          {/* Paiement mixte : cagnotte + complément carte */}
+                          {split && (
+                            <button onClick={() => handleBuyNow(avail)}
+                              style={{ width: '100%', padding: '0.9rem', border: '1px solid #c9a96e', background: '#fff8e6', cursor: 'pointer', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.82rem', color: '#a8834a', lineHeight: 1.5 }}>
+                              💰 {avail.toLocaleString('fr-FR')} € par cagnotte + {cardPart.toLocaleString('fr-FR')} € par carte
+                            </button>
+                          )}
+
+                          {/* Info solde si dispo mais pas encore assez */}
+                          {split && (
+                            <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.65rem', color: '#9e8e7e', textAlign: 'center' }}>
+                              Solde cagnotte : {avail.toLocaleString('fr-FR')} € · Complément par carte : {cardPart.toLocaleString('fr-FR')} €
+                            </p>
+                          )}
+                        </>
+                      );
+                    })()}
                   </div>
                 ) : (
                   <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.85rem', color: '#9e8e7e' }}>
