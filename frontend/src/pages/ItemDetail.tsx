@@ -40,7 +40,8 @@ export default function ItemDetail() {
   const [bidSuccess, setBidSuccess] = useState(false);
   const [buying, setBuying] = useState(false);
   const [orderConfirm, setOrderConfirm] = useState<any>(null);
-  const [payWithWallet, setPayWithWallet] = useState(false);
+  const [showWalletInput, setShowWalletInput] = useState(false);
+  const [walletInput, setWalletInput] = useState('');
   const socketRef = useRef<Socket | null>(null);
   const isStatic = id?.startsWith('static-') || id?.startsWith('admin-');
 
@@ -386,39 +387,83 @@ export default function ItemDetail() {
                     ) : (() => {
                       const price = item.fixed_price;
                       const avail = userWallet.available || 0;
-                      const cardOnly = avail === 0;
-                      const walletOnly = avail >= price;
-                      const split = avail > 0 && avail < price;
-                      const cardPart = price - avail;
+                      const walletUsed = Math.min(Math.max(0, parseFloat(walletInput) || 0), avail, price);
+                      const cardPart = price - walletUsed;
                       return (
                         <>
-                          {/* Toujours : payer par carte */}
                           <button onClick={() => handleBuyNow(0)} className="btn-gold"
                             style={{ width: '100%', fontSize: '0.85rem', padding: '1rem', letterSpacing: '0.1em' }}>
                             ACHETER MAINTENANT
                           </button>
 
-                          {/* Paiement intégral cagnotte */}
-                          {walletOnly && (
-                            <button onClick={() => handleBuyNow(price)}
-                              style={{ width: '100%', padding: '0.9rem', border: '1px solid #c9a96e', background: '#fff8e6', cursor: 'pointer', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.82rem', color: '#a8834a' }}>
-                              💰 Payer intégralement par cagnotte ({avail.toLocaleString('fr-FR')} € disponible)
-                            </button>
-                          )}
+                          {avail > 0 && (
+                            <>
+                              {!showWalletInput ? (
+                                <button onClick={() => { setShowWalletInput(true); setWalletInput(String(Math.min(avail, price))); }}
+                                  style={{ width: '100%', padding: '0.9rem', border: '1px solid #c9a96e', background: '#fff8e6', cursor: 'pointer', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.82rem', color: '#a8834a' }}>
+                                  💰 Utiliser ma cagnotte ({avail.toLocaleString('fr-FR')} € disponible)
+                                </button>
+                              ) : (
+                                <div style={{ border: '1px solid #c9a96e', background: '#fff8e6', padding: '1rem' }}>
+                                  <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.6rem', letterSpacing: '0.15em', color: '#a8834a', marginBottom: '10px' }}>
+                                    MONTANT À UTILISER SUR MA CAGNOTTE
+                                  </p>
+                                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px' }}>
+                                    <input
+                                      type="range" min={0} max={Math.min(avail, price)} step={1}
+                                      value={walletInput || 0}
+                                      onChange={e => setWalletInput(e.target.value)}
+                                      style={{ flex: 1, accentColor: '#c9a96e' }}
+                                    />
+                                    <div style={{ position: 'relative', width: '90px' }}>
+                                      <input
+                                        type="number" min={0} max={Math.min(avail, price)} step={1}
+                                        value={walletInput}
+                                        onChange={e => {
+                                          const v = Math.min(parseFloat(e.target.value) || 0, avail, price);
+                                          setWalletInput(String(v));
+                                        }}
+                                        style={{ width: '100%', padding: '6px 24px 6px 8px', border: '1px solid #c9a96e', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.88rem', color: '#a8834a', backgroundColor: 'white', boxSizing: 'border-box' }}
+                                      />
+                                      <span style={{ position: 'absolute', right: '8px', top: '50%', transform: 'translateY(-50%)', fontFamily: 'Georgia, serif', fontSize: '0.8rem', color: '#a8834a' }}>€</span>
+                                    </div>
+                                  </div>
 
-                          {/* Paiement mixte : cagnotte + complément carte */}
-                          {split && (
-                            <button onClick={() => handleBuyNow(avail)}
-                              style={{ width: '100%', padding: '0.9rem', border: '1px solid #c9a96e', background: '#fff8e6', cursor: 'pointer', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.82rem', color: '#a8834a', lineHeight: 1.5 }}>
-                              💰 {avail.toLocaleString('fr-FR')} € par cagnotte + {cardPart.toLocaleString('fr-FR')} € par carte
-                            </button>
-                          )}
+                                  {/* Récap */}
+                                  <div style={{ borderTop: '1px solid #e8d5b7', paddingTop: '10px', marginBottom: '12px' }}>
+                                    {walletUsed > 0 && (
+                                      <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.78rem', marginBottom: '4px' }}>
+                                        <span style={{ color: '#a8834a' }}>💰 Cagnotte</span>
+                                        <span style={{ color: '#a8834a', fontWeight: 700 }}>−{walletUsed.toLocaleString('fr-FR')} €</span>
+                                      </div>
+                                    )}
+                                    {cardPart > 0 && (
+                                      <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.78rem', marginBottom: '4px' }}>
+                                        <span style={{ color: '#9e8e7e' }}>💳 Carte</span>
+                                        <span style={{ color: '#1a1a1a', fontWeight: 700 }}>{cardPart.toLocaleString('fr-FR')} €</span>
+                                      </div>
+                                    )}
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: 'Georgia, serif', fontSize: '0.9rem', borderTop: '1px solid #e8d5b7', paddingTop: '6px', marginTop: '4px' }}>
+                                      <span>Total</span>
+                                      <span>{price.toLocaleString('fr-FR')} €</span>
+                                    </div>
+                                  </div>
 
-                          {/* Info solde si dispo mais pas encore assez */}
-                          {split && (
-                            <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.65rem', color: '#9e8e7e', textAlign: 'center' }}>
-                              Solde cagnotte : {avail.toLocaleString('fr-FR')} € · Complément par carte : {cardPart.toLocaleString('fr-FR')} €
-                            </p>
+                                  <div style={{ display: 'flex', gap: '8px' }}>
+                                    <button onClick={() => handleBuyNow(walletUsed)}
+                                      disabled={walletUsed === 0}
+                                      className="btn-gold"
+                                      style={{ flex: 1, fontSize: '0.78rem', opacity: walletUsed > 0 ? 1 : 0.5 }}>
+                                      CONFIRMER
+                                    </button>
+                                    <button onClick={() => { setShowWalletInput(false); setWalletInput(''); }}
+                                      style={{ padding: '10px 14px', border: '1px solid #e8d5b7', background: 'none', cursor: 'pointer', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.75rem', color: '#9e8e7e' }}>
+                                      ANNULER
+                                    </button>
+                                  </div>
+                                </div>
+                              )}
+                            </>
                           )}
                         </>
                       );
