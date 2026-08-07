@@ -113,7 +113,6 @@ export default function ItemDetail() {
     if (!user) { alert('Connectez-vous pour acheter.'); return; }
     setBuying(true);
     try {
-      // Create order in localStorage
       const orders = JSON.parse(localStorage.getItem('mb_orders') || '[]');
       const order = {
         id: `order-${Date.now()}`,
@@ -121,18 +120,40 @@ export default function ItemDetail() {
         buyer_id: user.id, buyer_email: user.email, buyer_name: user.name,
         buyer_address: user.address || '', buyer_city: user.city || '',
         amount: item.fixed_price,
-        payment_status: 'pending',
+        payment_status: 'paid',
         shipping_status: 'pending',
         tracking_number: null,
+        seller_email: item.seller_email || null,
+        seller_payout: item.seller_payout || null,
+        buyer_confirmed: false,
+        wallet_credited: false,
         created_at: new Date().toISOString(),
       };
       orders.push(order);
       localStorage.setItem('mb_orders', JSON.stringify(orders));
+
+      // Credit seller pending wallet immediately on sale
+      if (item.seller_email && item.seller_payout) {
+        const wallet = JSON.parse(localStorage.getItem('mb_wallet') || '{}');
+        if (!wallet[item.seller_email]) wallet[item.seller_email] = { pending: 0, available: 0, transactions: [] };
+        wallet[item.seller_email].pending += item.seller_payout;
+        wallet[item.seller_email].transactions.push({
+          id: `tx-${Date.now()}`,
+          order_id: order.id,
+          item_title: item.title,
+          amount: item.seller_payout,
+          type: 'credit',
+          status: 'pending',
+          date: new Date().toISOString(),
+        });
+        localStorage.setItem('mb_wallet', JSON.stringify(wallet));
+      }
+
       setOrderConfirm(order);
       if (!isStatic) {
         try { await api.post('/orders', { item_id: id }); } catch {}
       }
-    } catch (e: any) { alert('Erreur lors de la commande'); }
+    } catch { alert('Erreur lors de la commande'); }
     finally { setBuying(false); }
   };
 

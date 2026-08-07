@@ -46,6 +46,7 @@ export default function AdminItemForm() {
     fixed_price: '', auction_start_price: '', auction_min_price: '',
     auction_days: '7',
     certified: false, featured: false, isVintage: false,
+    seller_email: '', seller_payout: '',
   });
 
   const set = (k: string, v: any) => setForm(f => ({ ...f, [k]: v }));
@@ -89,6 +90,8 @@ export default function AdminItemForm() {
       featured: form.featured ? 1 : 0,
       certified: form.certified ? 1 : 0,
       isVintage: form.isVintage,
+      seller_email: form.seller_email.trim() || null,
+      seller_payout: form.seller_payout ? parseFloat(form.seller_payout) : null,
       views: 0,
       created_at: new Date().toISOString(),
     };
@@ -243,6 +246,31 @@ export default function AdminItemForm() {
                   {[1, 2, 3, 5, 7, 10, 14].map(d => <option key={d} value={d}>{d} jour{d > 1 ? 's' : ''}</option>)}
                 </select>
               </div>
+            </div>
+          )}
+        </div>
+
+        {/* Vendeur lié */}
+        <div style={{ backgroundColor: 'white', padding: '1.5rem', border: '1px solid #e8d5b7' }}>
+          <p style={{ ...labelStyle, marginBottom: '1rem', color: '#c9a96e' }}>VENDEUR LIÉ (optionnel)</p>
+          <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.75rem', color: '#9e8e7e', marginBottom: '1rem', lineHeight: 1.5 }}>
+            Liez cet article à un utilisateur qui a soumis sa pièce. La cagnotte sera créditée à sa réception par l'acheteur.
+          </p>
+          <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '1rem' }}>
+            <div>
+              <label style={labelStyle}>EMAIL DU VENDEUR</label>
+              <input value={form.seller_email} onChange={e => set('seller_email', e.target.value)}
+                type="email" placeholder="ex: vendeur@email.com" style={inputStyle} />
+            </div>
+            <div>
+              <label style={labelStyle}>MONTANT CAGNOTTE (€)</label>
+              <input value={form.seller_payout} onChange={e => set('seller_payout', e.target.value)}
+                type="number" min="0" step="1" placeholder="Ex: 800" style={inputStyle} />
+            </div>
+          </div>
+          {form.seller_email && form.seller_payout && (
+            <div style={{ marginTop: '10px', padding: '10px 14px', backgroundColor: '#fff8e6', border: '1px solid #c9a96e', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.78rem', color: '#a8834a' }}>
+              ✓ {form.seller_email} recevra <strong>{parseFloat(form.seller_payout).toLocaleString('fr-FR')} €</strong> dans sa cagnotte après réception par l'acheteur
             </div>
           )}
         </div>
