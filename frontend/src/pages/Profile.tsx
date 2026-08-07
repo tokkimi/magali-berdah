@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useStore, useT } from '../lib/store';
 import { api } from '../lib/api';
-import { User, Package, Gavel, Heart, Truck, ExternalLink } from 'lucide-react';
+import { User, Package, Gavel, Heart, Truck, ExternalLink, Send } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { getAllItems } from '../lib/staticItems';
 import ItemCard from '../components/ItemCard';
 
@@ -47,6 +48,7 @@ export default function Profile() {
     { id: 'profile', label: t('profile'), icon: User },
     { id: 'orders', label: t('myOrders'), icon: Package },
     { id: 'bids', label: t('myBids'), icon: Gavel },
+    { id: 'submissions', label: 'Soumissions', icon: Send },
     { id: 'favorites', label: t('favorites'), icon: Heart },
   ];
 
@@ -235,6 +237,49 @@ export default function Profile() {
                       <span style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.72rem', fontWeight: 700, color: b.is_winning ? '#2e7d32' : '#ff9800' }}>
                         {b.is_winning ? '✓ Meilleure offre' : '↑ Surenchère possible'}
                       </span>
+                    </div>
+                  ));
+                } catch { return null; }
+              })()}
+            </div>
+          )}
+
+          {tab === 'submissions' && (
+            <div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
+                <h2 style={{ fontFamily: 'Georgia, serif', fontSize: '1.2rem', fontWeight: 400, color: '#1a1a1a' }}>Mes soumissions</h2>
+                <Link to="/mes-soumissions" style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.72rem', color: '#c9a96e', textDecoration: 'none' }}>
+                  Voir tout →
+                </Link>
+              </div>
+              {(() => {
+                try {
+                  const all = JSON.parse(localStorage.getItem('mb_submissions') || '[]');
+                  const mine = all.filter((s: any) => s.email === user?.email);
+                  if (!mine.length) return (
+                    <div style={{ textAlign: 'center', padding: '2rem', color: '#9e8e7e' }}>
+                      <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.85rem', marginBottom: '1rem' }}>Aucune soumission</p>
+                      <Link to="/soumettre" className="btn-gold" style={{ fontSize: '0.72rem', textDecoration: 'none' }}>SOUMETTRE UN ARTICLE</Link>
+                    </div>
+                  );
+                  const colors: Record<string, string> = { pending: '#b45309', approved: '#2e7d32', rejected: '#cc0000' };
+                  const labels: Record<string, string> = { pending: 'En cours de révision', approved: 'Validé ✓', rejected: 'Rejeté' };
+                  return mine.map((s: any) => (
+                    <div key={s.id} style={{ border: '1px solid #e8d5b7', padding: '1rem 1.25rem', marginBottom: '10px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <div>
+                        <p style={{ fontFamily: 'Georgia, serif', fontSize: '0.9rem', color: '#1a1a1a', marginBottom: '3px' }}>{s.brand}</p>
+                        <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.7rem', color: '#9e8e7e' }}>{s.category}</p>
+                      </div>
+                      <div style={{ textAlign: 'right' }}>
+                        <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.72rem', fontWeight: 700, color: colors[s.status] || '#9e8e7e' }}>
+                          {labels[s.status] || s.status}
+                        </p>
+                        {s.status === 'approved' && !s.tracking_sent && (
+                          <Link to="/mes-soumissions" style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.65rem', color: '#1976d2', textDecoration: 'none' }}>
+                            → Entrer le numéro de suivi
+                          </Link>
+                        )}
+                      </div>
                     </div>
                   ));
                 } catch { return null; }

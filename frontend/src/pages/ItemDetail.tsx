@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { ChevronLeft, Shield, Truck, Clock, Heart } from 'lucide-react';
+import { ChevronLeft, Shield, Truck, Clock, Heart, CheckCircle, X, Trophy } from 'lucide-react';
 import { io, Socket } from 'socket.io-client';
 import { api, imgUrl } from '../lib/api';
 import { useStore, useT } from '../lib/store';
@@ -39,8 +39,9 @@ export default function ItemDetail() {
   const [bidError, setBidError] = useState('');
   const [bidSuccess, setBidSuccess] = useState(false);
   const [buying, setBuying] = useState(false);
+  const [orderConfirm, setOrderConfirm] = useState<any>(null);
   const socketRef = useRef<Socket | null>(null);
-  const isStatic = id?.startsWith('static-');
+  const isStatic = id?.startsWith('static-') || id?.startsWith('admin-');
 
   useEffect(() => {
     if (!id) return;
@@ -76,26 +77,62 @@ export default function ItemDetail() {
   }, [id]);
 
   const handleBid = async () => {
-    if (isStatic) { setBidError('Connectez-vous pour enchérir sur une vraie pièce.'); return; }
+    if (!user) { setBidError('Connectez-vous pour enchérir.'); return; }
     setBidError('');
     const amount = parseFloat(bidAmount);
-    if (isNaN(amount)) { setBidError('Montant invalide'); return; }
+    if (isNaN(amount) || amount <= 0) { setBidError('Montant invalide'); return; }
+    const min = (item.current_bid || item.auction_start_price || 0) + 1;
+    if (amount < min) { setBidError(`Enchère minimum : ${min.toLocaleString('fr-FR')} €`); return; }
+
+    // Save bid to localStorage
     try {
-      await api.post(`/items/${id}/bid`, { amount });
+      const bidsStore = JSON.parse(localStorage.getItem('mb_bids') || '[]');
+      const newBid = {
+        id: `bid-${Date.now()}`,
+        item_id: id, item_title: item.title,
+        user_id: user.id, user_email: user.email,
+        amount, created_at: new Date().toISOString(),
+        is_winning: true,
+      };
+      // mark previous bids on this item as not winning
+      const updated = bidsStore.map((b: any) => b.item_id === id ? { ...b, is_winning: false } : b);
+      updated.push(newBid);
+      localStorage.setItem('mb_bids', JSON.stringify(updated));
+      // update item locally
+      setItem((prev: any) => ({ ...prev, current_bid: amount }));
       setBidSuccess(true);
-      const d = await api.get(`/items/${id}`);
-      setItem(d.item); setBids(d.bids || []); setBidAmount('');
-    } catch (e: any) { setBidError(e.message); }
+      setBidAmount('');
+    } catch {}
+
+    if (!isStatic) {
+      try { await api.post(`/items/${id}/bid`, { amount }); } catch {}
+    }
   };
 
   const handleBuyNow = async () => {
-    if (isStatic) { alert('Connectez-vous pour acheter.'); return; }
-    if (!user) return;
+    if (!user) { alert('Connectez-vous pour acheter.'); return; }
     setBuying(true);
     try {
-      await api.post('/orders', { item_id: id });
-      navigate('/mes-achats');
-    } catch (e: any) { alert(e.message); }
+      // Create order in localStorage
+      const orders = JSON.parse(localStorage.getItem('mb_orders') || '[]');
+      const order = {
+        id: `order-${Date.now()}`,
+        item_id: id, item_title: item.title,
+        buyer_id: user.id, buyer_email: user.email, buyer_name: user.name,
+        buyer_address: user.address || '', buyer_city: user.city || '',
+        amount: item.fixed_price,
+        payment_status: 'pending',
+        shipping_status: 'pending',
+        tracking_number: null,
+        created_at: new Date().toISOString(),
+      };
+      orders.push(order);
+      localStorage.setItem('mb_orders', JSON.stringify(orders));
+      setOrderConfirm(order);
+      if (!isStatic) {
+        try { await api.post('/orders', { item_id: id }); } catch {}
+      }
+    } catch (e: any) { alert('Erreur lors de la commande'); }
     finally { setBuying(false); }
   };
 
@@ -120,9 +157,66 @@ export default function ItemDetail() {
   const conditionMap: Record<string, string> = { excellent: 'Excellent état', very_good: 'Très bon état', good: 'Bon état', fair: 'État correct' };
   const isAuction = item.auction_enabled === 1 && item.auction_end_time && new Date(item.auction_end_time) > new Date();
 
+  // Check if user has the winning bid on this auction (after it ended)
+  const myWinningBid = (() => {
+    if (!user || !isAuction) return null;
+    if (new Date(item?.auction_end_time) > new Date()) return null;
+    try {
+      const bidsStore = JSON.parse(localStorage.getItem('mb_bids') || '[]');
+      return bidsStore.find((b: any) => b.item_id === id && b.user_id === user.id && b.is_winning) || null;
+    } catch { return null; }
+  })();
+
   return (
     <div style={{ maxWidth: '900px', margin: '0 auto', padding: '1.5rem 1rem 8rem' }}>
       <style>{`@media(max-width:640px){.detail-grid{grid-template-columns:1fr !important; gap:1.5rem !important;}}`}</style>
+
+      {/* Order confirmation modal */}
+      {orderConfirm && (
+        <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.6)', zIndex: 400, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
+          <div style={{ backgroundColor: 'white', maxWidth: '460px', width: '100%', padding: '2.5rem 2rem', textAlign: 'center', position: 'relative' }}>
+            <button onClick={() => setOrderConfirm(null)} style={{ position: 'absolute', top: '1rem', right: '1rem', background: 'none', border: 'none', cursor: 'pointer', color: '#9e8e7e' }}>
+              <X size={18} />
+            </button>
+            <div style={{ width: '60px', height: '60px', borderRadius: '50%', background: 'linear-gradient(135deg, #c9a96e, #a8834a)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.5rem' }}>
+              <CheckCircle size={28} color="white" />
+            </div>
+            <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.6rem', letterSpacing: '0.3em', color: '#c9a96e', marginBottom: '0.5rem' }}>COMMANDE CONFIRMÉE</p>
+            <h2 style={{ fontFamily: 'Georgia, serif', fontSize: '1.4rem', fontWeight: 400, color: '#1a1a1a', marginBottom: '0.5rem' }}>{orderConfirm.item_title}</h2>
+            <p style={{ fontFamily: 'Georgia, serif', fontSize: '1.6rem', color: '#1a1a1a', marginBottom: '1.5rem' }}>{(orderConfirm.amount || 0).toLocaleString('fr-FR')} €</p>
+            <div style={{ backgroundColor: '#f8f4ef', padding: '1rem', marginBottom: '1.5rem', textAlign: 'left' }}>
+              <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.75rem', color: '#1a1a1a', lineHeight: 1.7 }}>
+                Votre commande a bien été enregistrée. Vous recevrez une confirmation par email et pourrez suivre l'envoi depuis votre compte.
+              </p>
+            </div>
+            <div style={{ display: 'flex', gap: '0.75rem' }}>
+              <Link to="/profil" onClick={() => setOrderConfirm(null)} className="btn-gold"
+                style={{ flex: 1, textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.75rem', padding: '12px' }}>
+                MES ACHATS
+              </Link>
+              <button onClick={() => setOrderConfirm(null)}
+                style={{ flex: 1, border: '1px solid #e8d5b7', background: 'none', cursor: 'pointer', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.75rem', color: '#9e8e7e', padding: '12px' }}>
+                FERMER
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Auction win banner */}
+      {myWinningBid && (
+        <div style={{ backgroundColor: '#fff8e6', border: '1px solid #c9a96e', padding: '1rem 1.25rem', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <Trophy size={20} color="#c9a96e" />
+          <div style={{ flex: 1 }}>
+            <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.78rem', fontWeight: 700, color: '#a8834a', marginBottom: '2px' }}>
+              Félicitations, vous avez remporté cette enchère !
+            </p>
+            <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.72rem', color: '#9e8e7e' }}>
+              Offre gagnante : {myWinningBid.amount.toLocaleString('fr-FR')} € · L'équipe vous contactera pour finaliser le paiement.
+            </p>
+          </div>
+        </div>
+      )}
 
       <Link to="/catalogue" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', textDecoration: 'none', color: '#9e8e7e', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.8rem', marginBottom: '1.5rem' }}>
         <ChevronLeft size={16} /> Retour

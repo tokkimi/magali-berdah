@@ -19,6 +19,7 @@ import HowToBuy from './pages/HowToBuy';
 import FAQ from './pages/FAQ';
 import Favorites from './pages/Favorites';
 import SoumettreArticle from './pages/SoumettreArticle';
+import MesSoumissions from './pages/MesSoumissions';
 
 // Pro
 import ProLayout from './pages/pro/Dashboard';
@@ -97,6 +98,7 @@ export default function App() {
         <Route path="/mes-achats" element={<PrivateRoute><Layout><Profile /></Layout></PrivateRoute>} />
         <Route path="/mes-encheres" element={<PrivateRoute><Layout><Profile /></Layout></PrivateRoute>} />
         <Route path="/favoris" element={<PrivateRoute><Layout><Favorites /></Layout></PrivateRoute>} />
+        <Route path="/mes-soumissions" element={<PrivateRoute><Layout><MesSoumissions /></Layout></PrivateRoute>} />
 
         {/* Pro dashboard — gestion commandes et profil seulement */}
         <Route path="/boutique" element={<PrivateRoute role="pro"><AdminWrapper><ProLayout /></AdminWrapper></PrivateRoute>}>
