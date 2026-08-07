@@ -1,9 +1,16 @@
 import { useEffect, useState } from 'react';
 import { useStore, useT } from '../lib/store';
 import { api } from '../lib/api';
-import { User, Package, Gavel, Heart } from 'lucide-react';
-import { STATIC_ITEMS } from '../lib/staticItems';
+import { User, Package, Gavel, Heart, Truck, ExternalLink } from 'lucide-react';
+import { getAllItems } from '../lib/staticItems';
 import ItemCard from '../components/ItemCard';
+
+function loadMyOrders(userId: string): any[] {
+  try {
+    const all = JSON.parse(localStorage.getItem('mb_orders') || '[]');
+    return all.filter((o: any) => o.buyer_id === userId || o.buyer_email === userId);
+  } catch { return []; }
+}
 
 export default function Profile() {
   const t = useT();
@@ -14,8 +21,14 @@ export default function Profile() {
   const [orders, setOrders] = useState<any[]>([]);
 
   useEffect(() => {
-    if (tab === 'orders') api.get('/orders/mine').then(d => setOrders(d.orders || [])).catch(() => {});
-  }, [tab]);
+    if (tab === 'orders' && user) {
+      const local = loadMyOrders(user.id || user.email);
+      setOrders(local);
+      api.get('/orders/mine').then(d => {
+        if (d.orders?.length) setOrders(d.orders);
+      }).catch(() => {});
+    }
+  }, [tab, user]);
 
   const saveProfile = async () => {
     try {
@@ -28,8 +41,7 @@ export default function Profile() {
     setTimeout(() => setSaved(false), 3000);
   };
 
-  // Favorites from Zustand store + static items fallback
-  const favItems = STATIC_ITEMS.filter(item => favIds.has(item.id));
+  const favItems = getAllItems().filter((item: any) => favIds.has(item.id));
 
   const tabs = [
     { id: 'profile', label: t('profile'), icon: User },
@@ -123,18 +135,76 @@ export default function Profile() {
             <div>
               <h2 style={{ fontFamily: 'Georgia, serif', fontSize: '1.2rem', fontWeight: 400, marginBottom: '1.25rem', color: '#1a1a1a' }}>Mes achats</h2>
               {orders.length === 0 ? (
-                <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.85rem', color: '#9e8e7e', textAlign: 'center', padding: '2rem' }}>Aucun achat pour le moment</p>
+                <div style={{ textAlign: 'center', padding: '3rem 1rem', color: '#9e8e7e' }}>
+                  <Package size={40} color="#e8d5b7" style={{ margin: '0 auto 1rem' }} />
+                  <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.85rem' }}>Aucun achat pour le moment</p>
+                </div>
               ) : orders.map(o => (
-                <div key={o.id} style={{ border: '1px solid #e8d5b7', padding: '1.25rem', marginBottom: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '0.75rem' }}>
-                  <div>
-                    <p style={{ fontFamily: 'Georgia, serif', fontSize: '0.95rem', color: '#1a1a1a', marginBottom: '4px' }}>{o.item_title}</p>
-                    <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.72rem', color: '#9e8e7e' }}>{o.shop_name}</p>
-                    <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.72rem', color: '#9e8e7e', marginTop: '2px' }}>{new Date(o.created_at).toLocaleDateString('fr-FR')}</p>
+                <div key={o.id} style={{ border: `1px solid ${o.shipping_status === 'delivered' ? '#c3e6cb' : o.shipping_status === 'shipped' ? '#bee5eb' : '#e8d5b7'}`, marginBottom: '1rem', overflow: 'hidden' }}>
+                  {/* Status bar */}
+                  <div style={{ padding: '6px 14px', backgroundColor: o.shipping_status === 'delivered' ? '#d4edda' : o.shipping_status === 'shipped' ? '#d1ecf1' : o.payment_status === 'paid' ? '#fff3cd' : '#f8f4ef', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    {o.shipping_status === 'delivered'
+                      ? <><span style={{ color: '#2e7d32', fontSize: '0.72rem', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontWeight: 700 }}>✓ LIVRÉ</span></>
+                      : o.shipping_status === 'shipped'
+                      ? <><Truck size={13} color="#1976d2" /><span style={{ color: '#1976d2', fontSize: '0.72rem', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontWeight: 700 }}>EN COURS DE LIVRAISON</span></>
+                      : o.payment_status === 'paid'
+                      ? <><span style={{ color: '#856404', fontSize: '0.72rem', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontWeight: 700 }}>✓ PAYÉ — PRÉPARATION EN COURS</span></>
+                      : <><span style={{ color: '#9e8e7e', fontSize: '0.72rem', fontFamily: 'Helvetica Neue, Arial, sans-serif' }}>PAIEMENT EN ATTENTE</span></>
+                    }
                   </div>
-                  <div style={{ textAlign: 'right' }}>
-                    <p style={{ fontFamily: 'Georgia, serif', fontSize: '1rem', color: '#1a1a1a', marginBottom: '4px' }}>{o.amount?.toLocaleString('fr-FR')} €</p>
-                    <StatusBadge status={o.payment_status} type="payment" />
-                    <StatusBadge status={o.shipping_status} type="shipping" />
+
+                  <div style={{ padding: '1rem 1.25rem', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '0.75rem' }}>
+                    <div>
+                      <p style={{ fontFamily: 'Georgia, serif', fontSize: '0.95rem', color: '#1a1a1a', marginBottom: '4px' }}>{o.item_title}</p>
+                      <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.7rem', color: '#9e8e7e' }}>
+                        {new Date(o.created_at).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}
+                      </p>
+                    </div>
+                    <p style={{ fontFamily: 'Georgia, serif', fontSize: '1rem', color: '#1a1a1a' }}>
+                      {(o.amount || 0).toLocaleString('fr-FR')} €
+                    </p>
+                  </div>
+
+                  {/* Tracking */}
+                  {o.tracking_number && (
+                    <div style={{ margin: '0 1.25rem 1rem', padding: '12px 14px', backgroundColor: '#f0f7ff', borderLeft: '3px solid #1976d2' }}>
+                      <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.65rem', letterSpacing: '0.1em', color: '#1976d2', marginBottom: '6px' }}>SUIVI D'ENVOI</p>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+                        <div>
+                          <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.78rem', color: '#1a1a1a' }}>
+                            {o.carrier_label} · <strong>{o.tracking_number}</strong>
+                          </p>
+                        </div>
+                        {o.tracking_url && (
+                          <a href={o.tracking_url} target="_blank" rel="noopener noreferrer"
+                            style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', padding: '6px 14px', backgroundColor: '#1976d2', color: 'white', textDecoration: 'none', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.72rem', borderRadius: '4px', marginLeft: 'auto' }}>
+                            <Truck size={13} /> SUIVRE MON COLIS <ExternalLink size={11} />
+                          </a>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Timeline */}
+                  <div style={{ padding: '0 1.25rem 1rem', display: 'flex', gap: '0', alignItems: 'center' }}>
+                    {[
+                      { label: 'Commandé', done: true },
+                      { label: 'Payé', done: o.payment_status === 'paid' },
+                      { label: 'Expédié', done: o.shipping_status === 'shipped' || o.shipping_status === 'delivered' },
+                      { label: 'Livré', done: o.shipping_status === 'delivered' },
+                    ].map((step, i, arr) => (
+                      <div key={step.label} style={{ display: 'flex', alignItems: 'center', flex: i < arr.length - 1 ? 1 : 0 }}>
+                        <div style={{ textAlign: 'center', flexShrink: 0 }}>
+                          <div style={{ width: '20px', height: '20px', borderRadius: '50%', backgroundColor: step.done ? '#c9a96e' : '#e8d5b7', margin: '0 auto 4px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                            {step.done && <span style={{ color: 'white', fontSize: '11px' }}>✓</span>}
+                          </div>
+                          <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.55rem', color: step.done ? '#c9a96e' : '#bbb', letterSpacing: '0.05em', whiteSpace: 'nowrap' }}>{step.label}</p>
+                        </div>
+                        {i < arr.length - 1 && (
+                          <div style={{ flex: 1, height: '2px', backgroundColor: step.done ? '#c9a96e' : '#e8d5b7', margin: '0 4px 14px' }} />
+                        )}
+                      </div>
+                    ))}
                   </div>
                 </div>
               ))}
@@ -144,9 +214,31 @@ export default function Profile() {
           {tab === 'bids' && (
             <div>
               <h2 style={{ fontFamily: 'Georgia, serif', fontSize: '1.2rem', fontWeight: 400, marginBottom: '1.25rem', color: '#1a1a1a' }}>Mes enchères</h2>
-              <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.85rem', color: '#9e8e7e', textAlign: 'center', padding: '2rem' }}>
-                Retrouvez vos enchères actives dans les articles correspondants.
-              </p>
+              {(() => {
+                try {
+                  const bids: any[] = JSON.parse(localStorage.getItem('mb_bids') || '[]')
+                    .filter((b: any) => b.user_id === user?.id || b.user_email === user?.email);
+                  if (!bids.length) return (
+                    <div style={{ textAlign: 'center', padding: '3rem 1rem', color: '#9e8e7e' }}>
+                      <Gavel size={40} color="#e8d5b7" style={{ margin: '0 auto 1rem' }} />
+                      <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.85rem' }}>Vous n'avez pas encore participé à une enchère</p>
+                    </div>
+                  );
+                  return bids.map(b => (
+                    <div key={b.id} style={{ border: '1px solid #e8d5b7', padding: '1rem 1.25rem', marginBottom: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.75rem' }}>
+                      <div>
+                        <p style={{ fontFamily: 'Georgia, serif', fontSize: '0.95rem', color: '#1a1a1a', marginBottom: '4px' }}>{b.item_title}</p>
+                        <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.7rem', color: '#9e8e7e' }}>
+                          Votre enchère : <strong style={{ color: '#c9a96e' }}>{(b.amount || 0).toLocaleString('fr-FR')} €</strong>
+                        </p>
+                      </div>
+                      <span style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.72rem', fontWeight: 700, color: b.is_winning ? '#2e7d32' : '#ff9800' }}>
+                        {b.is_winning ? '✓ Meilleure offre' : '↑ Surenchère possible'}
+                      </span>
+                    </div>
+                  ));
+                } catch { return null; }
+              })()}
             </div>
           )}
 
