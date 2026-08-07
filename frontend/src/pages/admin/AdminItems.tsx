@@ -1,13 +1,14 @@
 import { useEffect, useState } from 'react';
-import { Eye, Star, Pause, Play, Trash2, ShieldCheck, FileText, X } from 'lucide-react';
+import { Eye, Star, Pause, Play, Trash2, ShieldCheck, FileText, X, Plus } from 'lucide-react';
 import { api, imgUrl } from '../../lib/api';
-import { Link } from 'react-router-dom';
-import { STATIC_ITEMS } from '../../lib/staticItems';
+import { Link, useNavigate } from 'react-router-dom';
+import { getAllItems } from '../../lib/staticItems';
 import { useStore } from '../../lib/store';
 
 export default function AdminItems() {
+  const navigate = useNavigate();
   const { certifiedIds, setCertified } = useStore();
-  const [items, setItems] = useState<any[]>(STATIC_ITEMS.map(i => ({ ...i, certified: certifiedIds.has(i.id) ? 1 : i.certified })));
+  const [items, setItems] = useState<any[]>(getAllItems().map(i => ({ ...i, certified: certifiedIds.has(i.id) ? 1 : i.certified })));
   const [search, setSearch] = useState('');
   const [filter, setFilter] = useState('all');
   const [certModal, setCertModal] = useState<any>(null); // item being reviewed
@@ -121,7 +122,11 @@ export default function AdminItems() {
 
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
         <h1 style={{ fontFamily: 'Georgia, serif', fontSize: '1.8rem', fontWeight: 400, color: '#1a1a1a' }}>Articles ({filtered.length})</h1>
-        <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
+        <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', alignItems: 'center' }}>
+          <button onClick={() => navigate('/admin/articles/nouveau')} className="btn-gold"
+            style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.75rem' }}>
+            <Plus size={14} /> AJOUTER UN ARTICLE
+          </button>
           <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Rechercher..."
             style={{ border: '1px solid #e8d5b7', padding: '6px 12px', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.8rem', width: '180px' }} />
           <select value={filter} onChange={e => setFilter(e.target.value)}

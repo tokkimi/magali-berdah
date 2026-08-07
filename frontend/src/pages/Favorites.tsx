@@ -2,13 +2,12 @@ import { Link } from 'react-router-dom';
 import { Heart } from 'lucide-react';
 import { useStore } from '../lib/store';
 import ItemCard from '../components/ItemCard';
-import { STATIC_ITEMS } from '../lib/staticItems';
+import { getAllItems } from '../lib/staticItems';
 
 export default function Favorites() {
   const { user, favIds } = useStore();
 
-  // favIds is the source of truth (localStorage-persisted in Zustand store)
-  const favItems = STATIC_ITEMS.filter(item => favIds.has(item.id));
+  const favItems = getAllItems().filter((item: any) => favIds.has(item.id));
 
   if (!user) {
     return (

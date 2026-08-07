@@ -155,13 +155,23 @@ const PARENT_MAP: Record<string, string> = {
   'acc-scarves': 'accessories', 'acc-sunglasses': 'accessories',
 };
 
+function loadAdminItems(): any[] {
+  try { return JSON.parse(localStorage.getItem('mb_admin_items') || '[]'); } catch { return []; }
+}
+
+export function getAllItems(): any[] {
+  return [...loadAdminItems(), ...STATIC_ITEMS];
+}
+
 export function filterStaticItems(q: {
   type?: string; category?: string; brand?: string; search?: string;
   featured?: string; limit?: number; offset?: number; sort?: string;
 }): { items: any[]; total: number } {
   const { type, category, brand, search, featured, limit = 20, offset = 0, sort = 'created_at' } = q;
 
-  let filtered = STATIC_ITEMS.filter(item => {
+  const allItems = getAllItems();
+
+  let filtered = allItems.filter(item => {
     if (type === 'auction' && !item.auction_enabled) return false;
     if (type === 'fixed' && item.fixed_price == null) return false;
     if (featured === 'true' && !item.featured) return false;

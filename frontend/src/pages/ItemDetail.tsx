@@ -4,7 +4,7 @@ import { ChevronLeft, Shield, Truck, Clock, Heart } from 'lucide-react';
 import { io, Socket } from 'socket.io-client';
 import { api, imgUrl } from '../lib/api';
 import { useStore, useT } from '../lib/store';
-import { STATIC_ITEMS } from '../lib/staticItems';
+import { getAllItems } from '../lib/staticItems';
 
 const SOCKET_URL = import.meta.env.VITE_API_URL || '';
 
@@ -47,7 +47,7 @@ export default function ItemDetail() {
 
     // Static item — no API call needed
     if (isStatic) {
-      const found = STATIC_ITEMS.find(i => i.id === id);
+      const found = getAllItems().find((i: any) => i.id === id);
       if (found) setItem(found);
       else navigate('/catalogue');
       return;
@@ -58,7 +58,7 @@ export default function ItemDetail() {
       setBids(d.bids || []);
     }).catch(() => {
       // Try static fallback before redirecting
-      const found = STATIC_ITEMS.find(i => i.id === id);
+      const found = getAllItems().find((i: any) => i.id === id);
       if (found) setItem(found);
       else navigate('/catalogue');
     });

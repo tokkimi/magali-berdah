@@ -37,6 +37,7 @@ import AdminNewsletter from './pages/admin/AdminNewsletter';
 import AdminSEO from './pages/admin/AdminSEO';
 import AdminAnalytics from './pages/admin/AdminAnalytics';
 import AdminSubmissions from './pages/admin/AdminSubmissions';
+import AdminItemForm from './pages/admin/AdminItemForm';
 
 function PrivateRoute({ children, role }: { children: React.ReactNode; role?: string }) {
   const { user, token } = useStore();
@@ -111,6 +112,7 @@ export default function App() {
           <Route index element={<AdminDashboard />} />
           <Route path="utilisateurs" element={<AdminUsers />} />
           <Route path="articles" element={<AdminItems />} />
+          <Route path="articles/nouveau" element={<AdminItemForm />} />
           <Route path="demandes" element={<AdminSubmissions />} />
           <Route path="commandes" element={<AdminOrders />} />
           <Route path="boutiques" element={<AdminShops />} />
