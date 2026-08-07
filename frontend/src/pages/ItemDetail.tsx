@@ -40,6 +40,7 @@ export default function ItemDetail() {
   const [bidSuccess, setBidSuccess] = useState(false);
   const [buying, setBuying] = useState(false);
   const [orderConfirm, setOrderConfirm] = useState<any>(null);
+  const [payWithWallet, setPayWithWallet] = useState(false);
   const socketRef = useRef<Socket | null>(null);
   const isStatic = id?.startsWith('static-') || id?.startsWith('admin-');
 
@@ -109,8 +110,15 @@ export default function ItemDetail() {
     }
   };
 
-  const handleBuyNow = async () => {
+  // Wallet balance for buy-with-wallet option
+  const userWallet = (() => {
+    if (!user) return { available: 0 };
+    try { const w = JSON.parse(localStorage.getItem('mb_wallet') || '{}'); return w[user.email] || { available: 0 }; } catch { return { available: 0 }; }
+  })();
+
+  const handleBuyNow = async (useWallet = false) => {
     if (!user) { alert('Connectez-vous pour acheter.'); return; }
+    if (useWallet && userWallet.available < item.fixed_price) return;
     setBuying(true);
     try {
       const orders = JSON.parse(localStorage.getItem('mb_orders') || '[]');
@@ -121,6 +129,7 @@ export default function ItemDetail() {
         buyer_address: user.address || '', buyer_city: user.city || '',
         amount: item.fixed_price,
         payment_status: 'paid',
+        payment_via_wallet: useWallet,
         shipping_status: 'pending',
         tracking_number: null,
         seller_email: item.seller_email || null,
@@ -131,6 +140,19 @@ export default function ItemDetail() {
       };
       orders.push(order);
       localStorage.setItem('mb_orders', JSON.stringify(orders));
+
+      // Deduct from buyer's wallet if paid via wallet
+      if (useWallet) {
+        const allWallets = JSON.parse(localStorage.getItem('mb_wallet') || '{}');
+        const w = allWallets[user.email] || { pending: 0, available: 0, transactions: [] };
+        w.available = Math.max(0, (w.available || 0) - item.fixed_price);
+        w.transactions = [...(w.transactions || []), {
+          id: `tx-${Date.now()}`, item_title: item.title,
+          amount: item.fixed_price, type: 'purchase', status: 'used', date: new Date().toISOString(),
+        }];
+        allWallets[user.email] = w;
+        localStorage.setItem('mb_wallet', JSON.stringify(allWallets));
+      }
 
       // Credit seller pending wallet immediately on sale
       if (item.seller_email && item.seller_payout) {
@@ -339,10 +361,18 @@ export default function ItemDetail() {
                   {item.fixed_price.toLocaleString('fr-FR')} €
                 </p>
                 {user ? (
-                  <button onClick={handleBuyNow} disabled={buying || item.status === 'sold'} className="btn-gold"
-                    style={{ width: '100%', fontSize: '0.85rem', padding: '1rem', letterSpacing: '0.1em' }}>
-                    {item.status === 'sold' ? 'VENDU' : buying ? 'Traitement...' : 'ACHETER MAINTENANT'}
-                  </button>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    <button onClick={() => handleBuyNow(false)} disabled={buying || item.status === 'sold'} className="btn-gold"
+                      style={{ width: '100%', fontSize: '0.85rem', padding: '1rem', letterSpacing: '0.1em' }}>
+                      {item.status === 'sold' ? 'VENDU' : buying ? 'Traitement...' : 'ACHETER MAINTENANT'}
+                    </button>
+                    {userWallet.available >= item.fixed_price && item.status !== 'sold' && (
+                      <button onClick={() => handleBuyNow(true)} disabled={buying}
+                        style={{ width: '100%', padding: '0.9rem', border: '1px solid #c9a96e', background: '#fff8e6', cursor: 'pointer', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.82rem', color: '#a8834a', letterSpacing: '0.05em' }}>
+                        💰 PAYER AVEC MA CAGNOTTE ({userWallet.available.toLocaleString('fr-FR')} € disponible)
+                      </button>
+                    )}
+                  </div>
                 ) : (
                   <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.85rem', color: '#9e8e7e' }}>
                     <Link to="#" style={{ color: '#c9a96e' }}>Connectez-vous</Link> pour acheter

@@ -13,6 +13,7 @@ interface User {
   address?: string;
   city?: string;
   country?: string;
+  dob?: string;
 }
 
 interface Shop {

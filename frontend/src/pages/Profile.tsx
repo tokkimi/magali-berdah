@@ -1,7 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useStore, useT } from '../lib/store';
 import { api } from '../lib/api';
-import { User, Package, Gavel, Heart, Truck, ExternalLink, Send, ShoppingBag, Wallet, CheckCircle } from 'lucide-react';
+import {
+  User, Package, Gavel, Heart, Truck, ExternalLink, Send,
+  ShoppingBag, Wallet, CheckCircle, CreditCard, Building2, Plus, Minus,
+} from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { getAllItems } from '../lib/staticItems';
 import ItemCard from '../components/ItemCard';
@@ -19,7 +22,6 @@ function getWallet(email: string) {
     return w[email] || { pending: 0, available: 0, transactions: [] };
   } catch { return { pending: 0, available: 0, transactions: [] }; }
 }
-
 function saveWallet(email: string, data: any) {
   try {
     const w = JSON.parse(localStorage.getItem('mb_wallet') || '{}');
@@ -28,14 +30,41 @@ function saveWallet(email: string, data: any) {
   } catch {}
 }
 
+function getPaymentMethod(email: string) {
+  try { return JSON.parse(localStorage.getItem(`mb_pm_${email}`) || 'null'); } catch { return null; }
+}
+function getBankDetails(email: string) {
+  try { return JSON.parse(localStorage.getItem(`mb_bank_${email}`) || 'null'); } catch { return null; }
+}
+
 export default function Profile() {
   const t = useT();
   const { user, updateUser, favIds } = useStore();
   const [tab, setTab] = useState('profile');
-  const [form, setForm] = useState({ name: user?.name || '', phone: user?.phone || '', address: user?.address || '', city: user?.city || '', country: user?.country || 'FR' });
+  const [form, setForm] = useState({
+    name: user?.name || '', phone: user?.phone || '',
+    address: user?.address || '', city: user?.city || '',
+    country: user?.country || 'FR', dob: user?.dob || '', avatar: user?.avatar || '',
+  });
   const [saved, setSaved] = useState(false);
   const [orders, setOrders] = useState<any[]>([]);
   const [wallet, setWallet] = useState<any>({ pending: 0, available: 0, transactions: [] });
+
+  // Payment method state
+  const [pm, setPm] = useState<any>(null);
+  const [pmForm, setPmForm] = useState({ number: '', expiry: '', holder: '' });
+  const [pmEdit, setPmEdit] = useState(false);
+  const [pmSaved, setPmSaved] = useState(false);
+
+  // Bank details state
+  const [bank, setBank] = useState<any>(null);
+  const [bankForm, setBankForm] = useState({ iban: '', bic: '', holder: '' });
+  const [bankEdit, setBankEdit] = useState(false);
+  const [bankSaved, setBankSaved] = useState(false);
+
+  // Wallet top-up state
+  const [topupAmount, setTopupAmount] = useState('');
+  const [topupDone, setTopupDone] = useState(false);
   const [transferDone, setTransferDone] = useState(false);
 
   useEffect(() => {
@@ -47,24 +76,51 @@ export default function Profile() {
         if (d.orders?.length) setOrders(d.orders);
       }).catch(() => {});
     }
-    if (tab === 'wallet') {
+    if (tab === 'wallet' || tab === 'profile') {
       setWallet(getWallet(user.email));
     }
+    if (tab === 'profile') {
+      setPm(getPaymentMethod(user.email));
+      setBank(getBankDetails(user.email));
+    }
   }, [tab, user]);
+
+  // Always load wallet for header display
+  useEffect(() => {
+    if (user) setWallet(getWallet(user.email));
+  }, [user]);
 
   const saveProfile = async () => {
     try {
       const data = await api.put('/auth/me', form);
       updateUser(data.user);
-    } catch {
-      updateUser(form);
-    }
+    } catch { updateUser(form); }
     setSaved(true);
     setTimeout(() => setSaved(false), 3000);
   };
 
+  const savePaymentMethod = () => {
+    if (!user || !pmForm.number || !pmForm.expiry || !pmForm.holder) return;
+    const last4 = pmForm.number.replace(/\s/g, '').slice(-4);
+    const saved = { last4, expiry: pmForm.expiry, holder: pmForm.holder };
+    localStorage.setItem(`mb_pm_${user.email}`, JSON.stringify(saved));
+    setPm(saved);
+    setPmEdit(false);
+    setPmSaved(true);
+    setTimeout(() => setPmSaved(false), 3000);
+  };
+
+  const saveBankDetails = () => {
+    if (!user || !bankForm.iban || !bankForm.holder) return;
+    const data = { iban: bankForm.iban.trim().toUpperCase(), bic: bankForm.bic.trim().toUpperCase(), holder: bankForm.holder.trim() };
+    localStorage.setItem(`mb_bank_${user.email}`, JSON.stringify(data));
+    setBank(data);
+    setBankEdit(false);
+    setBankSaved(true);
+    setTimeout(() => setBankSaved(false), 3000);
+  };
+
   const confirmReceived = (order: any) => {
-    // Mark order as delivered + buyer_confirmed
     const all = JSON.parse(localStorage.getItem('mb_orders') || '[]');
     const updated = all.map((o: any) => o.id === order.id
       ? { ...o, shipping_status: 'delivered', buyer_confirmed: true, wallet_credited: true }
@@ -75,8 +131,6 @@ export default function Profile() {
       ? { ...o, shipping_status: 'delivered', buyer_confirmed: true }
       : o
     ));
-
-    // Credit seller wallet: move from pending to available
     if (order.seller_email && order.seller_payout && !order.wallet_credited) {
       const w = getWallet(order.seller_email);
       w.pending = Math.max(0, (w.pending || 0) - order.seller_payout);
@@ -85,21 +139,34 @@ export default function Profile() {
         tx.order_id === order.id ? { ...tx, status: 'available' } : tx
       );
       saveWallet(order.seller_email, w);
-      // Refresh own wallet if user is the seller
       if (order.seller_email === user?.email) setWallet({ ...w });
     }
+  };
+
+  const topUp = () => {
+    if (!user) return;
+    const amount = parseFloat(topupAmount);
+    if (isNaN(amount) || amount <= 0) return;
+    const w = getWallet(user.email);
+    w.available = (w.available || 0) + amount;
+    w.transactions = [...(w.transactions || []), {
+      id: `tx-${Date.now()}`, item_title: 'Rechargement cagnotte',
+      amount, type: 'topup', status: 'available', date: new Date().toISOString(),
+    }];
+    saveWallet(user.email, w);
+    setWallet({ ...w });
+    setTopupAmount('');
+    setTopupDone(true);
+    setTimeout(() => setTopupDone(false), 3000);
   };
 
   const requestTransfer = () => {
     if (!user || wallet.available <= 0) return;
     const w = { ...wallet };
+    const amount = w.available;
     w.transactions = [...(w.transactions || []), {
-      id: `tx-${Date.now()}`,
-      item_title: 'Virement demandé',
-      amount: w.available,
-      type: 'transfer',
-      status: 'requested',
-      date: new Date().toISOString(),
+      id: `tx-${Date.now()}`, item_title: 'Virement demandé',
+      amount, type: 'transfer', status: 'requested', date: new Date().toISOString(),
     }];
     w.available = 0;
     saveWallet(user.email, w);
@@ -110,15 +177,16 @@ export default function Profile() {
 
   const favItems = getAllItems().filter((item: any) => favIds.has(item.id));
   const mySellerItems = user ? getAllItems().filter((item: any) => item.seller_email === user.email) : [];
+  const totalBalance = (wallet.available || 0) + (wallet.pending || 0);
 
   const tabs = [
-    { id: 'profile', label: t('profile'), icon: User },
-    { id: 'orders', label: t('myOrders'), icon: Package },
-    { id: 'bids', label: t('myBids'), icon: Gavel },
-    { id: 'my-items', label: 'Mes articles', icon: ShoppingBag },
+    { id: 'profile', label: 'Mon profil', icon: User },
+    { id: 'orders', label: 'Mes achats', icon: Package },
+    { id: 'bids', label: 'Mes enchères', icon: Gavel },
     { id: 'wallet', label: 'Cagnotte', icon: Wallet },
+    ...(mySellerItems.length > 0 ? [{ id: 'my-items', label: 'Mes articles', icon: ShoppingBag }] : []),
     { id: 'submissions', label: 'Soumissions', icon: Send },
-    { id: 'favorites', label: t('favorites'), icon: Heart },
+    { id: 'favorites', label: 'Favoris', icon: Heart },
   ];
 
   if (!user) return null;
@@ -126,12 +194,12 @@ export default function Profile() {
   return (
     <div style={{ maxWidth: '1000px', margin: '0 auto', padding: '1.5rem 1rem 5rem' }}>
       <style>{`
-        .profile-tabs { display: flex; flex-direction: column; gap: 0; width: 200px; flex-shrink: 0; }
+        .profile-tabs { display: flex; flex-direction: column; gap: 0; width: 190px; flex-shrink: 0; }
         .profile-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
         @media (max-width: 700px) {
           .profile-layout { flex-direction: column !important; }
           .profile-tabs { flex-direction: row !important; width: 100% !important; overflow-x: auto; border-bottom: 1px solid #e8d5b7; margin-bottom: 1rem; padding-bottom: 0; gap: 0 !important; }
-          .profile-tab-btn { border-left: none !important; border-bottom: 2px solid transparent; flex-shrink: 0; padding: 10px 12px !important; }
+          .profile-tab-btn { border-left: none !important; border-bottom: 2px solid transparent; flex-shrink: 0; padding: 10px 10px !important; }
           .profile-tab-btn.active { border-left: none !important; border-bottom: 2px solid #c9a96e !important; }
           .profile-form-grid { grid-template-columns: 1fr !important; }
         }
@@ -139,14 +207,32 @@ export default function Profile() {
 
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem', borderBottom: '1px solid #e8d5b7', paddingBottom: '1.5rem', flexWrap: 'wrap' }}>
-        <div style={{ width: '60px', height: '60px', backgroundColor: '#f8f4ef', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '2px solid #c9a96e', flexShrink: 0 }}>
-          <span style={{ fontFamily: 'Georgia, serif', fontSize: '1.5rem', color: '#c9a96e' }}>{user.name[0]?.toUpperCase()}</span>
+        <div style={{ width: '60px', height: '60px', backgroundColor: '#f8f4ef', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '2px solid #c9a96e', flexShrink: 0, overflow: 'hidden' }}>
+          {form.avatar ? (
+            <img src={form.avatar} alt={user.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+              onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }} />
+          ) : (
+            <span style={{ fontFamily: 'Georgia, serif', fontSize: '1.5rem', color: '#c9a96e' }}>{user.name[0]?.toUpperCase()}</span>
+          )}
         </div>
-        <div>
+        <div style={{ flex: 1 }}>
           <h1 style={{ fontFamily: 'Georgia, serif', fontSize: '1.3rem', fontWeight: 400, color: '#1a1a1a' }}>{user.name}</h1>
           <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.78rem', color: '#9e8e7e' }}>{user.email}</p>
-          {user.verified && <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', color: '#2e7d32', fontSize: '0.72rem', fontFamily: 'Helvetica Neue, Arial, sans-serif' }}>✓ Compte vérifié</span>}
+          {user.verified && <span style={{ color: '#2e7d32', fontSize: '0.72rem', fontFamily: 'Helvetica Neue, Arial, sans-serif' }}>✓ Compte vérifié</span>}
         </div>
+        {/* Wallet balance badge — toujours visible */}
+        <button onClick={() => setTab('wallet')}
+          style={{ background: totalBalance > 0 ? 'linear-gradient(135deg, #c9a96e, #a8834a)' : '#f8f4ef', border: totalBalance > 0 ? 'none' : '1px solid #e8d5b7', padding: '10px 16px', cursor: 'pointer', textAlign: 'right', flexShrink: 0 }}>
+          <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.55rem', letterSpacing: '0.15em', color: totalBalance > 0 ? 'rgba(255,255,255,0.8)' : '#9e8e7e', marginBottom: '2px' }}>MA CAGNOTTE</p>
+          <p style={{ fontFamily: 'Georgia, serif', fontSize: '1.2rem', color: totalBalance > 0 ? 'white' : '#1a1a1a', lineHeight: 1 }}>
+            {totalBalance.toLocaleString('fr-FR')} €
+          </p>
+          {wallet.available > 0 && (
+            <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.55rem', color: 'rgba(255,255,255,0.7)', marginTop: '2px' }}>
+              {wallet.available.toLocaleString('fr-FR')} € disponible
+            </p>
+          )}
+        </button>
       </div>
 
       <div className="profile-layout" style={{ display: 'flex', gap: '2rem' }}>
@@ -162,44 +248,148 @@ export default function Profile() {
           ))}
         </nav>
 
-        {/* Tab content */}
         <div style={{ flex: 1, minWidth: 0 }}>
 
-          {/* ── PROFIL ── */}
+          {/* ── MON PROFIL ── */}
           {tab === 'profile' && (
-            <div>
-              <h2 style={{ fontFamily: 'Georgia, serif', fontSize: '1.2rem', fontWeight: 400, marginBottom: '1.25rem', color: '#1a1a1a' }}>Mes informations</h2>
-              <div className="profile-form-grid">
-                {[
-                  { label: 'Nom complet', key: 'name', type: 'text' },
-                  { label: 'Téléphone', key: 'phone', type: 'tel' },
-                  { label: 'Adresse', key: 'address', type: 'text' },
-                  { label: 'Ville', key: 'city', type: 'text' },
-                ].map(f => (
-                  <div key={f.key}>
-                    <label style={labelStyle}>{f.label.toUpperCase()}</label>
-                    <input type={f.type} value={(form as any)[f.key]} onChange={e => setForm(x => ({ ...x, [f.key]: e.target.value }))}
-                      style={inputStyle} />
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+
+              {/* Informations personnelles */}
+              <section style={{ backgroundColor: 'white', border: '1px solid #e8d5b7', padding: '1.5rem' }}>
+                <p style={sectionLabel}>INFORMATIONS PERSONNELLES</p>
+                <div className="profile-form-grid" style={{ gap: '1rem' }}>
+                  <div style={{ gridColumn: '1 / -1' }}>
+                    <label style={labelStyle}>PHOTO DE PROFIL (URL)</label>
+                    <input value={form.avatar} onChange={e => setForm(x => ({ ...x, avatar: e.target.value }))}
+                      placeholder="https://..." style={inputStyle} />
                   </div>
-                ))}
-                <div>
-                  <label style={labelStyle}>PAYS</label>
-                  <select value={form.country} onChange={e => setForm(x => ({ ...x, country: e.target.value }))} style={{ ...inputStyle, backgroundColor: 'white' }}>
-                    <option value="FR">France</option>
-                    <option value="BE">Belgique</option>
-                    <option value="CH">Suisse</option>
-                    <option value="LU">Luxembourg</option>
-                    <option value="MC">Monaco</option>
-                    <option value="GB">Royaume-Uni</option>
-                    <option value="US">États-Unis</option>
-                    <option value="AE">Émirats Arabes Unis</option>
-                  </select>
+                  {[
+                    { label: 'Nom complet', key: 'name', type: 'text' },
+                    { label: 'Téléphone', key: 'phone', type: 'tel' },
+                    { label: 'Date de naissance', key: 'dob', type: 'date' },
+                    { label: 'Adresse', key: 'address', type: 'text' },
+                    { label: 'Ville', key: 'city', type: 'text' },
+                  ].map(f => (
+                    <div key={f.key} style={f.key === 'address' || f.key === 'dob' ? {} : {}}>
+                      <label style={labelStyle}>{f.label.toUpperCase()}</label>
+                      <input type={f.type} value={(form as any)[f.key]}
+                        onChange={e => setForm(x => ({ ...x, [f.key]: e.target.value }))}
+                        style={inputStyle} />
+                    </div>
+                  ))}
+                  <div>
+                    <label style={labelStyle}>PAYS</label>
+                    <select value={form.country} onChange={e => setForm(x => ({ ...x, country: e.target.value }))} style={{ ...inputStyle, backgroundColor: 'white' }}>
+                      {[['FR','France'],['BE','Belgique'],['CH','Suisse'],['LU','Luxembourg'],['MC','Monaco'],['GB','Royaume-Uni'],['US','États-Unis'],['AE','Émirats Arabes Unis']].map(([v,l]) => (
+                        <option key={v} value={v}>{l}</option>
+                      ))}
+                    </select>
+                  </div>
                 </div>
-              </div>
-              <div style={{ marginTop: '1.25rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                <button onClick={saveProfile} className="btn-gold">{t('save').toUpperCase()}</button>
-                {saved && <span style={{ color: '#2e7d32', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.8rem' }}>✓ Enregistré</span>}
-              </div>
+                <div style={{ marginTop: '1.25rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                  <button onClick={saveProfile} className="btn-gold" style={{ fontSize: '0.78rem' }}>ENREGISTRER</button>
+                  {saved && <span style={{ color: '#2e7d32', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.8rem' }}>✓ Enregistré</span>}
+                </div>
+              </section>
+
+              {/* Moyen de paiement */}
+              <section style={{ backgroundColor: 'white', border: '1px solid #e8d5b7', padding: '1.5rem' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                  <p style={sectionLabel}>MOYEN DE PAIEMENT</p>
+                  {pm && !pmEdit && (
+                    <button onClick={() => { setPmEdit(true); setPmForm({ number: '', expiry: pm.expiry, holder: pm.holder }); }}
+                      style={{ background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.72rem', color: '#c9a96e' }}>
+                      Modifier
+                    </button>
+                  )}
+                </div>
+                {pm && !pmEdit ? (
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                    <div style={{ width: '48px', height: '32px', backgroundColor: '#1a1a2e', borderRadius: '4px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <CreditCard size={20} color="white" />
+                    </div>
+                    <div>
+                      <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.88rem', color: '#1a1a1a' }}>•••• •••• •••• {pm.last4}</p>
+                      <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.72rem', color: '#9e8e7e' }}>{pm.holder} · Expire {pm.expiry}</p>
+                    </div>
+                    {pmSaved && <span style={{ color: '#2e7d32', fontSize: '0.75rem', fontFamily: 'Helvetica Neue, Arial, sans-serif', marginLeft: 'auto' }}>✓ Enregistré</span>}
+                  </div>
+                ) : (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                    <div>
+                      <label style={labelStyle}>NUMÉRO DE CARTE</label>
+                      <input value={pmForm.number} onChange={e => setPmForm(f => ({ ...f, number: e.target.value }))}
+                        placeholder="1234 5678 9012 3456" maxLength={19} style={inputStyle} />
+                    </div>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                      <div>
+                        <label style={labelStyle}>DATE D'EXPIRATION</label>
+                        <input value={pmForm.expiry} onChange={e => setPmForm(f => ({ ...f, expiry: e.target.value }))}
+                          placeholder="MM/AA" maxLength={5} style={inputStyle} />
+                      </div>
+                      <div>
+                        <label style={labelStyle}>TITULAIRE</label>
+                        <input value={pmForm.holder} onChange={e => setPmForm(f => ({ ...f, holder: e.target.value }))}
+                          placeholder="Prénom Nom" style={inputStyle} />
+                      </div>
+                    </div>
+                    <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.65rem', color: '#9e8e7e' }}>
+                      🔒 Vos données sont stockées de façon sécurisée
+                    </p>
+                    <div style={{ display: 'flex', gap: '0.75rem' }}>
+                      <button onClick={savePaymentMethod} className="btn-gold" style={{ fontSize: '0.75rem' }}>ENREGISTRER LA CARTE</button>
+                      {pm && <button onClick={() => setPmEdit(false)} style={{ background: 'none', border: '1px solid #e8d5b7', padding: '8px 16px', cursor: 'pointer', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.75rem', color: '#9e8e7e' }}>ANNULER</button>}
+                    </div>
+                  </div>
+                )}
+              </section>
+
+              {/* Coordonnées bancaires */}
+              <section style={{ backgroundColor: 'white', border: '1px solid #e8d5b7', padding: '1.5rem' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                  <p style={sectionLabel}>COORDONNÉES BANCAIRES (virement cagnotte)</p>
+                  {bank && !bankEdit && (
+                    <button onClick={() => { setBankEdit(true); setBankForm({ iban: bank.iban, bic: bank.bic, holder: bank.holder }); }}
+                      style={{ background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.72rem', color: '#c9a96e' }}>
+                      Modifier
+                    </button>
+                  )}
+                </div>
+                {bank && !bankEdit ? (
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                    <Building2 size={28} color="#c9a96e" />
+                    <div>
+                      <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.85rem', color: '#1a1a1a' }}>{bank.iban}</p>
+                      <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.72rem', color: '#9e8e7e' }}>{bank.holder} {bank.bic ? `· BIC : ${bank.bic}` : ''}</p>
+                    </div>
+                    {bankSaved && <span style={{ color: '#2e7d32', fontSize: '0.75rem', fontFamily: 'Helvetica Neue, Arial, sans-serif', marginLeft: 'auto' }}>✓ Enregistré</span>}
+                  </div>
+                ) : (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                    <div>
+                      <label style={labelStyle}>IBAN *</label>
+                      <input value={bankForm.iban} onChange={e => setBankForm(f => ({ ...f, iban: e.target.value }))}
+                        placeholder="FR76 3000 6000 0112 3456 7890 189" style={inputStyle} />
+                    </div>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                      <div>
+                        <label style={labelStyle}>BIC / SWIFT</label>
+                        <input value={bankForm.bic} onChange={e => setBankForm(f => ({ ...f, bic: e.target.value }))}
+                          placeholder="BNPAFRPP" style={inputStyle} />
+                      </div>
+                      <div>
+                        <label style={labelStyle}>TITULAIRE DU COMPTE *</label>
+                        <input value={bankForm.holder} onChange={e => setBankForm(f => ({ ...f, holder: e.target.value }))}
+                          placeholder="Prénom Nom" style={inputStyle} />
+                      </div>
+                    </div>
+                    <div style={{ display: 'flex', gap: '0.75rem' }}>
+                      <button onClick={saveBankDetails} className="btn-gold" style={{ fontSize: '0.75rem' }}>ENREGISTRER</button>
+                      {bank && <button onClick={() => setBankEdit(false)} style={{ background: 'none', border: '1px solid #e8d5b7', padding: '8px 16px', cursor: 'pointer', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.75rem', color: '#9e8e7e' }}>ANNULER</button>}
+                    </div>
+                  </div>
+                )}
+              </section>
             </div>
           )}
 
@@ -214,16 +404,20 @@ export default function Profile() {
                 </div>
               ) : orders.map(o => (
                 <div key={o.id} style={{ border: `1px solid ${o.buyer_confirmed ? '#c3e6cb' : o.shipping_status === 'shipped' ? '#bee5eb' : '#e8d5b7'}`, marginBottom: '1rem', overflow: 'hidden' }}>
-                  {/* Status bar */}
                   <div style={{ padding: '6px 14px', backgroundColor: o.buyer_confirmed ? '#d4edda' : o.shipping_status === 'shipped' ? '#d1ecf1' : o.payment_status === 'paid' ? '#fff3cd' : '#f8f4ef', display: 'flex', alignItems: 'center', gap: '8px' }}>
                     {o.buyer_confirmed
                       ? <><CheckCircle size={13} color="#2e7d32" /><span style={{ color: '#2e7d32', fontSize: '0.72rem', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontWeight: 700 }}>REÇU — MERCI !</span></>
                       : o.shipping_status === 'shipped'
                       ? <><Truck size={13} color="#1976d2" /><span style={{ color: '#1976d2', fontSize: '0.72rem', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontWeight: 700 }}>EN COURS DE LIVRAISON</span></>
                       : o.payment_status === 'paid'
-                      ? <><span style={{ color: '#856404', fontSize: '0.72rem', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontWeight: 700 }}>✓ PAYÉ — PRÉPARATION EN COURS</span></>
-                      : <><span style={{ color: '#9e8e7e', fontSize: '0.72rem', fontFamily: 'Helvetica Neue, Arial, sans-serif' }}>PAIEMENT EN ATTENTE</span></>
+                      ? <span style={{ color: '#856404', fontSize: '0.72rem', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontWeight: 700 }}>✓ PAYÉ — PRÉPARATION EN COURS</span>
+                      : <span style={{ color: '#9e8e7e', fontSize: '0.72rem', fontFamily: 'Helvetica Neue, Arial, sans-serif' }}>PAIEMENT EN ATTENTE</span>
                     }
+                    {o.payment_via_wallet && (
+                      <span style={{ marginLeft: 'auto', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.65rem', color: '#c9a96e' }}>
+                        💰 Payé par cagnotte
+                      </span>
+                    )}
                   </div>
 
                   <div style={{ padding: '1rem 1.25rem', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '0.75rem' }}>
@@ -238,7 +432,6 @@ export default function Profile() {
                     </p>
                   </div>
 
-                  {/* Tracking */}
                   {o.tracking_number && (
                     <div style={{ margin: '0 1.25rem 1rem', padding: '12px 14px', backgroundColor: '#f0f7ff', borderLeft: '3px solid #1976d2' }}>
                       <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.65rem', letterSpacing: '0.1em', color: '#1976d2', marginBottom: '6px' }}>SUIVI D'ENVOI</p>
@@ -257,7 +450,7 @@ export default function Profile() {
                   )}
 
                   {/* Timeline */}
-                  <div style={{ padding: '0 1.25rem 1rem', display: 'flex', gap: '0', alignItems: 'center' }}>
+                  <div style={{ padding: '0 1.25rem 1rem', display: 'flex', alignItems: 'center' }}>
                     {[
                       { label: 'Commandé', done: true },
                       { label: 'Payé', done: o.payment_status === 'paid' },
@@ -269,16 +462,13 @@ export default function Profile() {
                           <div style={{ width: '20px', height: '20px', borderRadius: '50%', backgroundColor: step.done ? '#c9a96e' : '#e8d5b7', margin: '0 auto 4px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                             {step.done && <span style={{ color: 'white', fontSize: '11px' }}>✓</span>}
                           </div>
-                          <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.55rem', color: step.done ? '#c9a96e' : '#bbb', letterSpacing: '0.05em', whiteSpace: 'nowrap' }}>{step.label}</p>
+                          <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.55rem', color: step.done ? '#c9a96e' : '#bbb', whiteSpace: 'nowrap' }}>{step.label}</p>
                         </div>
-                        {i < arr.length - 1 && (
-                          <div style={{ flex: 1, height: '2px', backgroundColor: step.done ? '#c9a96e' : '#e8d5b7', margin: '0 4px 14px' }} />
-                        )}
+                        {i < arr.length - 1 && <div style={{ flex: 1, height: '2px', backgroundColor: step.done ? '#c9a96e' : '#e8d5b7', margin: '0 4px 14px' }} />}
                       </div>
                     ))}
                   </div>
 
-                  {/* Bien reçu button */}
                   {o.shipping_status === 'shipped' && !o.buyer_confirmed && (
                     <div style={{ padding: '0 1.25rem 1.25rem' }}>
                       <button onClick={() => confirmReceived(o)} className="btn-gold"
@@ -327,187 +517,163 @@ export default function Profile() {
             </div>
           )}
 
-          {/* ── MES ARTICLES EN VENTE ── */}
-          {tab === 'my-items' && (
-            <div>
-              <h2 style={{ fontFamily: 'Georgia, serif', fontSize: '1.2rem', fontWeight: 400, marginBottom: '0.5rem', color: '#1a1a1a' }}>Mes articles en vente</h2>
-              <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.75rem', color: '#9e8e7e', marginBottom: '1.5rem' }}>
-                Articles mis en vente par Magali Berdah à partir de vos pièces soumises
-              </p>
-              {mySellerItems.length === 0 ? (
-                <div style={{ textAlign: 'center', padding: '3rem 1rem', backgroundColor: 'white', border: '1px solid #e8d5b7' }}>
-                  <ShoppingBag size={40} color="#e8d5b7" style={{ margin: '0 auto 1rem', display: 'block' }} />
-                  <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.85rem', color: '#9e8e7e', marginBottom: '1rem' }}>
-                    Aucun article en vente pour le moment
-                  </p>
-                  <Link to="/soumettre" className="btn-gold" style={{ fontSize: '0.72rem', textDecoration: 'none' }}>
-                    SOUMETTRE UN ARTICLE
-                  </Link>
-                </div>
-              ) : (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                  {mySellerItems.map((item: any) => {
-                    const isAuction = item.auction_enabled === 1;
-                    const isSold = item.status === 'sold';
-                    const auctionEnded = isAuction && item.auction_end_time && new Date(item.auction_end_time) < new Date();
-
-                    return (
-                      <div key={item.id} style={{ backgroundColor: 'white', border: `1px solid ${isSold || auctionEnded ? '#c3e6cb' : '#e8d5b7'}`, overflow: 'hidden' }}>
-                        <div style={{ padding: '8px 16px', backgroundColor: isSold || auctionEnded ? '#d4edda' : isAuction ? '#fff8e6' : '#f8f4ef', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                          <span style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.1em', color: isSold || auctionEnded ? '#2e7d32' : isAuction ? '#a8834a' : '#9e8e7e' }}>
-                            {isSold ? 'VENDU' : auctionEnded ? 'ENCHÈRE TERMINÉE' : isAuction ? 'ENCHÈRE EN COURS' : 'EN VENTE'}
-                          </span>
-                          {item.seller_payout && (
-                            <span style={{ marginLeft: 'auto', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.65rem', color: '#c9a96e', fontWeight: 700 }}>
-                              Cagnotte : {item.seller_payout.toLocaleString('fr-FR')} €
-                            </span>
-                          )}
-                        </div>
-                        <div style={{ padding: '1rem 1.25rem', display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
-                          {item.photos?.[0] && (
-                            <img src={item.photos[0]} alt={item.title}
-                              style={{ width: '70px', height: '90px', objectFit: 'cover', backgroundColor: '#f8f4ef', flexShrink: 0 }}
-                              onError={e => (e.currentTarget.style.display = 'none')} />
-                          )}
-                          <div style={{ flex: 1 }}>
-                            <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.6rem', letterSpacing: '0.2em', color: '#c9a96e', marginBottom: '3px' }}>{item.brand?.toUpperCase()}</p>
-                            <p style={{ fontFamily: 'Georgia, serif', fontSize: '1rem', color: '#1a1a1a', marginBottom: '6px' }}>{item.title}</p>
-                            <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap' }}>
-                              {isAuction ? (
-                                <div>
-                                  <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.6rem', color: '#9e8e7e', letterSpacing: '0.1em' }}>
-                                    {auctionEnded ? 'PRIX FINAL' : 'OFFRE EN COURS'}
-                                  </p>
-                                  <p style={{ fontFamily: 'Georgia, serif', fontSize: '1.1rem', color: '#1a1a1a' }}>
-                                    {(item.current_bid || item.auction_start_price || 0).toLocaleString('fr-FR')} €
-                                  </p>
-                                </div>
-                              ) : (
-                                <div>
-                                  <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.6rem', color: '#9e8e7e', letterSpacing: '0.1em' }}>PRIX DE VENTE</p>
-                                  <p style={{ fontFamily: 'Georgia, serif', fontSize: '1.1rem', color: '#1a1a1a' }}>
-                                    {(item.fixed_price || 0).toLocaleString('fr-FR')} €
-                                  </p>
-                                </div>
-                              )}
-                              {item.seller_payout && (
-                                <div>
-                                  <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.6rem', color: '#9e8e7e', letterSpacing: '0.1em' }}>VOTRE CAGNOTTE</p>
-                                  <p style={{ fontFamily: 'Georgia, serif', fontSize: '1.1rem', color: '#c9a96e' }}>
-                                    {item.seller_payout.toLocaleString('fr-FR')} €
-                                  </p>
-                                </div>
-                              )}
-                            </div>
-                            {isAuction && !auctionEnded && item.auction_end_time && (
-                              <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.7rem', color: '#9e8e7e', marginTop: '6px' }}>
-                                Fin : {new Date(item.auction_end_time).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' })}
-                              </p>
-                            )}
-                          </div>
-                          <Link to={`/article/${item.id}`}
-                            style={{ flexShrink: 0, fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.65rem', color: '#c9a96e', textDecoration: 'none', marginTop: '4px' }}>
-                            Voir →
-                          </Link>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
-            </div>
-          )}
-
           {/* ── CAGNOTTE ── */}
           {tab === 'wallet' && (
-            <div>
-              <h2 style={{ fontFamily: 'Georgia, serif', fontSize: '1.2rem', fontWeight: 400, marginBottom: '0.5rem', color: '#1a1a1a' }}>Ma cagnotte</h2>
-              <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.75rem', color: '#9e8e7e', marginBottom: '1.5rem' }}>
-                Le virement est possible uniquement après confirmation de réception par l'acheteur
-              </p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+              <h2 style={{ fontFamily: 'Georgia, serif', fontSize: '1.2rem', fontWeight: 400, color: '#1a1a1a' }}>Ma cagnotte</h2>
 
               {/* Solde */}
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1.5rem' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                 <div style={{ backgroundColor: wallet.available > 0 ? '#fff8e6' : 'white', border: `2px solid ${wallet.available > 0 ? '#c9a96e' : '#e8d5b7'}`, padding: '1.5rem', textAlign: 'center' }}>
                   <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.6rem', letterSpacing: '0.15em', color: '#9e8e7e', marginBottom: '8px' }}>DISPONIBLE</p>
                   <p style={{ fontFamily: 'Georgia, serif', fontSize: '2rem', color: wallet.available > 0 ? '#c9a96e' : '#1a1a1a' }}>
                     {(wallet.available || 0).toLocaleString('fr-FR')} €
                   </p>
-                  {wallet.available > 0 && (
-                    <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.65rem', color: '#a8834a', marginTop: '4px' }}>
-                      ✓ Virement possible
-                    </p>
-                  )}
+                  {wallet.available > 0 && <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.65rem', color: '#a8834a', marginTop: '4px' }}>✓ Achat & virement possibles</p>}
                 </div>
                 <div style={{ backgroundColor: 'white', border: '1px solid #e8d5b7', padding: '1.5rem', textAlign: 'center' }}>
                   <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.6rem', letterSpacing: '0.15em', color: '#9e8e7e', marginBottom: '8px' }}>EN ATTENTE</p>
-                  <p style={{ fontFamily: 'Georgia, serif', fontSize: '2rem', color: '#9e8e7e' }}>
-                    {(wallet.pending || 0).toLocaleString('fr-FR')} €
-                  </p>
-                  {wallet.pending > 0 && (
-                    <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.65rem', color: '#9e8e7e', marginTop: '4px' }}>
-                      En attente de réception acheteur
-                    </p>
-                  )}
+                  <p style={{ fontFamily: 'Georgia, serif', fontSize: '2rem', color: '#9e8e7e' }}>{(wallet.pending || 0).toLocaleString('fr-FR')} €</p>
+                  {wallet.pending > 0 && <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.65rem', color: '#9e8e7e', marginTop: '4px' }}>En attente réception acheteur</p>}
                 </div>
               </div>
 
-              {/* Transfer button */}
-              <button onClick={requestTransfer} disabled={wallet.available <= 0}
-                className="btn-gold"
-                style={{ width: '100%', padding: '14px', fontSize: '0.82rem', letterSpacing: '0.1em', opacity: wallet.available > 0 ? 1 : 0.4, marginBottom: '1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
-                <Wallet size={16} /> DEMANDER UN VIREMENT
-              </button>
-              {wallet.available <= 0 && (
-                <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.72rem', color: '#9e8e7e', textAlign: 'center', marginTop: '-1rem', marginBottom: '1.5rem' }}>
-                  Le virement sera possible dès que l'acheteur aura confirmé la réception
+              {/* Recharger */}
+              <section style={{ backgroundColor: 'white', border: '1px solid #e8d5b7', padding: '1.5rem' }}>
+                <p style={sectionLabel}>RECHARGER MA CAGNOTTE</p>
+                <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.75rem', color: '#9e8e7e', marginBottom: '1rem' }}>
+                  Ajoutez des fonds pour acheter ou enchérir directement avec votre cagnotte
                 </p>
-              )}
-              {transferDone && (
-                <div style={{ backgroundColor: '#d4edda', border: '1px solid #c3e6cb', padding: '1rem', marginBottom: '1.5rem', textAlign: 'center' }}>
-                  <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.82rem', color: '#2e7d32', fontWeight: 700 }}>
-                    ✓ Demande de virement envoyée !
-                  </p>
-                  <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.72rem', color: '#2e7d32', marginTop: '4px' }}>
-                    L'équipe vous contactera sous 2-3 jours ouvrés
-                  </p>
+                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '8px' }}>
+                  {[50, 100, 200, 500].map(preset => (
+                    <button key={preset} onClick={() => setTopupAmount(String(preset))}
+                      style={{ padding: '8px 16px', border: `1px solid ${topupAmount === String(preset) ? '#c9a96e' : '#e8d5b7'}`, background: topupAmount === String(preset) ? '#fff8e6' : 'white', cursor: 'pointer', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.82rem', color: topupAmount === String(preset) ? '#a8834a' : '#1a1a1a' }}>
+                      {preset} €
+                    </button>
+                  ))}
+                  <input value={topupAmount} onChange={e => setTopupAmount(e.target.value)}
+                    type="number" min="1" placeholder="Autre montant"
+                    style={{ flex: 1, minWidth: '120px', ...inputStyle }} />
                 </div>
-              )}
+                {!pm && (
+                  <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.72rem', color: '#ff9800', marginBottom: '8px' }}>
+                    ⚠️ Ajoutez une carte de paiement dans Mon profil pour recharger
+                  </p>
+                )}
+                <button onClick={topUp} disabled={!topupAmount || parseFloat(topupAmount) <= 0 || !pm}
+                  className="btn-gold"
+                  style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.78rem', opacity: (!topupAmount || parseFloat(topupAmount) <= 0 || !pm) ? 0.5 : 1 }}>
+                  <Plus size={15} /> RECHARGER {topupAmount ? `${parseFloat(topupAmount).toLocaleString('fr-FR')} €` : ''}
+                </button>
+                {topupDone && (
+                  <p style={{ color: '#2e7d32', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.8rem', marginTop: '8px' }}>
+                    ✓ Cagnotte rechargée avec succès !
+                  </p>
+                )}
+              </section>
 
-              {/* Transaction history */}
+              {/* Virement */}
+              <section style={{ backgroundColor: 'white', border: '1px solid #e8d5b7', padding: '1.5rem' }}>
+                <p style={sectionLabel}>DEMANDER UN VIREMENT</p>
+                {!bank && (
+                  <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.75rem', color: '#ff9800', marginBottom: '1rem' }}>
+                    ⚠️ Ajoutez vos coordonnées bancaires dans Mon profil pour demander un virement
+                  </p>
+                )}
+                <button onClick={requestTransfer} disabled={wallet.available <= 0 || !bank}
+                  className="btn-gold"
+                  style={{ width: '100%', padding: '12px', fontSize: '0.78rem', letterSpacing: '0.1em', opacity: (wallet.available > 0 && bank) ? 1 : 0.4, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+                  <Minus size={15} /> VIRER {wallet.available > 0 ? `${wallet.available.toLocaleString('fr-FR')} €` : ''} SUR MON COMPTE
+                </button>
+                {wallet.available <= 0 && <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.65rem', color: '#9e8e7e', textAlign: 'center', marginTop: '6px' }}>Solde disponible insuffisant</p>}
+                {transferDone && (
+                  <div style={{ marginTop: '1rem', backgroundColor: '#d4edda', border: '1px solid #c3e6cb', padding: '1rem', textAlign: 'center' }}>
+                    <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.82rem', color: '#2e7d32', fontWeight: 700 }}>✓ Demande envoyée !</p>
+                    <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.72rem', color: '#2e7d32', marginTop: '4px' }}>L'équipe vous contactera sous 2-3 jours ouvrés</p>
+                  </div>
+                )}
+              </section>
+
+              {/* Historique */}
               {wallet.transactions?.length > 0 && (
-                <div>
-                  <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.6rem', letterSpacing: '0.15em', color: '#9e8e7e', marginBottom: '0.75rem' }}>HISTORIQUE</p>
+                <section style={{ backgroundColor: 'white', border: '1px solid #e8d5b7', padding: '1.5rem' }}>
+                  <p style={sectionLabel}>HISTORIQUE</p>
                   {[...(wallet.transactions || [])].reverse().map((tx: any) => (
                     <div key={tx.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.75rem 0', borderBottom: '1px solid #f0ece6' }}>
                       <div>
-                        <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.82rem', color: '#1a1a1a' }}>
-                          {tx.item_title}
-                        </p>
+                        <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.82rem', color: '#1a1a1a' }}>{tx.item_title}</p>
                         <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.65rem', color: '#9e8e7e' }}>
-                          {new Date(tx.date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}
-                          {' · '}
+                          {new Date(tx.date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })} ·{' '}
                           <span style={{ color: tx.status === 'available' ? '#2e7d32' : tx.status === 'requested' ? '#1976d2' : '#b45309' }}>
-                            {tx.status === 'available' ? 'Disponible' : tx.status === 'requested' ? 'Virement demandé' : 'En attente'}
+                            {tx.type === 'topup' ? 'Rechargement' : tx.type === 'transfer' ? 'Virement demandé' : tx.status === 'available' ? 'Disponible' : 'En attente'}
                           </span>
                         </p>
                       </div>
-                      <p style={{ fontFamily: 'Georgia, serif', fontSize: '1rem', color: tx.type === 'transfer' ? '#cc0000' : '#2e7d32' }}>
+                      <p style={{ fontFamily: 'Georgia, serif', fontSize: '1rem', color: tx.type === 'transfer' ? '#cc0000' : '#2e7d32', flexShrink: 0, marginLeft: '1rem' }}>
                         {tx.type === 'transfer' ? '-' : '+'}{tx.amount.toLocaleString('fr-FR')} €
                       </p>
                     </div>
                   ))}
-                </div>
+                </section>
               )}
+            </div>
+          )}
 
-              {(!wallet.transactions || wallet.transactions.length === 0) && wallet.available === 0 && wallet.pending === 0 && (
-                <div style={{ textAlign: 'center', padding: '2rem', color: '#9e8e7e', border: '1px solid #e8d5b7' }}>
-                  <Wallet size={36} color="#e8d5b7" style={{ margin: '0 auto 1rem', display: 'block' }} />
-                  <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.85rem' }}>
-                    Votre cagnotte est vide pour le moment
-                  </p>
-                </div>
-              )}
+          {/* ── MES ARTICLES (si vendeur) ── */}
+          {tab === 'my-items' && (
+            <div>
+              <h2 style={{ fontFamily: 'Georgia, serif', fontSize: '1.2rem', fontWeight: 400, marginBottom: '0.5rem', color: '#1a1a1a' }}>Mes articles en vente</h2>
+              <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.75rem', color: '#9e8e7e', marginBottom: '1.5rem' }}>
+                Articles mis en vente par Magali Berdah à partir de vos pièces
+              </p>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                {mySellerItems.map((item: any) => {
+                  const isAuction = item.auction_enabled === 1;
+                  const auctionEnded = isAuction && item.auction_end_time && new Date(item.auction_end_time) < new Date();
+                  const isSold = item.status === 'sold';
+                  return (
+                    <div key={item.id} style={{ backgroundColor: 'white', border: `1px solid ${isSold || auctionEnded ? '#c3e6cb' : '#e8d5b7'}`, overflow: 'hidden' }}>
+                      <div style={{ padding: '8px 16px', backgroundColor: isSold || auctionEnded ? '#d4edda' : isAuction ? '#fff8e6' : '#f8f4ef', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <span style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.1em', color: isSold || auctionEnded ? '#2e7d32' : isAuction ? '#a8834a' : '#9e8e7e' }}>
+                          {isSold ? 'VENDU' : auctionEnded ? 'ENCHÈRE TERMINÉE' : isAuction ? 'ENCHÈRE EN COURS' : 'EN VENTE'}
+                        </span>
+                        {item.seller_payout && (
+                          <span style={{ marginLeft: 'auto', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.65rem', color: '#c9a96e', fontWeight: 700 }}>
+                            Cagnotte : {item.seller_payout.toLocaleString('fr-FR')} €
+                          </span>
+                        )}
+                      </div>
+                      <div style={{ padding: '1rem 1.25rem', display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
+                        {item.photos?.[0] && (
+                          <img src={item.photos[0]} alt={item.title} style={{ width: '70px', height: '90px', objectFit: 'cover', flexShrink: 0 }}
+                            onError={e => (e.currentTarget.style.display = 'none')} />
+                        )}
+                        <div style={{ flex: 1 }}>
+                          <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.6rem', letterSpacing: '0.2em', color: '#c9a96e', marginBottom: '3px' }}>{item.brand?.toUpperCase()}</p>
+                          <p style={{ fontFamily: 'Georgia, serif', fontSize: '1rem', color: '#1a1a1a', marginBottom: '6px' }}>{item.title}</p>
+                          <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap' }}>
+                            <div>
+                              <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.6rem', color: '#9e8e7e', letterSpacing: '0.1em' }}>{isAuction ? (auctionEnded ? 'PRIX FINAL' : 'OFFRE EN COURS') : 'PRIX'}</p>
+                              <p style={{ fontFamily: 'Georgia, serif', fontSize: '1.1rem', color: '#1a1a1a' }}>
+                                {isAuction ? (item.current_bid || item.auction_start_price || 0).toLocaleString('fr-FR') : (item.fixed_price || 0).toLocaleString('fr-FR')} €
+                              </p>
+                            </div>
+                            {item.seller_payout && (
+                              <div>
+                                <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.6rem', color: '#9e8e7e', letterSpacing: '0.1em' }}>VOTRE CAGNOTTE</p>
+                                <p style={{ fontFamily: 'Georgia, serif', fontSize: '1.1rem', color: '#c9a96e' }}>{item.seller_payout.toLocaleString('fr-FR')} €</p>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                        <Link to={`/article/${item.id}`} style={{ flexShrink: 0, fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.65rem', color: '#c9a96e', textDecoration: 'none', marginTop: '4px' }}>
+                          Voir →
+                        </Link>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           )}
 
@@ -516,14 +682,11 @@ export default function Profile() {
             <div>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
                 <h2 style={{ fontFamily: 'Georgia, serif', fontSize: '1.2rem', fontWeight: 400, color: '#1a1a1a' }}>Mes soumissions</h2>
-                <Link to="/mes-soumissions" style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.72rem', color: '#c9a96e', textDecoration: 'none' }}>
-                  Voir tout →
-                </Link>
+                <Link to="/mes-soumissions" style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.72rem', color: '#c9a96e', textDecoration: 'none' }}>Voir tout →</Link>
               </div>
               {(() => {
                 try {
-                  const all = JSON.parse(localStorage.getItem('mb_submissions') || '[]');
-                  const mine = all.filter((s: any) => s.email === user?.email);
+                  const mine = (JSON.parse(localStorage.getItem('mb_submissions') || '[]') as any[]).filter((s: any) => s.email === user?.email);
                   if (!mine.length) return (
                     <div style={{ textAlign: 'center', padding: '2rem', color: '#9e8e7e' }}>
                       <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.85rem', marginBottom: '1rem' }}>Aucune soumission</p>
@@ -539,13 +702,9 @@ export default function Profile() {
                         <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.7rem', color: '#9e8e7e' }}>{s.category}</p>
                       </div>
                       <div style={{ textAlign: 'right' }}>
-                        <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.72rem', fontWeight: 700, color: colors[s.status] || '#9e8e7e' }}>
-                          {labels[s.status] || s.status}
-                        </p>
+                        <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.72rem', fontWeight: 700, color: colors[s.status] || '#9e8e7e' }}>{labels[s.status] || s.status}</p>
                         {s.status === 'approved' && !s.tracking_sent && (
-                          <Link to="/mes-soumissions" style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.65rem', color: '#1976d2', textDecoration: 'none' }}>
-                            → Entrer le numéro de suivi
-                          </Link>
+                          <Link to="/mes-soumissions" style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.65rem', color: '#1976d2', textDecoration: 'none' }}>→ Entrer le numéro de suivi</Link>
                         )}
                       </div>
                     </div>
@@ -568,17 +727,21 @@ export default function Profile() {
               )}
             </div>
           )}
+
         </div>
       </div>
     </div>
   );
 }
 
+const sectionLabel: React.CSSProperties = {
+  fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.6rem',
+  letterSpacing: '0.2em', color: '#c9a96e', marginBottom: '1rem',
+};
 const labelStyle: React.CSSProperties = {
   display: 'block', fontFamily: 'Helvetica Neue, Arial, sans-serif',
   fontSize: '0.65rem', letterSpacing: '0.1em', color: '#9e8e7e', marginBottom: '6px',
 };
-
 const inputStyle: React.CSSProperties = {
   width: '100%', border: '1px solid #e8d5b7', padding: '10px 12px',
   fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.85rem', color: '#1a1a1a',
