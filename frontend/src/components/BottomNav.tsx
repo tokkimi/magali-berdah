@@ -1,19 +1,11 @@
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Heart } from 'lucide-react';
-import { useStore } from '../lib/store';
+import { Link, useLocation } from 'react-router-dom';
+import { Send } from 'lucide-react';
 
 export default function BottomNav() {
   const location = useLocation();
-  const navigate = useNavigate();
-  const { user } = useStore();
-
   const isAuctions = location.search.includes('type=auction');
   const isSales = location.search.includes('type=fixed');
-
-  const handleFavorites = (e: React.MouseEvent) => {
-    e.preventDefault();
-    navigate(user ? '/favoris' : '/');
-  };
+  const isSoumettre = location.pathname === '/soumettre';
 
   return (
     <>
@@ -66,12 +58,10 @@ export default function BottomNav() {
         .nav-pill.inactive:hover {
           background: rgba(201,169,110,0.12);
         }
-        .nav-heart {
+        .nav-sell {
           width: 50px;
           height: 50px;
           border-radius: 50%;
-          border: none;
-          cursor: pointer;
           display: flex;
           align-items: center;
           justify-content: center;
@@ -83,8 +73,9 @@ export default function BottomNav() {
             0 1px 3px rgba(201,169,110,0.3),
             inset 0 1px 0 rgba(255,255,255,0.25);
           transition: transform 0.18s ease, box-shadow 0.18s ease;
+          text-decoration: none;
         }
-        .nav-heart:hover, .nav-heart:active {
+        .nav-sell:hover, .nav-sell:active {
           transform: scale(1.1);
           box-shadow: 0 6px 22px rgba(201,169,110,0.55), inset 0 1px 0 rgba(255,255,255,0.3);
         }
@@ -92,21 +83,15 @@ export default function BottomNav() {
 
       <div className="bottom-nav-wrap">
         <div className="bottom-nav">
-          <Link
-            to="/catalogue?type=fixed"
-            className={`nav-pill ${isSales ? 'active' : 'inactive'}`}
-          >
+          <Link to="/catalogue?type=fixed" className={`nav-pill ${isSales ? 'active' : 'inactive'}`}>
             VENTE
           </Link>
 
-          <button className="nav-heart" onClick={handleFavorites}>
-            <Heart size={20} color="white" fill="white" />
-          </button>
+          <Link to="/soumettre" className="nav-sell">
+            <Send size={20} color="white" />
+          </Link>
 
-          <Link
-            to="/catalogue?type=auction"
-            className={`nav-pill ${isAuctions ? 'active' : 'inactive'}`}
-          >
+          <Link to="/catalogue?type=auction" className={`nav-pill ${isAuctions ? 'active' : 'inactive'}`}>
             ENCHÈRES
           </Link>
         </div>

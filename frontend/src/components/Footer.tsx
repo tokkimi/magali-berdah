@@ -69,8 +69,7 @@ export default function Footer() {
           <p style={footLabelStyle}>VENDRE</p>
           {[
             { label: 'Soumettre un article', to: '/soumettre' },
-            { label: t('footerOpenShop'), to: '/pro' },
-            { label: t('footerCommission'), to: '/pro#tarifs' },
+            { label: 'Comment ça marche', to: '/pro' },
           ].map(l => (
             <Link key={l.to} to={l.to} style={footLinkStyle}>{l.label}</Link>
           ))}

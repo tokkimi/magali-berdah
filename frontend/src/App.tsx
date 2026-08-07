@@ -24,7 +24,6 @@ import SoumettreArticle from './pages/SoumettreArticle';
 import ProLayout from './pages/pro/Dashboard';
 import ProHome from './pages/pro/ProHome';
 import ProOrders from './pages/pro/ProOrders';
-import ProSubscription from './pages/pro/ProSubscription';
 import ProShopProfile from './pages/pro/ProShopProfile';
 
 // Admin
@@ -103,8 +102,7 @@ export default function App() {
           <Route index element={<ProHome />} />
           <Route path="commandes" element={<ProOrders />} />
           <Route path="messages" element={<ProOrders />} />
-          <Route path="abonnement" element={<ProSubscription />} />
-          <Route path="portefeuille" element={<div style={{ padding: '1rem' }}><h1 style={{ fontFamily: 'Georgia, serif', fontSize: '1.8rem', fontWeight: 400, color: '#1a1a1a', marginBottom: '1rem' }}>Portefeuille</h1><p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', color: '#9e8e7e' }}>Vos revenus de ventes apparaîtront ici une fois les paiements validés.</p></div>} />
+<Route path="portefeuille" element={<div style={{ padding: '1rem' }}><h1 style={{ fontFamily: 'Georgia, serif', fontSize: '1.8rem', fontWeight: 400, color: '#1a1a1a', marginBottom: '1rem' }}>Portefeuille</h1><p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', color: '#9e8e7e' }}>Vos revenus de ventes apparaîtront ici une fois les paiements validés.</p></div>} />
           <Route path="profil" element={<ProShopProfile />} />
         </Route>
 

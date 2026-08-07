@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, ShoppingBag, Wallet, Settings, Star, Send, MessageCircle, Menu, X } from 'lucide-react';
+import { LayoutDashboard, ShoppingBag, Wallet, Settings, Send, MessageCircle, Menu, X } from 'lucide-react';
 import { useStore, useT } from '../../lib/store';
 
 export default function ProLayout() {
@@ -14,7 +14,6 @@ export default function ProLayout() {
     { to: '/boutique/commandes', label: 'Commandes', icon: ShoppingBag },
     { to: '/boutique/messages', label: 'Messages', icon: MessageCircle },
     { to: '/boutique/portefeuille', label: t('wallet'), icon: Wallet },
-    { to: '/boutique/abonnement', label: t('subscription'), icon: Star },
     { to: '/boutique/profil', label: t('myStore'), icon: Settings },
   ];
 
