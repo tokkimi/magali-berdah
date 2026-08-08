@@ -8,7 +8,7 @@ import {
 import { Link } from 'react-router-dom';
 import { getAllItems } from '../lib/staticItems';
 import ItemCard from '../components/ItemCard';
-import { isApprovedAmbassador } from '../lib/whatnot';
+import { getSavedWhatnotToken } from '../lib/whatnot';
 
 function loadMyOrders(userId: string): any[] {
   try {
@@ -67,8 +67,6 @@ export default function Profile() {
   const [topupAmount, setTopupAmount] = useState('');
   const [topupDone, setTopupDone] = useState(false);
   const [transferDone, setTransferDone] = useState(false);
-  const [whatnotHandle, setWhatnotHandle] = useState(() => user ? localStorage.getItem(`mb_whatnot_handle_${user.email}`) || '' : '');
-  const [whatnotSaved, setWhatnotSaved] = useState(false);
 
   useEffect(() => {
     if (!user) return;
@@ -176,13 +174,6 @@ export default function Profile() {
     setWallet(w);
     setTransferDone(true);
     setTimeout(() => setTransferDone(false), 5000);
-  };
-
-  const saveWhatnot = () => {
-    if (!user || (user.role !== 'admin' && !isApprovedAmbassador(user.email))) return;
-    localStorage.setItem(`mb_whatnot_handle_${user.email}`, whatnotHandle.replace(/^@/, '').trim());
-    setWhatnotSaved(true);
-    setTimeout(() => setWhatnotSaved(false), 2500);
   };
 
   const favItems = getAllItems().filter((item: any) => favIds.has(item.id));
@@ -305,19 +296,12 @@ export default function Profile() {
               {/* Compte Whatnot */}
               <section style={{ backgroundColor: 'white', border: '1px solid #e8d5b7', padding: '1.5rem' }}>
                 <p style={sectionLabel}>COMPTE WHATNOT</p>
-                {user?.role === 'admin' || isApprovedAmbassador(user?.email) ? (
-                  <>
-                    <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '.75rem', color: '#666', marginBottom: '1rem' }}>Votre profil est autorisé à diffuser. Enregistrez votre pseudo, puis lancez le live depuis la page dédiée.</p>
-                    <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-                      <input value={whatnotHandle} onChange={e => setWhatnotHandle(e.target.value)} placeholder="@pseudo Whatnot" style={{ ...inputStyle, flex: 1, minWidth: 220 }} />
-                      <button onClick={saveWhatnot} className="btn-gold" style={{ fontSize: '.75rem' }}>CONNECTER LE PROFIL</button>
-                      <Link to="/lives" style={{ border: '1px solid #1a1a1a', padding: '9px 14px', color: '#1a1a1a', textDecoration: 'none', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '.72rem' }}>PASSER EN LIVE</Link>
-                    </div>
-                    {whatnotSaved && <p style={{ color: '#2e7d32', fontSize: '.75rem', marginTop: 8 }}>Profil Whatnot enregistré.</p>}
-                  </>
-                ) : (
-                  <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '.75rem', color: '#9e8e7e' }}>La connexion Whatnot sera disponible après validation de votre profil comme ambassadeur par l’administration.</p>
-                )}
+                <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '.75rem', color: '#666', marginBottom: '1rem' }}>
+                  {getSavedWhatnotToken(user?.email) ? 'Votre accès Whatnot est enregistré sur cet appareil.' : 'Après validation par l’administration, connectez votre accès une seule fois.'}
+                </p>
+                <Link to="/lives" className="btn-gold" style={{ display: 'inline-block', fontSize: '.75rem', textDecoration: 'none' }}>
+                  {getSavedWhatnotToken(user?.email) ? 'PASSER EN LIVE' : 'CONNECTER WHATNOT'}
+                </Link>
               </section>
 
               {/* Moyen de paiement */}

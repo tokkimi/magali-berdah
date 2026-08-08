@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { CheckCircle, XCircle, Trash2, Eye, Ban, UserCheck } from 'lucide-react';
 import { api } from '../../lib/api';
-import { getApprovedAmbassadors, setAmbassadorApproval } from '../../lib/whatnot';
 
 export default function AdminUsers() {
   const [users, setUsers] = useState<any[]>([]);
@@ -9,7 +8,6 @@ export default function AdminUsers() {
   const [filter, setFilter] = useState('all');
   const [selected, setSelected] = useState<any>(null);
   const [userDetail, setUserDetail] = useState<any>(null);
-  const [ambassadors, setAmbassadors] = useState<string[]>(getApprovedAmbassadors);
 
   useEffect(() => {
     api.get('/admin/users').then(d => setUsers(d.users || [])).catch(() => {});
@@ -38,12 +36,6 @@ export default function AdminUsers() {
     await api.delete(`/admin/users/${id}`);
     setUsers(u => u.filter(x => x.id !== id));
     if (selected?.id === id) setSelected(null);
-  };
-
-  const toggleAmbassador = (email: string) => {
-    const approved = ambassadors.includes(email.toLowerCase());
-    setAmbassadorApproval(email, !approved);
-    setAmbassadors(getApprovedAmbassadors());
   };
 
   const filtered = users.filter(u => {
@@ -109,10 +101,6 @@ export default function AdminUsers() {
                   </td>
                   <td style={{ padding: '10px 14px' }}>
                     <div style={{ display: 'flex', gap: '8px' }} onClick={e => e.stopPropagation()}>
-                      <button onClick={() => toggleAmbassador(u.email)} title={ambassadors.includes(u.email?.toLowerCase()) ? 'Retirer le statut ambassadeur live' : 'Valider comme ambassadeur live'}
-                        style={{ background: ambassadors.includes(u.email?.toLowerCase()) ? '#eef8f0' : 'white', border: '1px solid #e8d5b7', padding: '3px 6px', cursor: 'pointer', color: ambassadors.includes(u.email?.toLowerCase()) ? '#2e7d32' : '#9e8e7e', fontSize: '.62rem' }}>
-                        LIVE {ambassadors.includes(u.email?.toLowerCase()) ? '✓' : '×'}
-                      </button>
                       <button onClick={() => toggleVerify(u.id, u.verified)} title={u.verified ? 'Dé-vérifier' : 'Vérifier'} style={{ background: 'none', border: 'none', cursor: 'pointer', color: u.verified ? '#ff9800' : '#2e7d32' }}>
                         {u.verified ? <UserCheck size={16} /> : <CheckCircle size={16} />}
                       </button>
