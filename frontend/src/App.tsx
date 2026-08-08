@@ -20,6 +20,7 @@ import FAQ from './pages/FAQ';
 import Favorites from './pages/Favorites';
 import SoumettreArticle from './pages/SoumettreArticle';
 import MesSoumissions from './pages/MesSoumissions';
+import Lives from './pages/Lives';
 
 // Pro
 import ProLayout from './pages/pro/Dashboard';
@@ -89,6 +90,7 @@ export default function App() {
         <Route path="/comment-acheter" element={<Layout><HowToBuy /></Layout>} />
         <Route path="/faq" element={<Layout><FAQ /></Layout>} />
         <Route path="/soumettre" element={<Layout><SoumettreArticle /></Layout>} />
+        <Route path="/lives" element={<Layout><Lives /></Layout>} />
         <Route path="/confidentialite" element={<Layout><div style={{ maxWidth: 800, margin: '4rem auto', padding: '0 2rem', fontFamily: 'Helvetica Neue, Arial, sans-serif' }}><h1 style={{ fontFamily: 'Georgia, serif', fontSize: '2rem', fontWeight: 400, marginBottom: '2rem' }}>Politique de Confidentialité</h1><p style={{ color: '#9e8e7e', lineHeight: 1.8 }}>Conformément au RGPD, nous collectons uniquement les données nécessaires au fonctionnement de la plateforme. Vos données ne sont jamais revendues à des tiers. Vous disposez d'un droit d'accès, rectification et suppression à contact@magaliberdah.com.</p></div></Layout>} />
         <Route path="/contact" element={<Layout><div style={{ maxWidth: 600, margin: '4rem auto', padding: '0 2rem', textAlign: 'center' }}><h1 style={{ fontFamily: 'Georgia, serif', fontSize: '2rem', fontWeight: 400, marginBottom: '1rem' }}>Contact</h1><p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', color: '#9e8e7e', lineHeight: 1.8 }}>Pour toute question, contactez-nous à :<br /><a href="mailto:contact@magaliberdah.com" style={{ color: '#c9a96e' }}>contact@magaliberdah.com</a></p></div></Layout>} />
         <Route path="/a-propos" element={<Layout><div style={{ maxWidth: 800, margin: '4rem auto', padding: '0 2rem' }}><h1 style={{ fontFamily: 'Georgia, serif', fontSize: '2rem', fontWeight: 400, marginBottom: '1.5rem' }}>À propos</h1><p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', color: '#9e8e7e', lineHeight: 1.8 }}>Magali Berdah est une plateforme française dédiée à la vente et aux enchères de mode de luxe de seconde main. Notre mission est de connecter acheteurs passionnés et vendeurs professionnels autour de pièces d'exception, authentiques et soigneusement sélectionnées.</p></div></Layout>} />

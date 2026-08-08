@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Search, User, Heart, Bell, ChevronDown, Menu, X, ShoppingBag } from 'lucide-react';
+import { Search, User, Heart, Bell, ChevronDown, Menu, X, Radio } from 'lucide-react';
 import { useStore, useT } from '../lib/store';
 import { api } from '../lib/api';
 import AuthModal from './AuthModal';
@@ -106,6 +106,9 @@ export default function Header() {
                 )}
               </div>
             ))}
+            <Link to="/lives" style={{ textDecoration: 'none', color: '#e11d48', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.75rem', letterSpacing: '0.15em', display: 'flex', alignItems: 'center', gap: '5px' }}>
+              <Radio size={14} /> LIVE
+            </Link>
           </nav>
 
           {/* Search & Actions */}
@@ -205,6 +208,10 @@ export default function Header() {
                 {t(item.key as any).toUpperCase()}
               </Link>
             ))}
+            <Link to="/lives" onClick={() => setMobileOpen(false)}
+              style={{ display: 'flex', alignItems: 'center', gap: '7px', padding: '10px 0', textDecoration: 'none', color: '#e11d48', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.85rem', letterSpacing: '0.1em', borderBottom: '1px solid #f0ece6' }}>
+              <Radio size={15} /> LIVE
+            </Link>
             {/* Auth buttons in mobile menu */}
             {!user && (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '1rem' }}>

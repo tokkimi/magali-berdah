@@ -4,6 +4,7 @@ import { ChevronRight, ShoppingBag, Gavel, Shield, Truck } from 'lucide-react';
 import { api } from '../lib/api';
 import { useT } from '../lib/store';
 import ItemCard from '../components/ItemCard';
+import LiveRail from '../components/LiveRail';
 import { filterStaticItems } from '../lib/staticItems';
 
 function SkeletonCard() {
@@ -133,6 +134,8 @@ export default function Home() {
       </div>
 
       {/* Enchères */}
+      <LiveRail />
+
       <HScrollSection
         label={t('sectionOngoing')}
         title={t('featuredAuctions')}
