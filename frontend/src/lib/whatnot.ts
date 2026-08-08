@@ -18,6 +18,7 @@ const supabase = createClient(
 );
 
 const tokenKey = (email: string) => `mb_whatnot_access_${email.toLowerCase()}`;
+const requestKey = (email: string) => `mb_whatnot_request_${email.toLowerCase()}`;
 
 export function getSavedWhatnotToken(email?: string) {
   return email ? localStorage.getItem(tokenKey(email)) || '' : '';
@@ -26,6 +27,44 @@ export function getSavedWhatnotToken(email?: string) {
 export function saveWhatnotToken(email: string, token: string) {
   localStorage.setItem(tokenKey(email), token.trim());
   window.dispatchEvent(new Event('whatnot-profile-updated'));
+}
+
+export function getSavedRequestSecret(email?: string) {
+  return email ? localStorage.getItem(requestKey(email)) || '' : '';
+}
+
+export async function requestAmbassador(input: { email: string; displayName: string; handle: string; showUrl: string; previewUrl?: string; message?: string }) {
+  const { data, error } = await supabase.rpc('request_whatnot_ambassador', {
+    p_email: input.email, p_display_name: input.displayName, p_whatnot_handle: input.handle,
+    p_show_url: input.showUrl, p_preview_url: input.previewUrl || null, p_message: input.message || null,
+  });
+  if (error) throw error;
+  localStorage.setItem(requestKey(input.email), data as string);
+  return data as string;
+}
+
+export async function checkAmbassadorRequest(email: string) {
+  const secret = getSavedRequestSecret(email);
+  if (!secret) return null;
+  const { data, error } = await supabase.rpc('get_whatnot_ambassador_request', { p_email: email, p_request_secret: secret });
+  if (error) return null;
+  const result = data?.[0] as { status: 'pending' | 'approved' | 'rejected'; manage_token?: string } | undefined;
+  if (result?.manage_token) {
+    saveWhatnotToken(email, result.manage_token);
+    localStorage.removeItem(requestKey(email));
+  }
+  return result || null;
+}
+
+export async function adminListAmbassadorRequests(adminCode: string) {
+  const { data, error } = await supabase.rpc('admin_list_whatnot_requests', { p_admin_code: adminCode });
+  if (error) throw error;
+  return data || [];
+}
+
+export async function adminReviewAmbassadorRequest(adminCode: string, email: string, approved: boolean) {
+  const { error } = await supabase.rpc('admin_review_whatnot_request', { p_admin_code: adminCode, p_email: email, p_approved: approved });
+  if (error) throw error;
 }
 
 export async function getWhatnotLives(): Promise<WhatnotLive[]> {

@@ -5,6 +5,7 @@ import LiveCard from '../components/LiveCard';
 import {
   adminConnectWhatnot, getOwnWhatnotProfile, getSavedWhatnotToken, getWhatnotLives,
   saveWhatnotToken, setWhatnotLive, subscribeToWhatnotLives, type WhatnotLive,
+  checkAmbassadorRequest, getSavedRequestSecret, requestAmbassador,
 } from '../lib/whatnot';
 
 export default function Lives() {
@@ -12,6 +13,8 @@ export default function Lives() {
   const [lives, setLives] = useState<WhatnotLive[]>([]);
   const [ownProfile, setOwnProfile] = useState<WhatnotLive | null>(null);
   const [activationCode, setActivationCode] = useState('');
+  const [requestStatus, setRequestStatus] = useState<'pending' | 'approved' | 'rejected' | null>(null);
+  const [requestForm, setRequestForm] = useState({ handle: '', showUrl: '', previewUrl: '', message: '' });
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState('');
   const [createdCode, setCreatedCode] = useState('');
@@ -24,12 +27,29 @@ export default function Lives() {
     setOwnProfile(token ? await getOwnWhatnotProfile(user.email, token) : null);
   }, [user]);
 
+  const loadRequest = useCallback(async () => {
+    if (!user || !getSavedRequestSecret(user.email)) return setRequestStatus(null);
+    const result = await checkAmbassadorRequest(user.email);
+    setRequestStatus(result?.status || null);
+    if (result?.manage_token) await loadOwn();
+  }, [user, loadOwn]);
+
   useEffect(() => {
-    refresh(); void loadOwn();
+    refresh(); void loadOwn(); void loadRequest();
     const unsubscribe = subscribeToWhatnotLives(refresh);
     const timer = window.setInterval(refresh, 30000);
     return () => { unsubscribe(); window.clearInterval(timer); };
-  }, [refresh, loadOwn]);
+  }, [refresh, loadOwn, loadRequest]);
+
+  const submitRequest = async () => {
+    if (!user || !requestForm.handle.trim() || !requestForm.showUrl.trim()) return;
+    setBusy(true); setMessage('');
+    try {
+      await requestAmbassador({ email: user.email, displayName: user.name, ...requestForm });
+      setRequestStatus('pending'); setMessage('Votre demande a été envoyée à l’administration.');
+    } catch (error: any) { setMessage(error?.message || 'Impossible d’envoyer la demande.'); }
+    setBusy(false);
+  };
 
   const activateAccount = async () => {
     if (!user || !activationCode.trim()) return;
@@ -84,12 +104,23 @@ export default function Lives() {
 
         {user && !ownProfile && (
           <section style={panelStyle}>
-            <h2 style={headingStyle}>Connecter mon compte Whatnot</h2>
-            <p style={helpStyle}>Saisissez une seule fois le code transmis par l’administratrice.</p>
-            <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-              <input value={activationCode} onChange={e => setActivationCode(e.target.value)} placeholder="Code d’activation" style={{ ...inputStyle, flex: 1, minWidth: 230 }} />
-              <button disabled={busy} onClick={activateAccount} style={darkButton}><UserCheck size={15} /> CONNECTER</button>
-            </div>
+            <h2 style={headingStyle}>Devenir ambassadeur Live</h2>
+            {requestStatus === 'pending' ? (
+              <p style={{ ...helpStyle, color: '#a36b00', marginBottom: 0 }}>Votre demande est en attente de validation par l’administration. Cette page se mettra à jour automatiquement.</p>
+            ) : (
+              <>
+                {requestStatus === 'rejected' && <p style={{ ...helpStyle, color: '#b91c1c' }}>Votre précédente demande n’a pas été acceptée. Vous pouvez la corriger et la renvoyer.</p>}
+                <p style={helpStyle}>Renseignez votre compte une seule fois. Après validation, le bouton « Passer en live » apparaîtra automatiquement.</p>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(220px,1fr))', gap: 10 }}>
+                  <input value={requestForm.handle} onChange={e => setRequestForm(f => ({ ...f, handle: e.target.value }))} placeholder="@pseudo Whatnot" style={inputStyle} />
+                  <input value={requestForm.showUrl} onChange={e => setRequestForm(f => ({ ...f, showUrl: e.target.value }))} placeholder="Lien du show Whatnot" style={inputStyle} />
+                  <input value={requestForm.previewUrl} onChange={e => setRequestForm(f => ({ ...f, previewUrl: e.target.value }))} placeholder="Miniature (optionnel)" style={inputStyle} />
+                  <input value={requestForm.message} onChange={e => setRequestForm(f => ({ ...f, message: e.target.value }))} placeholder="Message pour l’admin (optionnel)" style={inputStyle} />
+                </div>
+                <button disabled={busy} onClick={submitRequest} style={{ ...liveButton, marginTop: 12 }}><UserCheck size={15} /> DEMANDER LE STATUT AMBASSADEUR</button>
+              </>
+            )}
+            <details style={{ marginTop: 16 }}><summary style={{ cursor: 'pointer', color: '#777', font: '.7rem Helvetica Neue, Arial' }}>J’ai déjà reçu un ancien code d’activation</summary><div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginTop: 10 }}><input value={activationCode} onChange={e => setActivationCode(e.target.value)} placeholder="Code d’activation" style={{ ...inputStyle, flex: 1, minWidth: 230 }} /><button disabled={busy} onClick={activateAccount} style={darkButton}>CONNECTER</button></div></details>
           </section>
         )}
 

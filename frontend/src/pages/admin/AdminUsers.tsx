@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { CheckCircle, XCircle, Trash2, Eye, Ban, UserCheck } from 'lucide-react';
 import { api } from '../../lib/api';
+import { adminListAmbassadorRequests, adminReviewAmbassadorRequest } from '../../lib/whatnot';
 
 export default function AdminUsers() {
   const [users, setUsers] = useState<any[]>([]);
@@ -8,6 +9,9 @@ export default function AdminUsers() {
   const [filter, setFilter] = useState('all');
   const [selected, setSelected] = useState<any>(null);
   const [userDetail, setUserDetail] = useState<any>(null);
+  const [liveAdminCode, setLiveAdminCode] = useState('');
+  const [liveRequests, setLiveRequests] = useState<any[]>([]);
+  const [liveMessage, setLiveMessage] = useState('');
 
   useEffect(() => {
     api.get('/admin/users').then(d => setUsers(d.users || [])).catch(() => {});
@@ -38,6 +42,18 @@ export default function AdminUsers() {
     if (selected?.id === id) setSelected(null);
   };
 
+  const loadLiveRequests = async () => {
+    setLiveMessage('');
+    try { setLiveRequests(await adminListAmbassadorRequests(liveAdminCode)); }
+    catch { setLiveMessage('Code administrateur Live invalide.'); }
+  };
+
+  const reviewLiveRequest = async (email: string, approved: boolean) => {
+    await adminReviewAmbassadorRequest(liveAdminCode, email, approved);
+    setLiveMessage(approved ? 'Ambassadeur validé.' : 'Demande refusée.');
+    await loadLiveRequests();
+  };
+
   const filtered = users.filter(u => {
     const m = u.email?.toLowerCase().includes(search.toLowerCase()) || u.name?.toLowerCase().includes(search.toLowerCase());
     if (filter === 'pro') return m && u.role === 'pro';
@@ -50,7 +66,27 @@ export default function AdminUsers() {
   const roleColors: Record<string, string> = { buyer: '#1976d2', pro: '#c9a96e', admin: '#cc0000' };
 
   return (
-    <div style={{ display: 'flex', gap: '1.5rem' }}>
+    <div style={{ display: 'flex', gap: '1.5rem', flexDirection: 'column' }}>
+      <section style={{ background: 'white', border: '1px solid #e8d5b7', padding: '1.25rem' }}>
+        <h2 style={{ fontFamily: 'Georgia, serif', fontSize: '1.2rem', fontWeight: 400, marginBottom: '.5rem' }}>Demandes ambassadeurs Live</h2>
+        <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '.72rem', color: '#777', marginBottom: '1rem' }}>Validez ou refusez les utilisateurs qui souhaitent diffuser sur la page Live.</p>
+        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: '1rem' }}>
+          <input type="password" value={liveAdminCode} onChange={e => setLiveAdminCode(e.target.value)} placeholder="Code administrateur Live" style={{ border: '1px solid #e8d5b7', padding: '8px 10px', minWidth: 240 }} />
+          <button onClick={loadLiveRequests} className="btn-gold" style={{ fontSize: '.7rem' }}>AFFICHER LES DEMANDES</button>
+        </div>
+        {liveMessage && <p style={{ fontSize: '.72rem', color: liveMessage.includes('invalide') ? '#b91c1c' : '#2e7d32', marginBottom: 10 }}>{liveMessage}</p>}
+        {liveRequests.map(request => (
+          <div key={request.email} style={{ borderTop: '1px solid #f0ece6', padding: '12px 0', display: 'flex', justifyContent: 'space-between', gap: 12, alignItems: 'center', flexWrap: 'wrap' }}>
+            <div>
+              <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '.82rem', fontWeight: 700 }}>{request.display_name} · @{request.whatnot_handle}</p>
+              <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '.7rem', color: '#777' }}>{request.email} · Statut : {request.status}</p>
+              <a href={request.show_url} target="_blank" rel="noreferrer" style={{ fontSize: '.68rem', color: '#c9a96e' }}>Vérifier le profil Whatnot</a>
+            </div>
+            {request.status === 'pending' && <div style={{ display: 'flex', gap: 8 }}><button onClick={() => reviewLiveRequest(request.email, true)} style={{ border: 0, background: '#2e7d32', color: 'white', padding: '8px 11px', cursor: 'pointer', fontSize: '.68rem' }}>VALIDER</button><button onClick={() => reviewLiveRequest(request.email, false)} style={{ border: '1px solid #b91c1c', background: 'white', color: '#b91c1c', padding: '8px 11px', cursor: 'pointer', fontSize: '.68rem' }}>REFUSER</button></div>}
+          </div>
+        ))}
+      </section>
+      <div style={{ display: 'flex', gap: '1.5rem' }}>
       <div style={{ flex: 1 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
           <h1 style={{ fontFamily: 'Georgia, serif', fontSize: '1.8rem', fontWeight: 400, color: '#1a1a1a' }}>Utilisateurs ({filtered.length})</h1>
@@ -158,6 +194,7 @@ export default function AdminUsers() {
           </div>
         </div>
       )}
+      </div>
     </div>
   );
 }

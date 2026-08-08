@@ -6,6 +6,7 @@ export default function BottomNav() {
   const isAuctions = location.search.includes('type=auction');
   const isSales = location.search.includes('type=fixed');
   const isSoumettre = location.pathname === '/soumettre';
+  const isLives = location.pathname === '/lives';
 
   return (
     <>
@@ -93,6 +94,9 @@ export default function BottomNav() {
 
           <Link to="/catalogue?type=auction" className={`nav-pill ${isAuctions ? 'active' : 'inactive'}`}>
             ENCHÈRES
+          </Link>
+          <Link to="/lives" className={`nav-pill ${isLives ? 'active' : 'inactive'}`} style={!isLives ? { color: '#e11d48' } : undefined}>
+            LIVE
           </Link>
         </div>
       </div>
