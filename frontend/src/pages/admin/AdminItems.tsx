@@ -16,7 +16,7 @@ export default function AdminItems() {
   const [certModal, setCertModal] = useState<any>(null); // item being reviewed
 
   useEffect(() => {
-    getSharedItems().then(shared => setItems([...new Map([...shared, ...getAllItems().filter(i => i.id.startsWith('static-'))].map(item => [item.id, item])).values()])).catch(() => {});
+    getSharedItems().then(shared => setItems([...new Map([...getAllItems().filter(i => i.id.startsWith('static-')), ...shared].map(item => [item.id, item])).values()])).catch(() => {});
   }, []);
 
   const persistItem = async (item: any, changes: Record<string, unknown>) => {

@@ -36,7 +36,7 @@ export default function Catalogue() {
     getSharedItems({ type, category })
       .then(shared => {
         const fallback = filterStaticItems({ type, category, brand, search, limit: 1000, offset: 0, sort });
-        let combined = [...new Map([...shared, ...fallback.items].map(item => [item.id, item])).values()].filter(item => item.status === 'active');
+        let combined = [...new Map([...fallback.items, ...shared].map(item => [item.id, item])).values()].filter(item => item.status === 'active');
         if (brand) combined = combined.filter(i => i.brand?.toLowerCase().includes(brand.toLowerCase()));
         if (search) { const s = search.toLowerCase(); combined = combined.filter(i => `${i.title} ${i.brand} ${i.description}`.toLowerCase().includes(s)); }
         if (sort === 'price_asc') combined.sort((a, b) => (a.fixed_price || a.current_bid || a.auction_start_price || 0) - (b.fixed_price || b.current_bid || b.auction_start_price || 0));
