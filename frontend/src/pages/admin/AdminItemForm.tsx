@@ -4,6 +4,7 @@ import { X, Plus } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { useStore } from '../../lib/store';
 import { getSharedItem } from '../../lib/marketplace';
+import { getAllItems } from '../../lib/staticItems';
 
 const CATEGORIES = [
   { id: 'bags-handbags', fr: 'Sacs à Main', en: 'Handbags' },
@@ -52,7 +53,8 @@ export default function AdminItemForm() {
 
   useEffect(() => {
     if (!id) return;
-    getSharedItem(id).then(existing => {
+    getSharedItem(id).then(shared => {
+      const existing = shared || getAllItems().find(item => item.id === id);
       if (!existing) { navigate('/admin/articles'); return; }
       setPhotoUrls(existing.photos?.length ? existing.photos : ['']);
       setForm({
@@ -60,7 +62,7 @@ export default function AdminItemForm() {
         condition: existing.condition || 'excellent', color: existing.color || '', size: existing.size || 'Taille unique',
         description: existing.description || '', saleType: existing.auction_enabled ? 'auction' : 'fixed',
         fixed_price: existing.fixed_price?.toString() || '', auction_start_price: existing.auction_start_price?.toString() || '',
-        auction_min_price: existing.auction_reserve_price?.toString() || '', auction_days: '7',
+        auction_min_price: (existing.auction_reserve_price ?? existing.auction_min_price)?.toString() || '', auction_days: '7',
         auction_end_time: existing.auction_end_time ? new Date(existing.auction_end_time).toISOString().slice(0, 16) : '',
         certified: Boolean(existing.certified), featured: Boolean(existing.featured), isVintage: false,
         seller_email: existing.seller_email || '', seller_payout: existing.seller_payout?.toString() || '',
@@ -129,7 +131,7 @@ export default function AdminItemForm() {
       created_by: user?.id,
     };
     const { error } = isEdit
-      ? await supabase.from('auction_items').update(payload).eq('id', id!)
+      ? await supabase.from('auction_items').upsert(payload, { onConflict: 'id' })
       : await supabase.from('auction_items').insert(payload);
     if (error) {
       setSaving(false);

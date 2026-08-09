@@ -16,7 +16,7 @@ export default function AdminItems() {
   const [certModal, setCertModal] = useState<any>(null); // item being reviewed
 
   useEffect(() => {
-    getSharedItems().then(shared => setItems([...shared, ...getAllItems().filter(i => i.id.startsWith('static-'))])).catch(() => {});
+    getSharedItems().then(shared => setItems([...new Map([...shared, ...getAllItems().filter(i => i.id.startsWith('static-'))].map(item => [item.id, item])).values()])).catch(() => {});
   }, []);
 
   const setStatus = async (id: string, status: string) => {
@@ -221,9 +221,7 @@ export default function AdminItems() {
                 </td>
                 <td style={{ padding: '10px 12px' }}>
                   <div style={{ display: 'flex', gap: '4px' }}>
-                    {item.id.startsWith('item-') && (
-                      <button onClick={() => navigate(`/admin/articles/${item.id}/modifier`)} title="Modifier entièrement" style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#1976d2', gap: 5 }}><Pencil size={15} /><span className="mobile-action-label">Modifier</span></button>
-                    )}
+                    <button onClick={() => navigate(`/admin/articles/${item.id}/modifier`)} title="Modifier entièrement" style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#1976d2', gap: 5 }}><Pencil size={15} /><span className="mobile-action-label">Modifier</span></button>
                     {item.status === 'active' ? (
                       <button onClick={() => setStatus(item.id, 'suspended')} title="Suspendre" style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#ff9800' }}><Pause size={15} /></button>
                     ) : item.status !== 'removed' ? (

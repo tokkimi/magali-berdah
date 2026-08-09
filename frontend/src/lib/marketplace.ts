@@ -12,13 +12,13 @@ export async function getSharedItems(filters: { type?: string; category?: string
   if (filters.limit) query = query.limit(filters.limit);
   const { data, error } = await query;
   if (error) throw error;
-  return data || [];
+  return (data || []).map(item => ({ ...item, __shared: true }));
 }
 
 export async function getSharedItem(id: string) {
   const { data, error } = await supabase.from('auction_items').select('*').eq('id', id).maybeSingle();
   if (error) throw error;
-  return data;
+  return data ? { ...data, __shared: true } : null;
 }
 
 export async function placeSharedBid(itemId: string, amount: number) {

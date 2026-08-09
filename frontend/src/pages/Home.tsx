@@ -88,10 +88,11 @@ export default function Home() {
       const bItems = b.status === 'fulfilled' ? b.value : [];
 
       // Use static fallback if API returns nothing
-      setAuctions([...aItems, ...filterStaticItems({ type: 'auction', limit: Math.max(0, 8 - aItems.length) }).items].slice(0, 8));
-      setWomen([...wItems, ...filterStaticItems({ category: 'women', limit: Math.max(0, 8 - wItems.length) }).items].slice(0, 8));
-      setMen([...mItems, ...filterStaticItems({ category: 'men', limit: Math.max(0, 8 - mItems.length) }).items].slice(0, 8));
-      setBags([...bItems, ...filterStaticItems({ category: 'bags', limit: Math.max(0, 8 - bItems.length) }).items].slice(0, 8));
+      const merge = (shared: any[], fallback: any[]) => [...new Map([...shared, ...fallback].map(item => [item.id, item])).values()].slice(0, 8);
+      setAuctions(merge(aItems, filterStaticItems({ type: 'auction', limit: 8 }).items));
+      setWomen(merge(wItems, filterStaticItems({ category: 'women', limit: 8 }).items));
+      setMen(merge(mItems, filterStaticItems({ category: 'men', limit: 8 }).items));
+      setBags(merge(bItems, filterStaticItems({ category: 'bags', limit: 8 }).items));
       setLoading(false);
     });
   }, []);

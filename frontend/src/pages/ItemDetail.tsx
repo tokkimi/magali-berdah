@@ -46,6 +46,7 @@ export default function ItemDetail() {
   const socketRef = useRef<Socket | null>(null);
   const isStatic = id?.startsWith('static-') || id?.startsWith('admin-');
   const isShared = id?.startsWith('item-');
+  const isSharedItem = Boolean(item?.__shared);
 
   useEffect(() => {
     if (!item) return;
@@ -69,10 +70,14 @@ export default function ItemDetail() {
 
     // Static item — no API call needed
     if (isStatic) {
-      const found = getAllItems().find((i: any) => i.id === id);
-      if (found) setItem(found);
-      else navigate('/catalogue');
-      return;
+      const refresh = async () => {
+        const shared = await getSharedItem(id);
+        if (shared) { setItem(shared); setBids(await getSharedBids(id)); return; }
+        const found = getAllItems().find((i: any) => i.id === id);
+        if (found) setItem(found); else navigate('/catalogue');
+      };
+      void refresh();
+      return subscribeToSharedAuctions(() => { void refresh(); });
     }
 
     if (isShared) {
@@ -115,7 +120,7 @@ export default function ItemDetail() {
     const min = (item.current_bid || item.auction_start_price || 0) + 1;
     if (amount < min) { setBidError(`Enchère minimum : ${min.toLocaleString('fr-FR')} €`); return; }
 
-    if (isShared) {
+    if (isSharedItem || isShared) {
       try {
         await placeSharedBid(id!, amount);
         setBidSuccess(true);
