@@ -96,7 +96,7 @@ export default function AdminDashboard() {
         </div>
 
         {/* Visitor chart */}
-        <div style={{ backgroundColor: 'white', border: '1px solid #e8d5b7', padding: '1.5rem', gridColumn: 'span 2' }}>
+        <div className="admin-dashboard-chart" style={{ backgroundColor: 'white', border: '1px solid #e8d5b7', padding: '1.5rem', gridColumn: 'span 2' }}>
           <h2 style={{ fontFamily: 'Georgia, serif', fontSize: '1rem', fontWeight: 400, marginBottom: '1rem', color: '#1a1a1a' }}>Visiteurs — 30 derniers jours</h2>
           <div style={{ display: 'flex', alignItems: 'flex-end', gap: '4px', height: '100px' }}>
             {(stats.dailyVisitors || []).slice(-30).map((d: any, i: number) => {

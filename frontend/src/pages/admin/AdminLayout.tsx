@@ -39,7 +39,17 @@ export default function AdminLayout() {
 
   return (
     <div className="admin-app-layout" style={{ display: 'flex', minHeight: 'calc(100vh - 120px)' }}>
-      <style>{`@media(max-width:800px){.admin-app-layout{display:block!important}.admin-sidebar{width:100%!important;position:sticky;top:0;z-index:20}.admin-sidebar-title{display:none}.admin-nav{display:flex;overflow-x:auto;padding:8px!important;gap:5px;scrollbar-width:none}.admin-nav a{min-width:max-content;border-left:0!important;border-radius:10px;padding:10px 12px!important;margin:0!important}.admin-main{padding:16px!important;overflow-x:hidden!important}}`}</style>
+      <style>{`@media(max-width:800px){
+        .admin-app-layout{display:block!important;min-height:auto!important}
+        .admin-sidebar{width:100%!important;min-height:0!important;height:auto!important;position:sticky;top:0;z-index:20;overflow:hidden}
+        .admin-sidebar-title{display:none}
+        .admin-nav{display:flex;overflow-x:auto;overscroll-behavior-x:contain;padding:8px!important;gap:5px;scrollbar-width:none}
+        .admin-nav::-webkit-scrollbar{display:none}
+        .admin-nav a{min-width:max-content;border-left:0!important;border-radius:10px;padding:10px 12px!important;margin:0!important;flex:0 0 auto}
+        .admin-main{width:100%!important;min-height:calc(100vh - 64px)!important;padding:16px 12px 100px!important;overflow-x:hidden!important}
+        .admin-main>div{max-width:100%;min-width:0}
+        .admin-dashboard-chart{grid-column:1!important;padding:16px!important}
+      }`}</style>
       <aside className="admin-sidebar" style={{ width: '240px', backgroundColor: '#0f0f0f', flexShrink: 0 }}>
         <div className="admin-sidebar-title" style={{ padding: '1.5rem', borderBottom: '1px solid #222' }}>
           <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.6rem', letterSpacing: '0.3em', color: '#c9a96e', marginBottom: '4px' }}>ADMINISTRATION</p>
