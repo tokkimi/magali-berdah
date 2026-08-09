@@ -107,6 +107,7 @@ export default function App() {
           <Route path="utilisateurs" element={<AdminUsers />} />
           <Route path="articles" element={<AdminItems />} />
           <Route path="articles/nouveau" element={<AdminItemForm />} />
+          <Route path="articles/:id/modifier" element={<AdminItemForm />} />
           <Route path="demandes" element={<AdminSubmissions />} />
           <Route path="commandes" element={<AdminOrders />} />
           <Route path="newsletter" element={<AdminNewsletter />} />

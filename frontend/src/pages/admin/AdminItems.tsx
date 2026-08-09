@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Eye, Star, Pause, Play, Trash2, ShieldCheck, FileText, X, Plus } from 'lucide-react';
+import { Eye, Star, Pause, Play, Trash2, ShieldCheck, FileText, X, Plus, Pencil } from 'lucide-react';
 import { api, imgUrl } from '../../lib/api';
 import { Link, useNavigate } from 'react-router-dom';
 import { getAllItems } from '../../lib/staticItems';
@@ -208,6 +208,9 @@ export default function AdminItems() {
                 </td>
                 <td style={{ padding: '10px 12px' }}>
                   <div style={{ display: 'flex', gap: '4px' }}>
+                    {item.id.startsWith('item-') && (
+                      <button onClick={() => navigate(`/admin/articles/${item.id}/modifier`)} title="Modifier entièrement" style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#1976d2' }}><Pencil size={15} /></button>
+                    )}
                     {item.status === 'active' ? (
                       <button onClick={() => setStatus(item.id, 'suspended')} title="Suspendre" style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#ff9800' }}><Pause size={15} /></button>
                     ) : item.status !== 'removed' ? (

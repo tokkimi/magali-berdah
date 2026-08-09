@@ -1,8 +1,9 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { X, Plus } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { useStore } from '../../lib/store';
+import { getSharedItem } from '../../lib/marketplace';
 
 const CATEGORIES = [
   { id: 'bags-handbags', fr: 'Sacs à Main', en: 'Handbags' },
@@ -31,6 +32,8 @@ const CONDITIONS = [
 
 export default function AdminItemForm() {
   const navigate = useNavigate();
+  const { id } = useParams<{ id: string }>();
+  const isEdit = Boolean(id);
   const { user } = useStore();
   const [saving, setSaving] = useState(false);
   const [photoUrls, setPhotoUrls] = useState<string[]>(['']);
@@ -40,12 +43,30 @@ export default function AdminItemForm() {
     color: '', size: 'Taille unique', description: '',
     saleType: 'fixed' as 'fixed' | 'auction',
     fixed_price: '', auction_start_price: '', auction_min_price: '',
-    auction_days: '7',
+    auction_days: '7', auction_end_time: '',
     certified: false, featured: false, isVintage: false,
     seller_email: '', seller_payout: '',
   });
 
   const set = (k: string, v: any) => setForm(f => ({ ...f, [k]: v }));
+
+  useEffect(() => {
+    if (!id) return;
+    getSharedItem(id).then(existing => {
+      if (!existing) { navigate('/admin/articles'); return; }
+      setPhotoUrls(existing.photos?.length ? existing.photos : ['']);
+      setForm({
+        title: existing.title || '', brand: existing.brand || '', category_id: existing.category_id || 'bags-handbags',
+        condition: existing.condition || 'excellent', color: existing.color || '', size: existing.size || 'Taille unique',
+        description: existing.description || '', saleType: existing.auction_enabled ? 'auction' : 'fixed',
+        fixed_price: existing.fixed_price?.toString() || '', auction_start_price: existing.auction_start_price?.toString() || '',
+        auction_min_price: existing.auction_reserve_price?.toString() || '', auction_days: '7',
+        auction_end_time: existing.auction_end_time ? new Date(existing.auction_end_time).toISOString().slice(0, 16) : '',
+        certified: Boolean(existing.certified), featured: Boolean(existing.featured), isVintage: false,
+        seller_email: existing.seller_email || '', seller_payout: existing.seller_payout?.toString() || '',
+      });
+    }).catch(() => navigate('/admin/articles'));
+  }, [id, navigate]);
 
   const addUrl = () => setPhotoUrls(u => [...u, '']);
   const removeUrl = (i: number) => setPhotoUrls(u => u.filter((_, idx) => idx !== i));
@@ -57,13 +78,13 @@ export default function AdminItemForm() {
 
     const cat = CATEGORIES.find(c => c.id === form.category_id);
     const photos = photoUrls.filter(u => u.trim());
-    const id = `admin-${Date.now()}`;
+    const itemId = id || `item-${crypto.randomUUID()}`;
     const auctionEnd = form.saleType === 'auction'
-      ? new Date(Date.now() + parseInt(form.auction_days) * 86400000).toISOString()
+      ? (form.auction_end_time ? new Date(form.auction_end_time).toISOString() : new Date(Date.now() + parseInt(form.auction_days) * 86400000).toISOString())
       : null;
 
     const item = {
-      id,
+      id: itemId,
       shop_id: 'admin',
       shop_name: 'Magali Berdah',
       title: form.title,
@@ -92,7 +113,7 @@ export default function AdminItemForm() {
       created_at: new Date().toISOString(),
     };
 
-    const { error } = await supabase.from('auction_items').insert({
+    const payload = {
       id: item.id, title: item.title, brand: item.brand, description: item.description,
       category_id: item.category_id, category_name_fr: item.category_name_fr,
       condition: item.condition, color: item.color, size: item.size, photos: item.photos,
@@ -106,7 +127,10 @@ export default function AdminItemForm() {
       certified: Boolean(item.certified),
       seller_email: item.seller_email, seller_payout: item.seller_payout,
       created_by: user?.id,
-    });
+    };
+    const { error } = isEdit
+      ? await supabase.from('auction_items').update(payload).eq('id', id!)
+      : await supabase.from('auction_items').insert(payload);
     if (error) {
       setSaving(false);
       alert(`Impossible d'ajouter l'article : ${error.message}`);
@@ -117,7 +141,7 @@ export default function AdminItemForm() {
     if (form.certified) {
       const raw = localStorage.getItem('mb_certified_ids') || '[]';
       const ids: string[] = JSON.parse(raw);
-      if (!ids.includes(id)) ids.push(id);
+      if (!ids.includes(itemId)) ids.push(itemId);
       localStorage.setItem('mb_certified_ids', JSON.stringify(ids));
     }
 
@@ -138,7 +162,7 @@ export default function AdminItemForm() {
   return (
     <div style={{ maxWidth: '700px' }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '2rem' }}>
-        <h1 style={{ fontFamily: 'Georgia, serif', fontSize: '1.8rem', fontWeight: 400, color: '#1a1a1a' }}>Ajouter un article</h1>
+        <h1 style={{ fontFamily: 'Georgia, serif', fontSize: '1.8rem', fontWeight: 400, color: '#1a1a1a' }}>{isEdit ? 'Modifier l’article' : 'Ajouter un article'}</h1>
         <button onClick={() => navigate('/admin/articles')} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#9e8e7e' }}>
           <X size={22} />
         </button>
@@ -260,6 +284,11 @@ export default function AdminItemForm() {
                   {[1, 2, 3, 5, 7, 10, 14].map(d => <option key={d} value={d}>{d} jour{d > 1 ? 's' : ''}</option>)}
                 </select>
               </div>
+              <div style={{ gridColumn: '1 / -1' }}>
+                <label style={labelStyle}>DATE ET HEURE DE FIN</label>
+                <input type="datetime-local" value={form.auction_end_time} onChange={e => set('auction_end_time', e.target.value)} style={inputStyle} />
+                <p style={{ marginTop: 5, color: '#9e8e7e', fontSize: '.7rem' }}>Si aucune date n’est indiquée, la durée choisie ci-dessus sera utilisée.</p>
+              </div>
             </div>
           )}
         </div>
@@ -307,7 +336,7 @@ export default function AdminItemForm() {
         <div style={{ display: 'flex', gap: '1rem' }}>
           <button type="submit" disabled={saving} className="btn-gold"
             style={{ flex: 1, fontSize: '0.8rem', letterSpacing: '0.1em', opacity: saving ? 0.7 : 1 }}>
-            {saving ? 'ENREGISTREMENT...' : 'PUBLIER L\'ARTICLE'}
+            {saving ? 'ENREGISTREMENT...' : isEdit ? 'ENREGISTRER LES MODIFICATIONS' : 'PUBLIER L\'ARTICLE'}
           </button>
           <button type="button" onClick={() => navigate('/admin/articles')}
             style={{ flex: 1, padding: '12px', border: '1px solid #e8d5b7', background: 'none', cursor: 'pointer', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.8rem', color: '#9e8e7e' }}>
