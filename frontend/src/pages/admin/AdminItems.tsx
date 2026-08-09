@@ -9,7 +9,7 @@ import { supabase } from '../../lib/supabase';
 
 export default function AdminItems() {
   const navigate = useNavigate();
-  const { certifiedIds, setCertified } = useStore();
+  const { certifiedIds, setCertified, user } = useStore();
   const [items, setItems] = useState<any[]>(getAllItems().map(i => ({ ...i, certified: certifiedIds.has(i.id) ? 1 : i.certified })));
   const [search, setSearch] = useState('');
   const [filter, setFilter] = useState('all');
@@ -19,29 +19,50 @@ export default function AdminItems() {
     getSharedItems().then(shared => setItems([...new Map([...shared, ...getAllItems().filter(i => i.id.startsWith('static-'))].map(item => [item.id, item])).values()])).catch(() => {});
   }, []);
 
-  const setStatus = async (id: string, status: string) => {
-    if (id.startsWith('item-')) await supabase.from('auction_items').update({ status }).eq('id', id);
+  const persistItem = async (item: any, changes: Record<string, unknown>) => {
+    const reserve = item.auction_reserve_price ?? item.auction_min_price ?? null;
+    const payload = {
+      id: item.id, title: item.title, brand: item.brand, description: item.description || '',
+      category_id: item.category_id, category_name_fr: item.category_name_fr || '', condition: item.condition || 'excellent',
+      color: item.color || null, size: item.size || null, photos: item.photos || [], fixed_price: item.fixed_price || null,
+      auction_enabled: Boolean(item.auction_enabled), auction_start_price: item.auction_start_price || null,
+      auction_reserve_price: reserve == null ? null : Math.max(Number(reserve), Number(item.auction_start_price || 0)),
+      auction_end_time: item.auction_end_time || null, status: item.status || 'active', featured: Boolean(item.featured),
+      certified: Boolean(item.certified), seller_email: item.seller_email || null, seller_payout: item.seller_payout || null,
+      created_by: item.created_by || user?.id,
+      ...changes,
+    };
+    const { error } = await supabase.from('auction_items').upsert(payload, { onConflict: 'id' });
+    if (error) throw error;
+  };
+
+  const setStatus = async (item: any, status: string) => {
+    await persistItem(item, { status });
+    const id = item.id;
     try { await api.put(`/admin/items/${id}/status`, { status }); } catch {}
     setItems(prev => prev.map(i => i.id === id ? { ...i, status } : i));
   };
 
-  const toggleFeature = async (id: string, current: number) => {
-    if (id.startsWith('item-')) await supabase.from('auction_items').update({ featured: !current }).eq('id', id);
+  const toggleFeature = async (item: any) => {
+    const id = item.id; const current = item.featured;
+    await persistItem(item, { featured: !current });
     try { await api.put(`/admin/items/${id}/feature`, { featured: !current }); } catch {}
     setItems(prev => prev.map(i => i.id === id ? { ...i, featured: current ? 0 : 1 } : i));
   };
 
-  const certify = async (id: string, certified: boolean) => {
-    if (id.startsWith('item-')) await supabase.from('auction_items').update({ certified }).eq('id', id);
+  const certify = async (item: any, certified: boolean) => {
+    const id = item.id;
+    await persistItem(item, { certified });
     try { await api.put(`/admin/items/${id}/certify`, { certified }); } catch {}
     setItems(prev => prev.map(i => i.id === id ? { ...i, certified: certified ? 1 : 0 } : i));
     setCertified(id, certified);
     setCertModal(null);
   };
 
-  const removeItem = async (id: string) => {
+  const removeItem = async (item: any) => {
     if (!confirm('Retirer cet article ?')) return;
-    if (id.startsWith('item-')) await supabase.from('auction_items').update({ status: 'removed' }).eq('id', id);
+    const id = item.id;
+    await persistItem(item, { status: 'removed' });
     try { await api.delete(`/admin/items/${id}`); } catch {}
     setItems(prev => prev.map(i => i.id === id ? { ...i, status: 'removed' } : i));
   };
@@ -116,7 +137,7 @@ export default function AdminItems() {
 
             <div style={{ display: 'flex', gap: '0.75rem' }}>
               {certModal.certified ? (
-                <button onClick={() => certify(certModal.id, false)}
+                <button onClick={() => certify(certModal, false)}
                   style={{ flex: 1, padding: '10px', border: '1px solid #cc0000', background: 'none', cursor: 'pointer', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.75rem', color: '#cc0000', letterSpacing: '0.08em' }}>
                   RETIRER LA CERTIFICATION
                 </button>
@@ -126,7 +147,7 @@ export default function AdminItems() {
                     style={{ flex: 1, padding: '10px', border: '1px solid #e8d5b7', background: 'none', cursor: 'pointer', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.75rem', color: '#9e8e7e' }}>
                     REFUSER
                   </button>
-                  <button onClick={() => certify(certModal.id, true)} className="btn-gold"
+                  <button onClick={() => certify(certModal, true)} className="btn-gold"
                     style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', fontSize: '0.75rem' }}>
                     <ShieldCheck size={15} /> CERTIFIER AUTHENTIQUE
                   </button>
@@ -215,7 +236,7 @@ export default function AdminItems() {
                   </button>
                 </td>
                 <td style={{ padding: '10px 12px' }}>
-                  <button onClick={() => toggleFeature(item.id, item.featured)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}>
+                  <button onClick={() => toggleFeature(item)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}>
                     <Star size={16} fill={item.featured ? '#c9a96e' : 'none'} color={item.featured ? '#c9a96e' : '#ccc'} />
                   </button>
                 </td>
@@ -223,11 +244,11 @@ export default function AdminItems() {
                   <div style={{ display: 'flex', gap: '4px' }}>
                     <button onClick={() => navigate(`/admin/articles/${item.id}/modifier`)} title="Modifier entièrement" style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#1976d2', gap: 5 }}><Pencil size={15} /><span className="mobile-action-label">Modifier</span></button>
                     {item.status === 'active' ? (
-                      <button onClick={() => setStatus(item.id, 'suspended')} title="Suspendre" style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#ff9800' }}><Pause size={15} /></button>
+                      <button onClick={() => setStatus(item, 'suspended')} title="Suspendre" style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#ff9800' }}><Pause size={15} /></button>
                     ) : item.status !== 'removed' ? (
-                      <button onClick={() => setStatus(item.id, 'active')} title="Mettre en ligne" style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#2e7d32' }}><Play size={15} /></button>
+                      <button onClick={() => setStatus(item, 'active')} title="Mettre en ligne" style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#2e7d32' }}><Play size={15} /></button>
                     ) : null}
-                    <button onClick={() => removeItem(item.id)} title="Retirer" style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#cc0000' }}><Trash2 size={15} /></button>
+                    <button onClick={() => removeItem(item)} title="Retirer" style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#cc0000' }}><Trash2 size={15} /></button>
                   </div>
                 </td>
               </tr>

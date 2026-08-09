@@ -1,7 +1,7 @@
 import { supabase } from './supabase';
 
 export async function getSharedItems(filters: { type?: string; category?: string; limit?: number } = {}) {
-  let query = supabase.from('auction_items').select('*').in('status', ['active', 'sold', 'unsold']).order('created_at', { ascending: false });
+  let query = supabase.from('auction_items').select('*').order('created_at', { ascending: false });
   if (filters.type === 'auction') query = query.eq('auction_enabled', true);
   if (filters.type === 'fixed') query = query.not('fixed_price', 'is', null);
   if (filters.category) {
