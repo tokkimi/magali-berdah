@@ -24,7 +24,7 @@ export default function AdminItems() {
     const payload = {
       id: item.id, title: item.title, brand: item.brand, description: item.description || '',
       category_id: item.category_id, category_name_fr: item.category_name_fr || '', condition: item.condition || 'excellent',
-      color: item.color || null, size: item.size || null, photos: item.photos || [], fixed_price: item.fixed_price || null,
+      color: item.color || null, size: item.size || null, photos: item.photos || [], videos: item.videos || [], fixed_price: item.fixed_price || null,
       auction_enabled: Boolean(item.auction_enabled), auction_start_price: item.auction_start_price || null,
       auction_reserve_price: reserve == null ? null : Math.max(Number(reserve), Number(item.auction_start_price || 0)),
       auction_end_time: item.auction_end_time || null, status: item.status || 'active', featured: Boolean(item.featured),

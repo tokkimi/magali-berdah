@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { X, Plus } from 'lucide-react';
+import { X, Upload, GripVertical, Video } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { useStore } from '../../lib/store';
 import { getSharedItem } from '../../lib/marketplace';
@@ -37,7 +37,10 @@ export default function AdminItemForm() {
   const isEdit = Boolean(id);
   const { user } = useStore();
   const [saving, setSaving] = useState(false);
-  const [photoUrls, setPhotoUrls] = useState<string[]>(['']);
+  const [photoUrls, setPhotoUrls] = useState<string[]>([]);
+  const [videoUrls, setVideoUrls] = useState<string[]>([]);
+  const [uploading, setUploading] = useState(false);
+  const [dragging, setDragging] = useState(false);
 
   const [form, setForm] = useState({
     title: '', brand: '', category_id: 'bags-handbags', condition: 'excellent',
@@ -56,7 +59,8 @@ export default function AdminItemForm() {
     getSharedItem(id).then(shared => {
       const existing = shared || getAllItems().find(item => item.id === id);
       if (!existing) { navigate('/admin/articles'); return; }
-      setPhotoUrls(existing.photos?.length ? existing.photos : ['']);
+      setPhotoUrls(existing.photos?.length ? existing.photos : []);
+      setVideoUrls(existing.videos?.length ? existing.videos : []);
       setForm({
         title: existing.title || '', brand: existing.brand || '', category_id: existing.category_id || 'bags-handbags',
         condition: existing.condition || 'excellent', color: existing.color || '', size: existing.size || 'Taille unique',
@@ -70,9 +74,32 @@ export default function AdminItemForm() {
     }).catch(() => navigate('/admin/articles'));
   }, [id, navigate]);
 
-  const addUrl = () => setPhotoUrls(u => [...u, '']);
   const removeUrl = (i: number) => setPhotoUrls(u => u.filter((_, idx) => idx !== i));
-  const setUrl = (i: number, v: string) => setPhotoUrls(u => u.map((x, idx) => idx === i ? v : x));
+  const movePhoto = (i: number, direction: -1 | 1) => setPhotoUrls(urls => {
+    const next = [...urls]; const target = i + direction;
+    if (target < 0 || target >= next.length) return urls;
+    [next[i], next[target]] = [next[target], next[i]];
+    return next;
+  });
+
+  const uploadMedia = async (files: File[]) => {
+    const accepted = files.filter(file => file.type.startsWith('image/') || file.type.startsWith('video/'));
+    if (!accepted.length) return;
+    setUploading(true);
+    try {
+      for (const file of accepted) {
+        const extension = file.name.split('.').pop()?.toLowerCase() || 'bin';
+        const path = `${user?.id}/${Date.now()}-${crypto.randomUUID()}.${extension}`;
+        const { error } = await supabase.storage.from('product-media').upload(path, file, { contentType: file.type, upsert: false });
+        if (error) throw error;
+        const { data } = supabase.storage.from('product-media').getPublicUrl(path);
+        if (file.type.startsWith('video/')) setVideoUrls(urls => [...urls, data.publicUrl]);
+        else setPhotoUrls(urls => [...urls, data.publicUrl]);
+      }
+    } catch (error: unknown) {
+      alert(error instanceof Error ? error.message : 'Impossible d’envoyer ce média.');
+    } finally { setUploading(false); setDragging(false); }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -99,6 +126,7 @@ export default function AdminItemForm() {
       color: form.color,
       size: form.size,
       photos: photos.length ? photos : ['https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=600&q=80'],
+      videos: videoUrls,
       fixed_price: form.saleType === 'fixed' ? parseFloat(form.fixed_price) || null : null,
       auction_enabled: form.saleType === 'auction' ? 1 : 0,
       auction_start_price: form.saleType === 'auction' ? parseFloat(form.auction_start_price) || null : null,
@@ -118,7 +146,7 @@ export default function AdminItemForm() {
     const payload = {
       id: item.id, title: item.title, brand: item.brand, description: item.description,
       category_id: item.category_id, category_name_fr: item.category_name_fr,
-      condition: item.condition, color: item.color, size: item.size, photos: item.photos,
+      condition: item.condition, color: item.color, size: item.size, photos: item.photos, videos: item.videos,
       fixed_price: item.fixed_price,
       auction_enabled: Boolean(item.auction_enabled),
       auction_start_price: item.auction_start_price,
@@ -181,35 +209,30 @@ export default function AdminItemForm() {
       <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
         {/* Photos */}
         <div style={{ backgroundColor: 'white', padding: '1.5rem', border: '1px solid #e8d5b7' }}>
-          <p style={{ ...labelStyle, marginBottom: '1rem' }}>PHOTOS (URLs)</p>
-          {photoUrls.map((url, i) => (
-            <div key={i} style={{ display: 'flex', gap: '8px', marginBottom: '8px' }}>
-              <input
-                type="url" value={url} onChange={e => setUrl(i, e.target.value)}
-                placeholder={`https://images.unsplash.com/...`}
-                style={{ ...inputStyle, flex: 1 }}
-              />
-              {photoUrls.length > 1 && (
-                <button type="button" onClick={() => removeUrl(i)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#cc0000' }}>
-                  <X size={16} />
-                </button>
-              )}
-            </div>
-          ))}
-          {photoUrls.length < 8 && (
-            <button type="button" onClick={addUrl}
-              style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'none', border: '1px dashed #e8d5b7', padding: '8px 16px', cursor: 'pointer', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.75rem', color: '#9e8e7e', marginTop: '4px' }}>
-              <Plus size={14} /> Ajouter une photo
-            </button>
-          )}
-          {photoUrls.filter(u => u.trim()).length > 0 && (
-            <div style={{ display: 'flex', gap: '8px', marginTop: '12px', flexWrap: 'wrap' }}>
-              {photoUrls.filter(u => u.trim()).map((url, i) => (
-                <img key={i} src={url} alt="" style={{ width: '70px', height: '90px', objectFit: 'cover', backgroundColor: '#f8f4ef' }}
-                  onError={e => (e.currentTarget.style.display = 'none')} />
-              ))}
-            </div>
-          )}
+          <p style={{ ...labelStyle, marginBottom: '1rem' }}>PHOTOS ET VIDÉOS</p>
+          <label
+            onDragEnter={e => { e.preventDefault(); setDragging(true); }}
+            onDragOver={e => e.preventDefault()}
+            onDragLeave={() => setDragging(false)}
+            onDrop={e => { e.preventDefault(); void uploadMedia(Array.from(e.dataTransfer.files)); }}
+            style={{ minHeight: 130, border: `2px dashed ${dragging ? '#c9a96e' : '#e8d5b7'}`, background: dragging ? '#fff8e6' : '#faf7f4', borderRadius: 14, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 8, cursor: 'pointer', textAlign: 'center', padding: 20 }}>
+            <Upload size={28} color="#c9a96e" />
+            <strong style={{ fontSize: 14 }}>{uploading ? 'Envoi en cours…' : 'Ajouter des photos ou vidéos'}</strong>
+            <span style={{ color: '#9e8e7e', fontSize: 12 }}>Touchez ici ou glissez vos fichiers — 50 Mo maximum</span>
+            <input hidden multiple disabled={uploading} type="file" accept="image/jpeg,image/png,image/webp,image/gif,video/mp4,video/webm,video/quicktime" onChange={e => { void uploadMedia(Array.from(e.target.files || [])); e.target.value = ''; }} />
+          </label>
+          {photoUrls.length > 0 && <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(130px,1fr))', gap: 10, marginTop: 14 }}>
+            {photoUrls.map((url, i) => <div key={url} style={{ border: i === 0 ? '2px solid #c9a96e' : '1px solid #e8d5b7', borderRadius: 10, overflow: 'hidden', background: 'white' }}>
+              <img src={url} alt={`Photo ${i + 1}`} style={{ width: '100%', aspectRatio: '1/1', objectFit: 'cover', display: 'block' }} />
+              <div style={{ padding: 7, display: 'grid', gap: 5 }}>
+                <button type="button" onClick={() => setPhotoUrls(urls => [url, ...urls.filter(photo => photo !== url)])} style={{ border: 0, background: i === 0 ? '#c9a96e' : '#f8f4ef', color: i === 0 ? 'white' : '#1a1a1a', minHeight: 32, borderRadius: 7, fontSize: 11, cursor: 'pointer' }}>{i === 0 ? 'IMAGE PRINCIPALE' : 'Définir comme principale'}</button>
+                <div style={{ display: 'flex', gap: 5 }}><button type="button" disabled={i === 0} onClick={() => movePhoto(i, -1)} style={{ flex: 1 }}><GripVertical size={13} />←</button><button type="button" disabled={i === photoUrls.length - 1} onClick={() => movePhoto(i, 1)} style={{ flex: 1 }}>→</button><button type="button" onClick={() => removeUrl(i)} style={{ color: '#cc0000' }}><X size={14} /></button></div>
+              </div>
+            </div>)}
+          </div>}
+          {videoUrls.length > 0 && <div style={{ marginTop: 16 }}><p style={{ ...labelStyle }}>VIDÉOS</p><div style={{ display: 'grid', gap: 10 }}>
+            {videoUrls.map((url, i) => <div key={url} style={{ border: '1px solid #e8d5b7', borderRadius: 10, padding: 8, display: 'flex', alignItems: 'center', gap: 10 }}><Video size={20} color="#c9a96e" /><video src={url} controls preload="metadata" style={{ width: 150, maxHeight: 110, borderRadius: 7 }} /><button type="button" onClick={() => setVideoUrls(urls => urls.filter((_, index) => index !== i))} style={{ marginLeft: 'auto', color: '#cc0000', border: 0, background: 'none' }}><X size={18} /></button></div>)}
+          </div></div>}
         </div>
 
         {/* Infos principales */}

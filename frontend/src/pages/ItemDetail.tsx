@@ -356,6 +356,13 @@ export default function ItemDetail() {
               ))}
             </div>
           )}
+          {item.videos?.length > 0 && (
+            <div style={{ marginTop: '1rem', display: 'grid', gap: '10px' }}>
+              {item.videos.map((video: string, i: number) => (
+                <video key={video} src={video} controls playsInline preload="metadata" aria-label={`Vidéo de l’article ${i + 1}`} style={{ width: '100%', maxHeight: '520px', background: '#111', borderRadius: '8px' }} />
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Détails */}
