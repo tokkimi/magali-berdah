@@ -160,7 +160,15 @@ export default function AdminItemForm() {
   };
 
   return (
-    <div style={{ maxWidth: '700px' }}>
+    <div className="admin-item-form" style={{ maxWidth: '700px' }}>
+      <style>{`@media(max-width:700px){
+        .admin-item-form{width:100%;max-width:none!important}.admin-item-form h1{font-size:1.45rem!important}
+        .admin-item-form form>div{padding:16px!important;border-radius:12px}
+        .admin-item-form [style*="grid-template-columns"]{grid-template-columns:1fr!important}
+        .admin-item-form input,.admin-item-form select,.admin-item-form textarea{min-height:46px;font-size:16px!important}
+        .admin-item-form form>div:last-child{position:sticky;bottom:76px;z-index:10;background:#f8f4ef!important;padding:10px 0!important;display:grid!important;grid-template-columns:1fr!important}
+        .admin-item-form form>div:last-child button{min-height:50px}
+      }`}</style>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '2rem' }}>
         <h1 style={{ fontFamily: 'Georgia, serif', fontSize: '1.8rem', fontWeight: 400, color: '#1a1a1a' }}>{isEdit ? 'Modifier l’article' : 'Ajouter un article'}</h1>
         <button onClick={() => navigate('/admin/articles')} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#9e8e7e' }}>

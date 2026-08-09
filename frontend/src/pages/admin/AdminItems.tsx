@@ -61,7 +61,20 @@ export default function AdminItems() {
   const statusLabels: Record<string, string> = { active: 'En ligne', draft: 'Brouillon', suspended: 'Suspendu', sold: 'Vendu', removed: 'Retiré' };
 
   return (
-    <div>
+    <div className="admin-items-page">
+      <style>{`.mobile-action-label{display:none}@media(max-width:700px){
+        .admin-items-toolbar{display:grid!important;grid-template-columns:1fr 1fr;width:100%;gap:8px!important}
+        .admin-items-toolbar button{grid-column:1/-1;min-height:48px;justify-content:center}
+        .admin-items-toolbar input,.admin-items-toolbar select{width:100%!important;min-height:44px}
+        .admin-items-table-wrap{border:0!important;background:transparent!important;overflow:visible!important}
+        .admin-items-table{min-width:0!important;display:block}.admin-items-table thead{display:none}.admin-items-table tbody{display:grid;gap:12px}
+        .admin-items-table tr{display:grid;grid-template-columns:1fr 1fr;background:white;border:1px solid #e8d5b7!important;border-radius:14px;padding:12px;gap:8px}
+        .admin-items-table td{display:block;padding:4px!important;min-width:0}.admin-items-table td:first-child{grid-column:1/-1}
+        .admin-items-table td:last-child{grid-column:1/-1;border-top:1px solid #f0ece6;padding-top:10px!important}
+        .admin-items-table td:last-child>div{display:grid!important;grid-template-columns:repeat(3,1fr);gap:8px!important}
+        .admin-items-table td:last-child button{min-height:42px;border:1px solid #e8d5b7!important;border-radius:9px!important;display:flex;align-items:center;justify-content:center}
+        .mobile-action-label{display:inline;font-size:12px;font-weight:700}
+      }`}</style>
       {/* Cert modal */}
       {certModal && (
         <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 300, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
@@ -126,7 +139,7 @@ export default function AdminItems() {
 
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
         <h1 style={{ fontFamily: 'Georgia, serif', fontSize: '1.8rem', fontWeight: 400, color: '#1a1a1a' }}>Articles ({filtered.length})</h1>
-        <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', alignItems: 'center' }}>
+        <div className="admin-items-toolbar" style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', alignItems: 'center' }}>
           <button onClick={() => navigate('/admin/articles/nouveau')} className="btn-gold"
             style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.75rem' }}>
             <Plus size={14} /> AJOUTER UN ARTICLE
@@ -146,8 +159,8 @@ export default function AdminItems() {
         </div>
       </div>
 
-      <div style={{ backgroundColor: 'white', border: '1px solid #e8d5b7', overflow: 'auto' }}>
-        <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: '800px' }}>
+      <div className="admin-items-table-wrap" style={{ backgroundColor: 'white', border: '1px solid #e8d5b7', overflow: 'auto' }}>
+        <table className="admin-items-table" style={{ width: '100%', borderCollapse: 'collapse', minWidth: '800px' }}>
           <thead>
             <tr style={{ borderBottom: '1px solid #e8d5b7', backgroundColor: '#f8f4ef' }}>
               {['Article', 'Vendeur', 'Prix', 'Statut', 'Vues', 'Certifié', 'Mis en avant', 'Actions'].map(h => (
@@ -209,7 +222,7 @@ export default function AdminItems() {
                 <td style={{ padding: '10px 12px' }}>
                   <div style={{ display: 'flex', gap: '4px' }}>
                     {item.id.startsWith('item-') && (
-                      <button onClick={() => navigate(`/admin/articles/${item.id}/modifier`)} title="Modifier entièrement" style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#1976d2' }}><Pencil size={15} /></button>
+                      <button onClick={() => navigate(`/admin/articles/${item.id}/modifier`)} title="Modifier entièrement" style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#1976d2', gap: 5 }}><Pencil size={15} /><span className="mobile-action-label">Modifier</span></button>
                     )}
                     {item.status === 'active' ? (
                       <button onClick={() => setStatus(item.id, 'suspended')} title="Suspendre" style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#ff9800' }}><Pause size={15} /></button>
