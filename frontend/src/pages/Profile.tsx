@@ -10,6 +10,7 @@ import { getAllItems } from '../lib/staticItems';
 import ItemCard from '../components/ItemCard';
 import WhatnotProfilePanel from '../components/WhatnotProfilePanel';
 import { getSavedWhatnotToken } from '../lib/whatnot';
+import { getMyAuctionWins } from '../lib/marketplace';
 
 function loadMyOrders(userId: string): any[] {
   try {
@@ -52,6 +53,7 @@ export default function Profile() {
   const [saved, setSaved] = useState(false);
   const [orders, setOrders] = useState<any[]>([]);
   const [wallet, setWallet] = useState<any>({ pending: 0, available: 0, transactions: [] });
+  const [auctionWins, setAuctionWins] = useState<any[]>([]);
 
   // Payment method state
   const [pm, setPm] = useState<any>(null);
@@ -86,6 +88,7 @@ export default function Profile() {
       setPm(getPaymentMethod(user.email));
       setBank(getBankDetails(user.email));
     }
+    if (tab === 'bids') getMyAuctionWins().then(setAuctionWins).catch(() => setAuctionWins([]));
   }, [tab, user]);
 
   // Always load wallet for header display
@@ -505,6 +508,14 @@ export default function Profile() {
           {/* ── MES ENCHÈRES ── */}
           {tab === 'bids' && (
             <div>
+              {auctionWins.map(win => (
+                <div key={win.id} style={{ border: '2px solid #c9a96e', background: '#fff8e6', padding: '1.25rem', marginBottom: '1rem' }}>
+                  <p style={{ color: '#2e7d32', fontWeight: 700, marginBottom: 6 }}>FÉLICITATIONS, VOUS AVEZ GAGNÉ L’ENCHÈRE !</p>
+                  <p style={{ fontFamily: 'Georgia, serif', fontSize: '1.05rem' }}>{win.auction_items?.title}</p>
+                  <p style={{ marginTop: 6 }}>Montant gagnant : <strong>{Number(win.winning_amount).toLocaleString('fr-FR')} €</strong></p>
+                  <p style={{ marginTop: 6, color: '#9e8e7e', fontSize: '.78rem' }}>Paiement : {win.payment_status === 'paid' ? 'payé' : 'en attente de paiement sécurisé'}</p>
+                </div>
+              ))}
               <h2 style={{ fontFamily: 'Georgia, serif', fontSize: '1.2rem', fontWeight: 400, marginBottom: '1.25rem', color: '#1a1a1a' }}>Mes enchères</h2>
               {(() => {
                 try {

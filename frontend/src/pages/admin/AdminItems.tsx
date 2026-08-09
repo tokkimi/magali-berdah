@@ -4,6 +4,8 @@ import { api, imgUrl } from '../../lib/api';
 import { Link, useNavigate } from 'react-router-dom';
 import { getAllItems } from '../../lib/staticItems';
 import { useStore } from '../../lib/store';
+import { getSharedItems } from '../../lib/marketplace';
+import { supabase } from '../../lib/supabase';
 
 export default function AdminItems() {
   const navigate = useNavigate();
@@ -14,22 +16,23 @@ export default function AdminItems() {
   const [certModal, setCertModal] = useState<any>(null); // item being reviewed
 
   useEffect(() => {
-    api.get('/admin/items').then(d => {
-      if (d.items?.length) setItems(d.items);
-    }).catch(() => {});
+    getSharedItems().then(shared => setItems([...shared, ...getAllItems().filter(i => i.id.startsWith('static-'))])).catch(() => {});
   }, []);
 
   const setStatus = async (id: string, status: string) => {
+    if (id.startsWith('item-')) await supabase.from('auction_items').update({ status }).eq('id', id);
     try { await api.put(`/admin/items/${id}/status`, { status }); } catch {}
     setItems(prev => prev.map(i => i.id === id ? { ...i, status } : i));
   };
 
   const toggleFeature = async (id: string, current: number) => {
+    if (id.startsWith('item-')) await supabase.from('auction_items').update({ featured: !current }).eq('id', id);
     try { await api.put(`/admin/items/${id}/feature`, { featured: !current }); } catch {}
     setItems(prev => prev.map(i => i.id === id ? { ...i, featured: current ? 0 : 1 } : i));
   };
 
   const certify = async (id: string, certified: boolean) => {
+    if (id.startsWith('item-')) await supabase.from('auction_items').update({ certified }).eq('id', id);
     try { await api.put(`/admin/items/${id}/certify`, { certified }); } catch {}
     setItems(prev => prev.map(i => i.id === id ? { ...i, certified: certified ? 1 : 0 } : i));
     setCertified(id, certified);
@@ -38,6 +41,7 @@ export default function AdminItems() {
 
   const removeItem = async (id: string) => {
     if (!confirm('Retirer cet article ?')) return;
+    if (id.startsWith('item-')) await supabase.from('auction_items').update({ status: 'removed' }).eq('id', id);
     try { await api.delete(`/admin/items/${id}`); } catch {}
     setItems(prev => prev.map(i => i.id === id ? { ...i, status: 'removed' } : i));
   };

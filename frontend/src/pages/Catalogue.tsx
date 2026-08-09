@@ -5,6 +5,7 @@ import { api } from '../lib/api';
 import { useT, useStore } from '../lib/store';
 import ItemCard from '../components/ItemCard';
 import { filterStaticItems } from '../lib/staticItems';
+import { getSharedItems } from '../lib/marketplace';
 
 const BRANDS = ['Hermès', 'Chanel', 'Dior', 'Louis Vuitton', 'Gucci', 'Prada', 'Cartier', 'Balenciaga', 'Saint Laurent', 'Valentino', 'Celine', 'Givenchy', 'Bottega Veneta', 'Loewe', 'Fendi', 'Burberry', 'Versace', 'Max Mara', 'Armani'];
 
@@ -32,22 +33,16 @@ export default function Catalogue() {
 
   useEffect(() => {
     setLoading(true);
-    const q = new URLSearchParams({ limit: String(limit), offset: String((page - 1) * limit), sort });
-    if (type) q.set('type', type);
-    if (category) q.set('category', category);
-    if (brand) q.set('brand', brand);
-    if (search) q.set('search', search);
-    api.get(`/items?${q}`)
-      .then(d => {
-        const apiItems = d.items || [];
-        if (apiItems.length > 0) {
-          setItems(apiItems);
-          setTotal(d.total || 0);
-        } else {
-          const fallback = filterStaticItems({ type, category, brand, search, limit, offset: (page - 1) * limit, sort });
-          setItems(fallback.items);
-          setTotal(fallback.total);
-        }
+    getSharedItems({ type, category })
+      .then(shared => {
+        const fallback = filterStaticItems({ type, category, brand, search, limit: 1000, offset: 0, sort });
+        let combined = [...shared, ...fallback.items];
+        if (brand) combined = combined.filter(i => i.brand?.toLowerCase().includes(brand.toLowerCase()));
+        if (search) { const s = search.toLowerCase(); combined = combined.filter(i => `${i.title} ${i.brand} ${i.description}`.toLowerCase().includes(s)); }
+        if (sort === 'price_asc') combined.sort((a, b) => (a.fixed_price || a.current_bid || a.auction_start_price || 0) - (b.fixed_price || b.current_bid || b.auction_start_price || 0));
+        if (sort === 'price_desc') combined.sort((a, b) => (b.fixed_price || b.current_bid || b.auction_start_price || 0) - (a.fixed_price || a.current_bid || a.auction_start_price || 0));
+        setTotal(combined.length);
+        setItems(combined.slice((page - 1) * limit, page * limit));
       })
       .catch(() => {
         const fallback = filterStaticItems({ type, category, brand, search, limit, offset: (page - 1) * limit, sort });

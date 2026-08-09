@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ChevronRight, ShoppingBag, Gavel, Shield, Truck } from 'lucide-react';
-import { api } from '../lib/api';
 import { useT } from '../lib/store';
 import ItemCard from '../components/ItemCard';
 import LiveRail from '../components/LiveRail';
 import { filterStaticItems } from '../lib/staticItems';
+import { getSharedItems } from '../lib/marketplace';
 
 function SkeletonCard() {
   return (
@@ -77,21 +77,21 @@ export default function Home() {
 
   useEffect(() => {
     Promise.allSettled([
-      api.get('/items?type=auction&limit=8'),
-      api.get('/items?category=women&limit=8'),
-      api.get('/items?category=men&limit=8'),
-      api.get('/items?category=bags&limit=8'),
+      getSharedItems({ type: 'auction', limit: 8 }),
+      getSharedItems({ category: 'women', limit: 8 }),
+      getSharedItems({ category: 'men', limit: 8 }),
+      getSharedItems({ category: 'bags', limit: 8 }),
     ]).then(([a, w, m, b]) => {
-      const aItems = a.status === 'fulfilled' ? (a.value.items || []) : [];
-      const wItems = w.status === 'fulfilled' ? (w.value.items || []) : [];
-      const mItems = m.status === 'fulfilled' ? (m.value.items || []) : [];
-      const bItems = b.status === 'fulfilled' ? (b.value.items || []) : [];
+      const aItems = a.status === 'fulfilled' ? a.value : [];
+      const wItems = w.status === 'fulfilled' ? w.value : [];
+      const mItems = m.status === 'fulfilled' ? m.value : [];
+      const bItems = b.status === 'fulfilled' ? b.value : [];
 
       // Use static fallback if API returns nothing
-      setAuctions(aItems.length > 0 ? aItems : filterStaticItems({ type: 'auction', limit: 8 }).items);
-      setWomen(wItems.length > 0 ? wItems : filterStaticItems({ category: 'women', limit: 8 }).items);
-      setMen(mItems.length > 0 ? mItems : filterStaticItems({ category: 'men', limit: 8 }).items);
-      setBags(bItems.length > 0 ? bItems : filterStaticItems({ category: 'bags', limit: 8 }).items);
+      setAuctions([...aItems, ...filterStaticItems({ type: 'auction', limit: Math.max(0, 8 - aItems.length) }).items].slice(0, 8));
+      setWomen([...wItems, ...filterStaticItems({ category: 'women', limit: Math.max(0, 8 - wItems.length) }).items].slice(0, 8));
+      setMen([...mItems, ...filterStaticItems({ category: 'men', limit: Math.max(0, 8 - mItems.length) }).items].slice(0, 8));
+      setBags([...bItems, ...filterStaticItems({ category: 'bags', limit: Math.max(0, 8 - bItems.length) }).items].slice(0, 8));
       setLoading(false);
     });
   }, []);

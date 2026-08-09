@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { X, Plus } from 'lucide-react';
+import { supabase } from '../../lib/supabase';
+import { useStore } from '../../lib/store';
 
 const CATEGORIES = [
   { id: 'bags-handbags', fr: 'Sacs à Main', en: 'Handbags' },
@@ -27,15 +29,9 @@ const CONDITIONS = [
   { id: 'fair', fr: 'État correct' },
 ];
 
-function loadAdminItems(): any[] {
-  try { return JSON.parse(localStorage.getItem('mb_admin_items') || '[]'); } catch { return []; }
-}
-function saveAdminItems(items: any[]) {
-  localStorage.setItem('mb_admin_items', JSON.stringify(items));
-}
-
 export default function AdminItemForm() {
   const navigate = useNavigate();
+  const { user } = useStore();
   const [saving, setSaving] = useState(false);
   const [photoUrls, setPhotoUrls] = useState<string[]>(['']);
 
@@ -55,7 +51,7 @@ export default function AdminItemForm() {
   const removeUrl = (i: number) => setPhotoUrls(u => u.filter((_, idx) => idx !== i));
   const setUrl = (i: number, v: string) => setPhotoUrls(u => u.map((x, idx) => idx === i ? v : x));
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
 
@@ -96,8 +92,26 @@ export default function AdminItemForm() {
       created_at: new Date().toISOString(),
     };
 
-    const existing = loadAdminItems();
-    saveAdminItems([item, ...existing]);
+    const { error } = await supabase.from('auction_items').insert({
+      id: item.id, title: item.title, brand: item.brand, description: item.description,
+      category_id: item.category_id, category_name_fr: item.category_name_fr,
+      condition: item.condition, color: item.color, size: item.size, photos: item.photos,
+      fixed_price: item.fixed_price,
+      auction_enabled: Boolean(item.auction_enabled),
+      auction_start_price: item.auction_start_price,
+      auction_reserve_price: item.auction_min_price,
+      auction_end_time: item.auction_end_time,
+      status: item.status,
+      featured: Boolean(item.featured),
+      certified: Boolean(item.certified),
+      seller_email: item.seller_email, seller_payout: item.seller_payout,
+      created_by: user?.id,
+    });
+    if (error) {
+      setSaving(false);
+      alert(`Impossible d'ajouter l'article : ${error.message}`);
+      return;
+    }
 
     // Also persist certifiedIds if certified
     if (form.certified) {
@@ -235,10 +249,10 @@ export default function AdminItemForm() {
                   placeholder="Ex: 1200" style={inputStyle} />
               </div>
               <div>
-                <label style={labelStyle}>PRIX MINIMUM (€)</label>
-                <input type="number" min="0" value={form.auction_min_price}
+                <label style={labelStyle}>PRIX DE RÉSERVE (€)</label>
+                <input type="number" min={form.auction_start_price || '0'} value={form.auction_min_price}
                   onChange={e => set('auction_min_price', e.target.value)}
-                  placeholder="Ex: 900" style={inputStyle} />
+                  placeholder="Ex: 1500" style={inputStyle} />
               </div>
               <div>
                 <label style={labelStyle}>DURÉE (JOURS)</label>
