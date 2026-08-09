@@ -24,7 +24,7 @@ export default function AdminDashboard() {
   }, []);
 
   const cards = [
-    { label: 'Utilisateurs', value: stats.totalUsers, sub: `${stats.totalPros} boutiques`, icon: Users, color: '#c9a96e' },
+    { label: 'Utilisateurs', value: stats.totalUsers, sub: `${stats.totalPros} vendeurs historiques`, icon: Users, color: '#c9a96e' },
     { label: 'Articles actifs', value: stats.activeItems, sub: `${stats.totalItems} total`, icon: Package, color: '#1976d2' },
     { label: 'Commandes', value: stats.totalOrders, sub: `${stats.pendingPayments} en attente`, icon: ShoppingBag, color: '#ff9800' },
     { label: 'Revenus (commissions)', value: `${(stats.totalRevenue || 0).toFixed(0)} €`, icon: TrendingUp, color: '#2e7d32' },

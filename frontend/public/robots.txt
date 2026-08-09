@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /profil
+Disallow: /mes-achats
+Disallow: /mes-encheres
+Sitemap: https://magali-berdah.vercel.app/sitemap.xml

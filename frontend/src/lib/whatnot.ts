@@ -1,4 +1,4 @@
-import { createClient } from '@supabase/supabase-js';
+import { supabase } from './supabase';
 
 export interface WhatnotLive {
   email: string;
@@ -11,11 +11,6 @@ export interface WhatnotLive {
   started_at?: string;
   expires_at?: string;
 }
-
-const supabase = createClient(
-  import.meta.env.VITE_SUPABASE_URL || 'https://ixtuxlirehrbsvifdfka.supabase.co',
-  import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY || 'sb_publishable_ZFuGaQ_JZTMXh1m0_Y1hMw_LBCqC7pE',
-);
 
 const tokenKey = (email: string) => `mb_whatnot_access_${email.toLowerCase()}`;
 const requestKey = (email: string) => `mb_whatnot_request_${email.toLowerCase()}`;
@@ -70,9 +65,11 @@ export async function adminReviewAmbassadorRequest(adminCode: string, email: str
 export async function getWhatnotLives(): Promise<WhatnotLive[]> {
   const { data, error } = await supabase.from('whatnot_profiles')
     .select('email,display_name,whatnot_handle,show_url,preview_url,live_title,is_live,started_at,expires_at')
+    .eq('is_live', true)
     .order('started_at', { ascending: false });
   if (error) throw error;
-  return (data || []) as WhatnotLive[];
+  const now = Date.now();
+  return ((data || []) as WhatnotLive[]).filter(live => !live.expires_at || new Date(live.expires_at).getTime() > now);
 }
 
 export async function getOwnWhatnotProfile(email: string, token: string): Promise<WhatnotLive | null> {

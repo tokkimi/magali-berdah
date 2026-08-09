@@ -46,6 +46,23 @@ export default function ItemDetail() {
   const isStatic = id?.startsWith('static-') || id?.startsWith('admin-');
 
   useEffect(() => {
+    if (!item) return;
+    document.title = `${item.title} | Magali Berdah`;
+    const script = document.createElement('script');
+    script.type = 'application/ld+json';
+    script.dataset.productSchema = 'true';
+    script.text = JSON.stringify({
+      '@context': 'https://schema.org', '@type': 'Product', name: item.title,
+      image: item.images || (item.image ? [item.image] : []), description: item.description || item.title,
+      brand: item.brand ? { '@type': 'Brand', name: item.brand } : undefined,
+      offers: { '@type': 'Offer', priceCurrency: 'EUR', price: item.fixed_price || item.current_bid || item.auction_start_price, availability: 'https://schema.org/InStock', url: window.location.href },
+    });
+    document.head.querySelector('script[data-product-schema]')?.remove();
+    document.head.appendChild(script);
+    return () => script.remove();
+  }, [item]);
+
+  useEffect(() => {
     if (!id) return;
 
     // Static item — no API call needed

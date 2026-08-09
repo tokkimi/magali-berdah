@@ -3,11 +3,12 @@ import { useStore, useT } from '../lib/store';
 import { api } from '../lib/api';
 import {
   User, Package, Gavel, Heart, Truck, ExternalLink, Send,
-  ShoppingBag, Wallet, CheckCircle, CreditCard, Building2, Plus, Minus,
+  ShoppingBag, Wallet, CheckCircle, CreditCard, Building2, Plus, Minus, Radio,
 } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { getAllItems } from '../lib/staticItems';
 import ItemCard from '../components/ItemCard';
+import WhatnotProfilePanel from '../components/WhatnotProfilePanel';
 import { getSavedWhatnotToken } from '../lib/whatnot';
 
 function loadMyOrders(userId: string): any[] {
@@ -41,7 +42,8 @@ function getBankDetails(email: string) {
 export default function Profile() {
   const t = useT();
   const { user, updateUser, favIds } = useStore();
-  const [tab, setTab] = useState('profile');
+  const [searchParams] = useSearchParams();
+  const [tab, setTab] = useState(() => searchParams.get('onglet') === 'live' ? 'live' : 'profile');
   const [form, setForm] = useState({
     name: user?.name || '', phone: user?.phone || '',
     address: user?.address || '', city: user?.city || '',
@@ -182,6 +184,7 @@ export default function Profile() {
 
   const tabs = [
     { id: 'profile', label: 'Mon profil', icon: User },
+    { id: 'live', label: 'Live Whatnot', icon: Radio },
     { id: 'orders', label: 'Mes achats', icon: Package },
     { id: 'bids', label: 'Mes enchères', icon: Gavel },
     { id: 'wallet', label: 'Cagnotte', icon: Wallet },
@@ -251,6 +254,8 @@ export default function Profile() {
 
         <div style={{ flex: 1, minWidth: 0 }}>
 
+          {tab === 'live' && <WhatnotProfilePanel />}
+
           {/* ── MON PROFIL ── */}
           {tab === 'profile' && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
@@ -299,9 +304,9 @@ export default function Profile() {
                 <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '.75rem', color: '#666', marginBottom: '1rem' }}>
                   {getSavedWhatnotToken(user?.email) ? 'Votre accès Whatnot est enregistré sur cet appareil.' : 'Après validation par l’administration, connectez votre accès une seule fois.'}
                 </p>
-                <Link to="/lives" className="btn-gold" style={{ display: 'inline-block', fontSize: '.75rem', textDecoration: 'none' }}>
+                <button onClick={() => setTab('live')} className="btn-gold" style={{ display: 'inline-block', fontSize: '.75rem' }}>
                   {getSavedWhatnotToken(user?.email) ? 'PASSER EN LIVE' : 'CONNECTER WHATNOT'}
-                </Link>
+                </button>
               </section>
 
               {/* Moyen de paiement */}

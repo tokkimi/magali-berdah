@@ -4,6 +4,7 @@ import { Search, User, Heart, Bell, ChevronDown, Menu, X, Radio } from 'lucide-r
 import { useStore, useT } from '../lib/store';
 import { api } from '../lib/api';
 import AuthModal from './AuthModal';
+import { getSavedWhatnotToken } from '../lib/whatnot';
 
 const NAV_ITEMS = [
   {
@@ -24,7 +25,7 @@ const NAV_ITEMS = [
 
 export default function Header() {
   const t = useT();
-  const { user, shop, lang, setLang, logout } = useStore();
+  const { user, lang, setLang, logout } = useStore();
   const navigate = useNavigate();
   const [showAuth, setShowAuth] = useState(false);
   const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
@@ -63,7 +64,7 @@ export default function Header() {
         <div style={{ backgroundColor: '#1a1a1a', color: '#c9a96e', fontSize: '0.7rem', letterSpacing: '0.15em', fontFamily: 'Helvetica Neue, Arial, sans-serif' }}
           className="flex items-center justify-between px-6 py-1.5">
           <span>LIVRAISON OFFERTE POUR TOUT ACHAT / FREE SHIPPING ON ALL ORDERS</span>
-          <div className="flex items-center gap-4">
+          <div className="header-actions flex items-center gap-2">
             <button onClick={() => setLang(lang === 'fr' ? 'en' : 'fr')}
               style={{ color: '#c9a96e', background: 'transparent', border: '1px solid #c9a96e', padding: '2px 10px', cursor: 'pointer', fontSize: '0.65rem', letterSpacing: '0.1em' }}>
               {lang === 'fr' ? 'EN' : 'FR'}
@@ -125,7 +126,7 @@ export default function Header() {
               <>
                 {/* Notifications */}
                 <div style={{ position: 'relative' }}>
-                  <button onClick={() => { setShowNotifs(!showNotifs); markNotisRead(); }} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#1a1a1a', position: 'relative' }}>
+                  <button className="header-icon-button" aria-label="Notifications" onClick={() => { setShowNotifs(!showNotifs); markNotisRead(); }} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#1a1a1a', position: 'relative' }}>
                     <Bell size={20} />
                     {unreadCount > 0 && <span className="notif-badge">{unreadCount}</span>}
                   </button>
@@ -143,11 +144,11 @@ export default function Header() {
                   )}
                 </div>
 
-                <Link to="/favoris" style={{ color: '#1a1a1a' }}><Heart size={20} /></Link>
+                <Link to="/favoris" className="header-icon-button" aria-label="Favoris" style={{ color: '#1a1a1a' }}><Heart size={20} /></Link>
 
                 {/* User menu */}
                 <div style={{ position: 'relative' }}>
-                  <button onClick={() => setShowUserMenu(!showUserMenu)} style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <button className="header-icon-button" aria-label="Mon profil" onClick={() => setShowUserMenu(!showUserMenu)} style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}>
                     {user.avatar ? <img src={user.avatar} alt="" style={{ width: 28, height: 28, borderRadius: '50%', objectFit: 'cover' }} /> : <User size={20} />}
                     <ChevronDown size={12} />
                   </button>
@@ -155,9 +156,9 @@ export default function Header() {
                     <div style={{ position: 'absolute', right: 0, top: '100%', backgroundColor: 'white', border: '1px solid #e8d5b7', minWidth: '180px', zIndex: 100, marginTop: '8px', boxShadow: '0 8px 30px rgba(0,0,0,0.1)' }}>
                       {[
                         { label: t('profile'), to: '/profil' },
+                        ...(user.role === 'admin' || getSavedWhatnotToken(user.email) ? [{ label: 'Passer en live', to: '/profil?onglet=live' }] : []),
                         { label: t('myOrders'), to: '/mes-achats' },
                         { label: t('myBids'), to: '/mes-encheres' },
-                        ...(user.role === 'pro' ? [{ label: t('proAccount'), to: '/boutique' }] : []),
                         ...(user.role === 'admin' ? [{ label: t('adminPanel'), to: '/admin' }] : []),
                       ].map(item => (
                         <Link key={item.to} to={item.to} onClick={() => setShowUserMenu(false)}
@@ -187,7 +188,7 @@ export default function Header() {
               </div>
             )}
 
-            <button className="md:hidden" onClick={() => setMobileOpen(!mobileOpen)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}>
+            <button className="header-icon-button md:hidden" aria-label="Menu" onClick={() => setMobileOpen(!mobileOpen)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}>
               {mobileOpen ? <X size={22} /> : <Menu size={22} />}
             </button>
           </div>

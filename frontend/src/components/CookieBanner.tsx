@@ -1,13 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useT } from '../lib/store';
 
 export default function CookieBanner() {
   const t = useT();
-  const [visible, setVisible] = useState(false);
-
-  useEffect(() => {
-    if (!localStorage.getItem('mb_cookies')) setVisible(true);
-  }, []);
+  const [visible, setVisible] = useState(() => !localStorage.getItem('mb_cookies'));
 
   const accept = () => { localStorage.setItem('mb_cookies', 'accepted'); setVisible(false); };
   const refuse = () => { localStorage.setItem('mb_cookies', 'refused'); setVisible(false); };
@@ -17,7 +13,7 @@ export default function CookieBanner() {
   return (
     <div style={{
       position: 'fixed', bottom: 0, left: 0, right: 0, backgroundColor: '#1a1a1a',
-      color: 'white', padding: '1rem 2rem', zIndex: 1000,
+      color: 'white', padding: 'clamp(.75rem,3vw,1rem) clamp(1rem,5vw,2rem)', zIndex: 1000,
       display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem',
       borderTop: '2px solid #c9a96e'
     }}>

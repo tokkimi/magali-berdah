@@ -1,5 +1,5 @@
 import { Link, Outlet, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Users, Package, ShoppingBag, Store, Mail, BarChart2, Search, Inbox } from 'lucide-react';
+import { LayoutDashboard, Users, Package, ShoppingBag, Mail, BarChart2, Search, Inbox, Radio } from 'lucide-react';
 import { useStore } from '../../lib/store';
 
 function getPendingCount() {
@@ -16,11 +16,11 @@ export default function AdminLayout() {
 
   const nav = [
     { to: '/admin', label: 'Tableau de bord', icon: LayoutDashboard, exact: true },
+    { to: '/profil', label: 'Mon Live', icon: Radio },
     { to: '/admin/demandes', label: 'Demandes de dépôt', icon: Inbox, badge: pendingCount },
     { to: '/admin/articles', label: 'Articles', icon: Package },
     { to: '/admin/utilisateurs', label: 'Utilisateurs', icon: Users },
     { to: '/admin/commandes', label: 'Commandes', icon: ShoppingBag },
-    { to: '/admin/boutiques', label: 'Boutiques', icon: Store },
     { to: '/admin/newsletter', label: 'Newsletter', icon: Mail },
     { to: '/admin/analytics', label: 'Analytics', icon: BarChart2 },
     { to: '/admin/seo', label: 'SEO', icon: Search },
@@ -38,13 +38,14 @@ export default function AdminLayout() {
   }
 
   return (
-    <div style={{ display: 'flex', minHeight: 'calc(100vh - 120px)' }}>
-      <aside style={{ width: '240px', backgroundColor: '#0f0f0f', flexShrink: 0 }}>
-        <div style={{ padding: '1.5rem', borderBottom: '1px solid #222' }}>
+    <div className="admin-app-layout" style={{ display: 'flex', minHeight: 'calc(100vh - 120px)' }}>
+      <style>{`@media(max-width:800px){.admin-app-layout{display:block!important}.admin-sidebar{width:100%!important;position:sticky;top:0;z-index:20}.admin-sidebar-title{display:none}.admin-nav{display:flex;overflow-x:auto;padding:8px!important;gap:5px;scrollbar-width:none}.admin-nav a{min-width:max-content;border-left:0!important;border-radius:10px;padding:10px 12px!important;margin:0!important}.admin-main{padding:16px!important;overflow-x:hidden!important}}`}</style>
+      <aside className="admin-sidebar" style={{ width: '240px', backgroundColor: '#0f0f0f', flexShrink: 0 }}>
+        <div className="admin-sidebar-title" style={{ padding: '1.5rem', borderBottom: '1px solid #222' }}>
           <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.6rem', letterSpacing: '0.3em', color: '#c9a96e', marginBottom: '4px' }}>ADMINISTRATION</p>
           <p style={{ fontFamily: 'Georgia, serif', fontSize: '1rem', color: 'white' }}>Magali Berdah</p>
         </div>
-        <nav style={{ padding: '0.75rem 0' }}>
+        <nav className="admin-nav" style={{ padding: '0.75rem 0' }}>
           {nav.map(({ to, label, icon: Icon, exact, badge }) => (
             <Link key={to} to={to}
               style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 1.5rem', textDecoration: 'none', color: isActive(to, exact) ? '#c9a96e' : '#666', borderLeft: isActive(to, exact) ? '2px solid #c9a96e' : '2px solid transparent', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.78rem', marginBottom: '2px', backgroundColor: isActive(to, exact) ? 'rgba(201,169,110,0.08)' : 'transparent' }}>
@@ -55,7 +56,7 @@ export default function AdminLayout() {
           ))}
         </nav>
       </aside>
-      <main style={{ flex: 1, padding: '2rem', backgroundColor: '#f8f4ef', overflowY: 'auto' }}>
+      <main className="admin-main" style={{ flex: 1, padding: '2rem', backgroundColor: '#f8f4ef', overflowY: 'auto' }}>
         <Outlet />
       </main>
     </div>

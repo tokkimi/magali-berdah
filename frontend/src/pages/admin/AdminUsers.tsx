@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
-import { CheckCircle, XCircle, Trash2, Eye, Ban, UserCheck } from 'lucide-react';
-import { api } from '../../lib/api';
-import { adminListAmbassadorRequests, adminReviewAmbassadorRequest } from '../../lib/whatnot';
+import { CheckCircle, XCircle, Ban, UserCheck, Copy } from 'lucide-react';
+import { adminConnectWhatnot, adminListAmbassadorRequests, adminReviewAmbassadorRequest } from '../../lib/whatnot';
+import { supabase } from '../../lib/supabase';
 
 export default function AdminUsers() {
   const [users, setUsers] = useState<any[]>([]);
@@ -12,34 +12,28 @@ export default function AdminUsers() {
   const [liveAdminCode, setLiveAdminCode] = useState('');
   const [liveRequests, setLiveRequests] = useState<any[]>([]);
   const [liveMessage, setLiveMessage] = useState('');
+  const [directLive, setDirectLive] = useState({ handle: '', showUrl: '', previewUrl: '' });
+  const [createdLiveCode, setCreatedLiveCode] = useState('');
 
   useEffect(() => {
-    api.get('/admin/users').then(d => setUsers(d.users || [])).catch(() => {});
+    supabase.from('profiles').select('*').order('created_at', { ascending: false }).then(({ data }) => setUsers(data || []));
   }, []);
 
   const openUser = async (user: any) => {
     setSelected(user);
-    const d = await api.get(`/admin/users/${user.id}`);
-    setUserDetail(d);
+    setUserDetail({ user, orders: [] });
   };
 
   const toggleVerify = async (id: string, current: number) => {
-    await api.put(`/admin/users/${id}/verify`, { verified: !current });
+    await supabase.from('profiles').update({ verified: !current }).eq('id', id);
     setUsers(u => u.map(x => x.id === id ? { ...x, verified: current ? 0 : 1 } : x));
     if (userDetail?.user?.id === id) setUserDetail((d: any) => ({ ...d, user: { ...d.user, verified: current ? 0 : 1 } }));
   };
 
   const toggleBan = async (id: string, current: number) => {
     if (!confirm(current ? 'Réactiver ce compte ?' : 'Suspendre ce compte ?')) return;
-    await api.put(`/admin/users/${id}/ban`, { banned: !current });
+    await supabase.from('profiles').update({ banned: !current }).eq('id', id);
     setUsers(u => u.map(x => x.id === id ? { ...x, banned: current ? 0 : 1 } : x));
-  };
-
-  const deleteUser = async (id: string) => {
-    if (!confirm('Supprimer définitivement cet utilisateur ?')) return;
-    await api.delete(`/admin/users/${id}`);
-    setUsers(u => u.filter(x => x.id !== id));
-    if (selected?.id === id) setSelected(null);
   };
 
   const loadLiveRequests = async () => {
@@ -54,9 +48,18 @@ export default function AdminUsers() {
     await loadLiveRequests();
   };
 
+  const authorizeSelectedForLive = async () => {
+    if (!selected || !liveAdminCode || !directLive.handle || !directLive.showUrl) return;
+    setLiveMessage(''); setCreatedLiveCode('');
+    try {
+      const token = await adminConnectWhatnot({ adminCode: liveAdminCode, email: selected.email, displayName: selected.name, ...directLive });
+      setCreatedLiveCode(token);
+      setLiveMessage(`${selected.name} est maintenant autorisé à diffuser.`);
+    } catch { setLiveMessage('Impossible d’autoriser ce profil. Vérifiez le code administrateur et les informations Whatnot.'); }
+  };
+
   const filtered = users.filter(u => {
     const m = u.email?.toLowerCase().includes(search.toLowerCase()) || u.name?.toLowerCase().includes(search.toLowerCase());
-    if (filter === 'pro') return m && u.role === 'pro';
     if (filter === 'buyer') return m && u.role === 'buyer';
     if (filter === 'banned') return m && u.banned;
     if (filter === 'unverified') return m && !u.verified;
@@ -64,9 +67,11 @@ export default function AdminUsers() {
   });
 
   const roleColors: Record<string, string> = { buyer: '#1976d2', pro: '#c9a96e', admin: '#cc0000' };
+  const roleLabels: Record<string, string> = { buyer: 'UTILISATEUR', pro: 'VENDEUR', admin: 'ADMIN' };
 
   return (
-    <div style={{ display: 'flex', gap: '1.5rem', flexDirection: 'column' }}>
+    <div className="admin-users-page" style={{ display: 'flex', gap: '1.5rem', flexDirection: 'column' }}>
+      <style>{`@media(max-width:800px){.admin-users-columns{display:block!important}.admin-user-detail{width:100%!important;position:static!important;margin-top:16px}.admin-users-page table{min-width:720px}.admin-users-page input,.admin-users-page select{max-width:100%;min-height:42px}}`}</style>
       <section style={{ background: 'white', border: '1px solid #e8d5b7', padding: '1.25rem' }}>
         <h2 style={{ fontFamily: 'Georgia, serif', fontSize: '1.2rem', fontWeight: 400, marginBottom: '.5rem' }}>Demandes ambassadeurs Live</h2>
         <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '.72rem', color: '#777', marginBottom: '1rem' }}>Validez ou refusez les utilisateurs qui souhaitent diffuser sur la page Live.</p>
@@ -86,7 +91,18 @@ export default function AdminUsers() {
           </div>
         ))}
       </section>
-      <div style={{ display: 'flex', gap: '1.5rem' }}>
+      {selected && <section style={{ background: 'white', border: '1px solid #e8d5b7', padding: '1.25rem' }}>
+        <h2 style={{ fontFamily: 'Georgia, serif', fontSize: '1.2rem', fontWeight: 400, marginBottom: 6 }}>Autoriser directement {selected.name}</h2>
+        <p style={{ color: '#777', fontSize: 12, marginBottom: 12 }}>Sélectionnez un utilisateur dans la liste, puis liez son compte Whatnot sans attendre une demande.</p>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(210px,1fr))', gap: 8 }}>
+          <input value={directLive.handle} onChange={e => setDirectLive(v => ({ ...v, handle: e.target.value }))} placeholder="@pseudo Whatnot" style={{ border: '1px solid #e8d5b7', padding: 10 }} />
+          <input value={directLive.showUrl} onChange={e => setDirectLive(v => ({ ...v, showUrl: e.target.value }))} placeholder="Lien du profil ou show Whatnot" style={{ border: '1px solid #e8d5b7', padding: 10 }} />
+          <input value={directLive.previewUrl} onChange={e => setDirectLive(v => ({ ...v, previewUrl: e.target.value }))} placeholder="Miniature (facultatif)" style={{ border: '1px solid #e8d5b7', padding: 10 }} />
+        </div>
+        <button onClick={authorizeSelectedForLive} className="btn-gold" style={{ marginTop: 10 }}>AUTORISER COMME AMBASSADEUR LIVE</button>
+        {createdLiveCode && <div style={{ marginTop: 12, padding: 12, background: '#f8f4ef', wordBreak: 'break-all', fontSize: 12 }}><strong>Code à transmettre une seule fois :</strong> {createdLiveCode} <button aria-label="Copier le code" onClick={() => navigator.clipboard.writeText(createdLiveCode)} style={{ border: 0, background: 'none', cursor: 'pointer' }}><Copy size={15} /></button></div>}
+      </section>}
+      <div className="admin-users-columns" style={{ display: 'flex', gap: '1.5rem' }}>
       <div style={{ flex: 1 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
           <h1 style={{ fontFamily: 'Georgia, serif', fontSize: '1.8rem', fontWeight: 400, color: '#1a1a1a' }}>Utilisateurs ({filtered.length})</h1>
@@ -97,7 +113,6 @@ export default function AdminUsers() {
               style={{ border: '1px solid #e8d5b7', padding: '6px 12px', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.8rem', backgroundColor: 'white' }}>
               <option value="all">Tous</option>
               <option value="buyer">Acheteurs</option>
-              <option value="pro">Boutiques</option>
               <option value="banned">Suspendus</option>
               <option value="unverified">Non vérifiés</option>
             </select>
@@ -123,7 +138,7 @@ export default function AdminUsers() {
                   <td style={{ padding: '10px 14px', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.78rem', color: '#666' }}>{u.email}</td>
                   <td style={{ padding: '10px 14px' }}>
                     <span style={{ color: roleColors[u.role] || '#9e8e7e', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.7rem', fontWeight: 600 }}>
-                      {u.role?.toUpperCase()}
+                      {roleLabels[u.role] || u.role?.toUpperCase()}
                     </span>
                   </td>
                   <td style={{ padding: '10px 14px' }}>
@@ -143,9 +158,6 @@ export default function AdminUsers() {
                       <button onClick={() => toggleBan(u.id, u.banned)} title={u.banned ? 'Réactiver' : 'Suspendre'} style={{ background: 'none', border: 'none', cursor: 'pointer', color: u.banned ? '#2e7d32' : '#ff9800' }}>
                         <Ban size={16} />
                       </button>
-                      <button onClick={() => deleteUser(u.id)} title="Supprimer" style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#cc0000' }}>
-                        <Trash2 size={16} />
-                      </button>
                     </div>
                   </td>
                 </tr>
@@ -157,7 +169,7 @@ export default function AdminUsers() {
 
       {/* Detail panel */}
       {selected && userDetail && (
-        <div style={{ width: '320px', flexShrink: 0, backgroundColor: 'white', border: '1px solid #e8d5b7', padding: '1.5rem', height: 'fit-content', position: 'sticky', top: '2rem' }}>
+        <div className="admin-user-detail" style={{ width: '320px', flexShrink: 0, backgroundColor: 'white', border: '1px solid #e8d5b7', padding: '1.5rem', height: 'fit-content', position: 'sticky', top: '2rem' }}>
           <h3 style={{ fontFamily: 'Georgia, serif', fontSize: '1.1rem', fontWeight: 400, marginBottom: '1rem', color: '#1a1a1a' }}>Détails</h3>
           <div style={{ marginBottom: '1rem', paddingBottom: '1rem', borderBottom: '1px solid #f0ece6' }}>
             {[
@@ -174,7 +186,7 @@ export default function AdminUsers() {
             ))}
           </div>
 
-          {userDetail.shop && (
+          {false && userDetail.shop && (
             <div style={{ marginBottom: '1rem', paddingBottom: '1rem', borderBottom: '1px solid #f0ece6' }}>
               <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.65rem', letterSpacing: '0.1em', color: '#9e8e7e', marginBottom: '8px' }}>BOUTIQUE</p>
               <p style={{ fontFamily: 'Georgia, serif', fontSize: '0.9rem', color: '#c9a96e', marginBottom: '4px' }}>{userDetail.shop.shop_name}</p>

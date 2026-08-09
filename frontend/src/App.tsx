@@ -8,6 +8,7 @@ import Footer from './components/Footer';
 import BottomNav from './components/BottomNav';
 import CookieBanner from './components/CookieBanner';
 import Chatbot from './components/Chatbot';
+import SeoManager from './components/SeoManager';
 
 import Home from './pages/Home';
 import Catalogue from './pages/Catalogue';
@@ -21,12 +22,7 @@ import Favorites from './pages/Favorites';
 import SoumettreArticle from './pages/SoumettreArticle';
 import MesSoumissions from './pages/MesSoumissions';
 import Lives from './pages/Lives';
-
-// Pro
-import ProLayout from './pages/pro/Dashboard';
-import ProHome from './pages/pro/ProHome';
-import ProOrders from './pages/pro/ProOrders';
-import ProShopProfile from './pages/pro/ProShopProfile';
+import NotFound from './pages/NotFound';
 
 // Admin
 import AdminLayout from './pages/admin/AdminLayout';
@@ -34,7 +30,6 @@ import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminUsers from './pages/admin/AdminUsers';
 import AdminItems from './pages/admin/AdminItems';
 import AdminOrders from './pages/admin/AdminOrders';
-import AdminShops from './pages/admin/AdminShops';
 import AdminNewsletter from './pages/admin/AdminNewsletter';
 import AdminSEO from './pages/admin/AdminSEO';
 import AdminAnalytics from './pages/admin/AdminAnalytics';
@@ -74,11 +69,13 @@ export default function App() {
   const { fetchMe, fetchFavs, token } = useStore();
 
   useEffect(() => {
-    if (token) { fetchMe(); fetchFavs(); }
-  }, []);
+    void fetchMe();
+    if (token) void fetchFavs();
+  }, [fetchFavs, fetchMe, token]);
 
   return (
     <BrowserRouter>
+      <SeoManager />
       <ScrollToTop />
       <Routes>
         {/* Public */}
@@ -102,14 +99,7 @@ export default function App() {
         <Route path="/favoris" element={<PrivateRoute><Layout><Favorites /></Layout></PrivateRoute>} />
         <Route path="/mes-soumissions" element={<PrivateRoute><Layout><MesSoumissions /></Layout></PrivateRoute>} />
 
-        {/* Pro dashboard — gestion commandes et profil seulement */}
-        <Route path="/boutique" element={<PrivateRoute role="pro"><AdminWrapper><ProLayout /></AdminWrapper></PrivateRoute>}>
-          <Route index element={<ProHome />} />
-          <Route path="commandes" element={<ProOrders />} />
-          <Route path="messages" element={<ProOrders />} />
-<Route path="portefeuille" element={<div style={{ padding: '1rem' }}><h1 style={{ fontFamily: 'Georgia, serif', fontSize: '1.8rem', fontWeight: 400, color: '#1a1a1a', marginBottom: '1rem' }}>Portefeuille</h1><p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', color: '#9e8e7e' }}>Vos revenus de ventes apparaîtront ici une fois les paiements validés.</p></div>} />
-          <Route path="profil" element={<ProShopProfile />} />
-        </Route>
+        <Route path="/boutique/*" element={<Navigate to="/profil" replace />} />
 
         {/* Admin */}
         <Route path="/admin" element={<PrivateRoute role="admin"><AdminWrapper><AdminLayout /></AdminWrapper></PrivateRoute>}>
@@ -119,13 +109,12 @@ export default function App() {
           <Route path="articles/nouveau" element={<AdminItemForm />} />
           <Route path="demandes" element={<AdminSubmissions />} />
           <Route path="commandes" element={<AdminOrders />} />
-          <Route path="boutiques" element={<AdminShops />} />
           <Route path="newsletter" element={<AdminNewsletter />} />
           <Route path="seo" element={<AdminSEO />} />
           <Route path="analytics" element={<AdminAnalytics />} />
         </Route>
 
-        <Route path="*" element={<Navigate to="/" replace />} />
+        <Route path="*" element={<Layout><NotFound /></Layout>} />
       </Routes>
     </BrowserRouter>
   );

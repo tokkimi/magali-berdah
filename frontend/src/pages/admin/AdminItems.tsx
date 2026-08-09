@@ -146,7 +146,7 @@ export default function AdminItems() {
         <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: '800px' }}>
           <thead>
             <tr style={{ borderBottom: '1px solid #e8d5b7', backgroundColor: '#f8f4ef' }}>
-              {['Article', 'Boutique', 'Prix', 'Statut', 'Vues', 'Certifié', 'Mis en avant', 'Actions'].map(h => (
+              {['Article', 'Vendeur', 'Prix', 'Statut', 'Vues', 'Certifié', 'Mis en avant', 'Actions'].map(h => (
                 <th key={h} style={{ padding: '10px 12px', textAlign: 'left', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.6rem', letterSpacing: '0.15em', color: '#9e8e7e' }}>{h.toUpperCase()}</th>
               ))}
             </tr>

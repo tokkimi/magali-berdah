@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { api } from './api';
 import { STATIC_ITEMS } from './staticItems';
+import { supabase } from './supabase';
 
 interface User {
   id: string;
@@ -77,10 +78,36 @@ export const useStore = create<Store>((set, get) => ({
   },
   logout: () => {
     localStorage.removeItem('mb_token');
+    void supabase.auth.signOut();
     set({ token: null, user: null, shop: null });
   },
   updateUser: (u) => set(s => ({ user: s.user ? { ...s.user, ...u } : null })),
   fetchMe: async () => {
+    const legacyToken = get().token;
+    if (legacyToken?.startsWith('demo.')) {
+      localStorage.removeItem('mb_token');
+      set({ token: null, user: null, shop: null });
+      return;
+    }
+    const { data: sessionData } = await supabase.auth.getSession();
+    const authUser = sessionData.session?.user;
+    if (sessionData.session && authUser) {
+      const { data: profile } = await supabase.from('profiles').select('*').eq('id', authUser.id).maybeSingle();
+      localStorage.setItem('mb_token', sessionData.session.access_token);
+      set({
+        token: sessionData.session.access_token,
+        user: {
+          id: authUser.id, email: authUser.email || '',
+          name: profile?.name || authUser.user_metadata?.name || authUser.email?.split('@')[0] || 'Utilisateur',
+          role: authUser.app_metadata?.role === 'admin' ? 'admin' : 'buyer',
+          verified: profile?.verified || authUser.email_confirmed_at ? 1 : 0,
+          phone: profile?.phone || undefined, address: profile?.address || undefined,
+          city: profile?.city || undefined, country: profile?.country || 'FR', avatar: profile?.avatar || undefined,
+        },
+        shop: null,
+      });
+      return;
+    }
     const token = get().token;
     if (!token) return;
     // Token demo local — ne pas appeler le backend

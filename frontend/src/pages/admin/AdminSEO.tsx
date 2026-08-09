@@ -6,15 +6,17 @@ export default function AdminSEO() {
   const [saved, setSaved] = useState(false);
 
   useEffect(() => {
+    try { const local = JSON.parse(localStorage.getItem('mb_seo') || 'null'); if (local) setSeo(local); } catch {}
     api.get('/admin/seo').then(d => { if (d.seo) setSeo(d.seo); }).catch(() => {});
   }, []);
 
   const save = async () => {
+    localStorage.setItem('mb_seo', JSON.stringify(seo));
     try {
       await api.put('/admin/seo', seo);
-      setSaved(true);
-      setTimeout(() => setSaved(false), 3000);
     } catch {}
+    setSaved(true);
+    setTimeout(() => setSaved(false), 3000);
   };
 
   return (

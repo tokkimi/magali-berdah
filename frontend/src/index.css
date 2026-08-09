@@ -118,6 +118,25 @@ input:focus, textarea:focus, select:focus {
   font-family: Arial, sans-serif;
 }
 
+.header-icon-button {
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  border-radius: 50%;
+  line-height: 1;
+  flex-shrink: 0;
+}
+.header-icon-button:hover { background: #f8f4ef !important; }
+@media (max-width: 767px) {
+  .header-actions { gap: 2px !important; }
+  .header-icon-button { width: 38px; height: 38px; }
+  header > div:nth-child(2) { padding: 10px 12px !important; }
+}
+
 /* Auth buttons: desktop only */
 #auth-btns-desktop { display: none; }
 @media (min-width: 768px) { #auth-btns-desktop { display: flex; } }

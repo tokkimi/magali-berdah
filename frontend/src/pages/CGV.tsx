@@ -1,94 +1,31 @@
+const sections = [
+  ['1. Objet et acceptation', `Les présentes conditions générales encadrent les ventes à prix fixe et les ventes aux enchères proposées sur le site Magali Berdah. Avant toute commande, le client peut les consulter, les télécharger et les accepter. La version applicable est celle présentée au moment de la commande.`],
+  ['2. Identité et contact', `Le service client est joignable à contact@magaliberdah.com. Les informations légales complètes de l’exploitant (dénomination, forme juridique, siège, immatriculation et numéro de TVA le cas échéant) doivent également figurer dans les mentions légales du site et sur les documents de commande.`],
+  ['3. Produits, seconde main et authenticité', `Les caractéristiques essentielles, photographies, dimensions, état, défauts connus et accessoires inclus sont indiqués sur chaque fiche. Les articles de seconde main peuvent présenter des traces d’usage décrites avant l’achat. Toute information déterminante connue doit être communiquée au client. La vente de contrefaçons est strictement interdite.`],
+  ['4. Prix et frais', `Les prix sont affichés en euros, toutes taxes comprises lorsque la TVA est applicable. Les frais de livraison, taxes, droits de douane éventuels et tout autre coût obligatoire sont indiqués avant la validation définitive. Le prix dû est celui affiché dans le récapitulatif de commande.`],
+  ['5. Commande et paiement', `Le client vérifie son panier, son adresse, le prix total et le moyen de paiement avant de confirmer une commande comportant une obligation de paiement. Une confirmation récapitulative est adressée sur un support durable. La commande peut être refusée en cas de fraude suspectée, d’indisponibilité ou d’incident de paiement, avec remboursement des sommes encaissées.`],
+  ['6. Enchères', `Chaque enchère engage son auteur selon les règles affichées avant participation. Le prix de départ, l’heure de clôture, les éventuels paliers et conditions particulières sont présentés clairement. Le régime du droit de rétractation dépend de la nature juridique exacte de la vente et des exceptions prévues par le Code de la consommation ; aucune exclusion générale ne peut être appliquée au-delà de la loi.`],
+  ['7. Livraison et transfert des risques', `Le délai ou la date de livraison est communiqué avant la commande. À défaut d’indication particulière, la livraison intervient au plus tard dans le délai légal. Le client doit signaler rapidement toute perte, avarie ou non-conformité, sans que cela limite ses garanties légales. Pour un consommateur, le risque est transféré lors de la prise de possession physique du bien, sauf transporteur choisi indépendamment par lui.`],
+  ['8. Droit de rétractation', `Lorsque le droit de rétractation s’applique, le consommateur dispose de quatorze jours à compter de la réception du bien pour notifier sa décision sans justification. Il retourne ensuite le bien dans le délai légal, complet et dans l’état permettant sa vérification. Les frais directs de retour sont à sa charge uniquement si cela lui a été annoncé avant la commande. Le remboursement intervient selon les délais et modalités prévus par la loi. Un formulaire type doit rester facilement accessible.`],
+  ['9. Garanties légales', `Le consommateur bénéficie de la garantie légale de conformité et de la garantie des vices cachés dans les conditions prévues par le Code de la consommation et le Code civil. Ces garanties sont indépendantes de toute garantie commerciale. Une clause contractuelle ne peut ni les supprimer ni les réduire.`],
+  ['10. Réclamations et médiation', `Toute réclamation peut être envoyée à contact@magaliberdah.com avec le numéro de commande et les justificatifs utiles. Après une réclamation écrite restée sans solution, le consommateur peut saisir gratuitement le médiateur de la consommation dont les coordonnées doivent être communiquées dans les mentions légales et les documents contractuels. Il conserve également le droit de saisir la juridiction compétente.`],
+  ['11. Données personnelles', `Les données sont traitées pour la gestion des comptes, commandes, paiements, livraisons, sécurité et obligations légales. Les droits d’accès, rectification, effacement, limitation, opposition et portabilité s’exercent à contact@magaliberdah.com, dans les limites prévues par le RGPD. Les détails figurent dans la politique de confidentialité.`],
+  ['12. Droit applicable', `Les présentes conditions sont soumises au droit français, sans priver le consommateur des dispositions impératives plus protectrices de son pays de résidence lorsque celles-ci s’appliquent. Si une clause est déclarée invalide, les autres restent applicables.`],
+];
+
 export default function CGV() {
   return (
-    <div style={{ maxWidth: '900px', margin: '0 auto', padding: '4rem 2rem' }}>
-      <h1 style={{ fontFamily: 'Georgia, serif', fontSize: '2rem', fontWeight: 400, color: '#1a1a1a', marginBottom: '0.5rem' }}>Conditions Générales de Vente</h1>
-      <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.8rem', color: '#9e8e7e', marginBottom: '3rem' }}>Dernière mise à jour : Janvier 2025 · Version internationale</p>
-
-      {[
-        {
-          title: '1. Identification de la société',
-          content: `Magali Berdah (ci-après "la Société") est une société française dont le siège social est situé en France. La plateforme magaliberdah.com (ci-après "la Plateforme") est exploitée par la Société et permet la mise en relation entre acheteurs et vendeurs professionnels de mode de luxe.
-
-Contact : contact@magaliberdah.com`
-        },
-        {
-          title: '2. Objet et champ d\'application',
-          content: `Les présentes Conditions Générales de Vente (CGV) s'appliquent à toutes les transactions effectuées sur la Plateforme, quelle que soit la nationalité de l'acheteur ou du vendeur.
-
-Les présentes CGV prévalent sur tout autre document. Tout achat implique l'acceptation sans réserve des présentes CGV.`
-        },
-        {
-          title: '3. Articles mis en vente',
-          content: `3.1 Vente à prix fixe : L'acheteur acquiert l'article au prix affiché, frais de livraison inclus.
-
-3.2 Enchères : Les articles peuvent être mis aux enchères avec un prix de départ et, le cas échéant, un prix de réserve minimum. L'enchérisseur s'engage à honorer son offre si elle est la plus haute à la clôture de l'enchère.
-
-3.3 Les vendeurs professionnels certifiés sont seuls responsables de la description et de l'état des articles mis en vente.`
-        },
-        {
-          title: '4. Prix et paiement',
-          content: `4.1 Tous les prix sont affichés en euros (€) TTC, frais de livraison inclus sauf mention contraire.
-
-4.2 Pour les acheteurs hors zone euro, les conversions de devises sont indicatives. Le paiement est effectué en euros.
-
-4.3 La Société se réserve le droit de modifier les prix à tout moment. Les prix affichés au moment de la commande sont ceux applicables.
-
-4.4 Les modes de paiement acceptés sont : carte bancaire (Visa, Mastercard), PayPal et virement bancaire pour les montants supérieurs à 5 000 €.`
-        },
-        {
-          title: '5. Livraison',
-          content: `5.1 Les frais de livraison sont inclus dans le prix affiché. La livraison est organisée par le vendeur professionnel.
-
-5.2 Les délais de livraison varient selon la destination : France (2-5 jours ouvrés), Europe (5-10 jours ouvrés), International (10-21 jours ouvrés).
-
-5.3 Pour les livraisons hors Union Européenne, des droits de douane et taxes locales peuvent s'appliquer, à la charge de l'acheteur.
-
-5.4 La Société décline toute responsabilité pour les retards liés aux douanes ou transporteurs.`
-        },
-        {
-          title: '6. Droit de rétractation',
-          content: `6.1 Conformément à la directive européenne 2011/83/UE et au Code de la consommation français, tout acheteur résidant dans l'Union Européenne dispose d'un délai de 14 jours calendaires pour exercer son droit de rétractation sur les achats à prix fixe, sans avoir à motiver sa décision.
-
-6.2 Le droit de rétractation ne s'applique pas aux achats effectués aux enchères (Article L.221-28 du Code de la consommation).
-
-6.3 Pour exercer ce droit, l'acheteur doit notifier sa décision par email à contact@magaliberdah.com dans le délai imparti.
-
-6.4 Les frais de retour sont à la charge de l'acheteur, sauf si l'article ne correspond pas à sa description.`
-        },
-        {
-          title: '7. Authentification et garantie',
-          content: `7.1 La Société vérifie les vendeurs professionnels mais ne peut pas garantir l'authenticité de chaque article. Il appartient à l'acheteur de demander les certificats d'authenticité appropriés.
-
-7.2 En cas d'article manifestement contrefait, l'acheteur dispose de 30 jours pour en informer la Société et obtenir un remboursement complet.`
-        },
-        {
-          title: '8. Commissions et frais',
-          content: `8.1 Pour les boutiques sans abonnement : commission de 20% sur chaque vente.
-8.2 Pour les boutiques Premium (abonnement 129€/mois) : commission de 5% sur chaque vente.
-8.3 L'abonnement Premium est sans engagement et peut être résilié à tout moment avec effet à la fin de la période en cours.`
-        },
-        {
-          title: '9. Droit applicable et juridiction',
-          content: `Les présentes CGV sont soumises au droit français. En cas de litige, les parties s'efforceront de trouver une solution amiable. À défaut, les tribunaux français seront seuls compétents.
-
-Pour les consommateurs européens, la Commission européenne met à disposition une plateforme de règlement en ligne des litiges (RLL) accessible à : https://ec.europa.eu/consumers/odr`
-        },
-        {
-          title: '10. Protection des données personnelles (RGPD)',
-          content: `Conformément au Règlement Général sur la Protection des Données (RGPD), les données personnelles des utilisateurs sont traitées conformément à notre Politique de Confidentialité disponible sur la Plateforme.
-
-Les utilisateurs disposent d'un droit d'accès, de rectification, d'effacement, de portabilité et d'opposition aux données les concernant, exerçable à : contact@magaliberdah.com`
-        },
-      ].map(section => (
-        <div key={section.title} style={{ marginBottom: '2.5rem' }}>
-          <h2 style={{ fontFamily: 'Georgia, serif', fontSize: '1.1rem', fontWeight: 400, color: '#1a1a1a', marginBottom: '1rem', paddingBottom: '0.5rem', borderBottom: '1px solid #e8d5b7' }}>
-            {section.title}
-          </h2>
-          <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.85rem', color: '#444', lineHeight: '1.8', whiteSpace: 'pre-line' }}>
-            {section.content}
-          </p>
-        </div>
-      ))}
+    <div style={{ maxWidth: 900, margin: '0 auto', padding: 'clamp(2rem,6vw,4rem) 1rem' }}>
+      <p style={{ color: '#c9a96e', font: '700 11px Helvetica Neue, Arial', letterSpacing: '.18em' }}>INFORMATIONS CONTRACTUELLES</p>
+      <h1 style={{ font: '400 clamp(1.8rem,5vw,2.6rem) Georgia, serif', margin: '.5rem 0' }}>Conditions générales de vente</h1>
+      <p style={{ color: '#777', font: '13px Helvetica Neue, Arial', marginBottom: 32 }}>Dernière mise à jour : 9 août 2026</p>
+      <div style={{ padding: 16, background: '#fff8e8', border: '1px solid #e8d5b7', marginBottom: 32, font: '13px/1.6 Helvetica Neue, Arial' }}>
+        Ces conditions doivent être complétées par les mentions légales de l’exploitant et l’identité du médiateur de la consommation avant l’ouverture définitive des paiements.
+      </div>
+      {sections.map(([title, content]) => <section key={title} style={{ marginBottom: 30 }}>
+        <h2 style={{ font: '400 19px Georgia, serif', paddingBottom: 10, borderBottom: '1px solid #e8d5b7', marginBottom: 12 }}>{title}</h2>
+        <p style={{ color: '#444', font: '14px/1.8 Helvetica Neue, Arial' }}>{content}</p>
+      </section>)}
     </div>
   );
 }
