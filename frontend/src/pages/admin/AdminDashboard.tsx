@@ -4,22 +4,14 @@ import { api } from '../../lib/api';
 import { Users, Package, ShoppingBag, TrendingUp, Eye, Mail, Star, Clock, Trash2, ChevronRight, Save, CalendarDays, Search, X } from 'lucide-react';
 import { STATIC_ITEMS, getAllItems } from '../../lib/staticItems';
 import { getSharedItems } from '../../lib/marketplace';
+import { loadExclusiveSettings, saveExclusiveSettings, getLocalExclusiveSettings, type ExclusiveSettings } from '../../lib/exclusiveSettings';
 
-const SETTINGS_KEY = 'mb_exclusive_settings';
-
-function getExclusiveSettings() {
-  try {
-    const s = JSON.parse(localStorage.getItem(SETTINGS_KEY) || '{}');
-    return {
-      open_date: s.open_date || new Intl.DateTimeFormat('fr-CA', { timeZone: 'Europe/Paris' }).format(new Date()),
-      open_time: s.open_time || '09:00',
-      close_time: s.close_time || '19:00',
-      exclusive_ids: (s.exclusive_ids as string[]) || [],
-    };
-  } catch { return { open_date: new Intl.DateTimeFormat('fr-CA', { timeZone: 'Europe/Paris' }).format(new Date()), open_time: '09:00', close_time: '19:00', exclusive_ids: [] }; }
-}
-function saveExclusiveSettings(s: any) {
-  localStorage.setItem(SETTINGS_KEY, JSON.stringify(s));
+function getExclusiveSettings(): ExclusiveSettings {
+  const s = getLocalExclusiveSettings();
+  return {
+    ...s,
+    open_date: s.open_date || new Intl.DateTimeFormat('fr-CA', { timeZone: 'Europe/Paris' }).format(new Date()),
+  };
 }
 function getParisDate() {
   return new Intl.DateTimeFormat('fr-CA', { timeZone: 'Europe/Paris' }).format(new Date());
@@ -133,12 +125,17 @@ function ExclusiveWidget() {
   const today = getParisDate();
 
   useEffect(() => {
+    loadExclusiveSettings().then(s => {
+      const withDate = { ...s, open_date: s.open_date || new Intl.DateTimeFormat('fr-CA', { timeZone: 'Europe/Paris' }).format(new Date()) };
+      setSettings(withDate);
+      setOpen(isNowOpen(withDate.open_date, withDate.open_time, withDate.close_time));
+    });
     const iv = setInterval(() => setOpen(isNowOpen(settings.open_date, settings.open_time, settings.close_time)), 30000);
     return () => clearInterval(iv);
-  }, [settings]);
+  }, []);
 
-  const save = () => {
-    saveExclusiveSettings(settings);
+  const save = async () => {
+    await saveExclusiveSettings(settings);
     setSaved(true);
     setOpen(isNowOpen(settings.open_date, settings.open_time, settings.close_time));
     setTimeout(() => setSaved(false), 2500);
@@ -147,14 +144,14 @@ function ExclusiveWidget() {
   const removeItem = (id: string) => {
     const next = { ...settings, exclusive_ids: settings.exclusive_ids.filter(x => x !== id) };
     setSettings(next);
-    saveExclusiveSettings(next);
+    void saveExclusiveSettings(next);
   };
 
   const addItem = (id: string) => {
     if (settings.exclusive_ids.includes(id)) return;
     const next = { ...settings, exclusive_ids: [...settings.exclusive_ids, id] };
     setSettings(next);
-    saveExclusiveSettings(next);
+    void saveExclusiveSettings(next);
   };
 
   const allItems = getAllItems();

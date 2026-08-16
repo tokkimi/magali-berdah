@@ -3,19 +3,10 @@ import { Lock, Gavel, Star, ChevronRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { getAllItems } from '../lib/staticItems';
 import ItemCard from '../components/ItemCard';
-
-const SETTINGS_KEY = 'mb_exclusive_settings';
+import { loadExclusiveSettings, getLocalExclusiveSettings } from '../lib/exclusiveSettings';
 
 function getExclusiveSettings() {
-  try {
-    const s = JSON.parse(localStorage.getItem(SETTINGS_KEY) || '{}');
-    return {
-      open_date: s.open_date || '',
-      open_time: s.open_time || '09:00',
-      close_time: s.close_time || '19:00',
-      exclusive_ids: (s.exclusive_ids as string[]) || [],
-    };
-  } catch { return { open_date: '', open_time: '09:00', close_time: '19:00', exclusive_ids: [] }; }
+  return getLocalExclusiveSettings();
 }
 
 function getNowParis() {
@@ -77,14 +68,20 @@ function CountdownBlock({ value, label }: { value: string; label: string }) {
 }
 
 export default function VenteExclusive() {
-  const settings = getExclusiveSettings();
+  const [settings, setSettingsState] = useState(getExclusiveSettings);
   const [open, setOpen] = useState(() => isWindowOpen(settings.open_date, settings.open_time, settings.close_time));
   const [countdown, setCountdown] = useState(() => getSecondsUntilOpen(settings.open_date, settings.open_time));
   const [tick, setTick] = useState(0);
 
   useEffect(() => {
+    loadExclusiveSettings().then(s => {
+      setSettingsState(s);
+      setOpen(isWindowOpen(s.open_date, s.open_time, s.close_time));
+      setCountdown(getSecondsUntilOpen(s.open_date, s.open_time));
+    });
     const iv = setInterval(() => {
       const s = getExclusiveSettings();
+      setSettingsState(s);
       setOpen(isWindowOpen(s.open_date, s.open_time, s.close_time));
       setCountdown(getSecondsUntilOpen(s.open_date, s.open_time));
       setTick(t => t + 1);

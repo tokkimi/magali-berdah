@@ -6,17 +6,14 @@ import ItemCard from '../components/ItemCard';
 import LiveRail from '../components/LiveRail';
 import { filterStaticItems } from '../lib/staticItems';
 import { getSharedItems } from '../lib/marketplace';
+import { loadExclusiveSettings, getLocalExclusiveSettings } from '../lib/exclusiveSettings';
 
 function getLives(): any[] {
   try { return JSON.parse(localStorage.getItem('mb_lives') || '[]').filter((l: any) => l.is_live); } catch { return []; }
 }
 
-const SETTINGS_KEY = 'mb_exclusive_settings';
 function getExclusiveSettings() {
-  try {
-    const s = JSON.parse(localStorage.getItem(SETTINGS_KEY) || '{}');
-    return { open_date: s.open_date || '', open_time: s.open_time || '09:00', close_time: s.close_time || '19:00', exclusive_ids: (s.exclusive_ids as string[]) || [] };
-  } catch { return { open_date: '', open_time: '09:00', close_time: '19:00', exclusive_ids: [] }; }
+  return getLocalExclusiveSettings();
 }
 function getNowParis() {
   const parts = new Intl.DateTimeFormat('fr-FR', {
@@ -54,6 +51,11 @@ function ExclusiveSection() {
   const [secs, setSecs] = useState(() => getSecondsUntilOpen(settings.open_date, settings.open_time));
 
   useEffect(() => {
+    loadExclusiveSettings().then(s => {
+      setSettings(s);
+      setOpen(isWindowOpen(s.open_date, s.open_time, s.close_time));
+      setSecs(getSecondsUntilOpen(s.open_date, s.open_time));
+    });
     const iv = setInterval(() => {
       const s = getExclusiveSettings();
       setSettings(s);
