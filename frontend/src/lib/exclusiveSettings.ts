@@ -1,4 +1,10 @@
-import { supabase } from './supabase';
+import { createClient } from '@supabase/supabase-js';
+
+// Separate Supabase project solely for shared site settings (site_settings table)
+const settingsSupabase = createClient(
+  'https://qaxkkmomvzapedarfjfh.supabase.co',
+  'sb_publishable_1lZ5LIpEZufFUMFWIvPtKA_rM3R51i2'
+);
 
 const SETTINGS_KEY = 'mb_exclusive_settings';
 const ROW_ID = 'singleton';
@@ -27,7 +33,7 @@ function toLocal(s: ExclusiveSettings) {
 
 export async function loadExclusiveSettings(): Promise<ExclusiveSettings> {
   try {
-    const { data, error } = await supabase
+    const { data, error } = await settingsSupabase
       .from('site_settings')
       .select('open_date,open_time,close_time,exclusive_ids')
       .eq('id', ROW_ID)
@@ -49,7 +55,7 @@ export async function loadExclusiveSettings(): Promise<ExclusiveSettings> {
 export async function saveExclusiveSettings(s: ExclusiveSettings): Promise<void> {
   toLocal(s);
   try {
-    await supabase.from('site_settings').upsert(
+    await settingsSupabase.from('site_settings').upsert(
       { id: ROW_ID, open_date: s.open_date, open_time: s.open_time, close_time: s.close_time, exclusive_ids: s.exclusive_ids },
       { onConflict: 'id' }
     );
