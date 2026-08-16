@@ -40,7 +40,7 @@ import AdminSettings from './pages/admin/AdminSettings';
 
 function PrivateRoute({ children, role }: { children: React.ReactNode; role?: string }) {
   const { user, token } = useStore();
-  if (!token && !user) return <Navigate to="/" replace />;
+  if (!token || !user) return <Navigate to="/" replace />;
   if (role && user?.role !== role) return <Navigate to="/" replace />;
   return <>{children}</>;
 }

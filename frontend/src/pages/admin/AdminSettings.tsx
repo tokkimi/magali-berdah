@@ -1,16 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Clock, Star, Save, Trash2, CalendarDays, Eye, EyeOff, RotateCcw } from 'lucide-react';
 import { getAllItems } from '../../lib/staticItems';
-
-const SETTINGS_KEY = 'mb_exclusive_settings';
-
-function getSettings() {
-  try { return JSON.parse(localStorage.getItem(SETTINGS_KEY) || '{}'); }
-  catch { return {}; }
-}
-function saveSettings(s: any) {
-  localStorage.setItem(SETTINGS_KEY, JSON.stringify(s));
-}
+import { loadExclusiveSettings, saveExclusiveSettings } from '../../lib/exclusiveSettings';
 
 // Heure Paris → "HH:MM" string
 function getParisClock() {
@@ -58,29 +49,30 @@ export default function AdminSettings() {
   const auctionItems = allItems.filter((i: any) => i.type === 'auction' || i.auction_enabled);
 
   useEffect(() => {
-    const s = getSettings();
-    if (s.open_date) setOpenDate(s.open_date);
-    if (s.open_time) setOpenTime(s.open_time);
-    if (s.close_time) setCloseTime(s.close_time);
-    if (s.exclusive_ids) setExclusiveIds(s.exclusive_ids);
+    loadExclusiveSettings().then(s => {
+      if (s.open_date) setOpenDate(s.open_date);
+      if (s.open_time) setOpenTime(s.open_time);
+      if (s.close_time) setCloseTime(s.close_time);
+      setExclusiveIds(s.exclusive_ids || []);
+    });
     const iv = setInterval(() => setTick(t => t + 1), 10000);
     return () => clearInterval(iv);
   }, []);
 
-  const save = () => {
-    saveSettings({ open_date: openDate, open_time: openTime, close_time: closeTime, exclusive_ids: exclusiveIds });
+  const save = async () => {
+    await saveExclusiveSettings({ open_date: openDate, open_time: openTime, close_time: closeTime, exclusive_ids: exclusiveIds });
     setSaved(true);
     setTimeout(() => setSaved(false), 3000);
   };
 
-  const reset = () => {
+  const reset = async () => {
     if (!confirm('Supprimer cette sélection exclusive ?')) return;
     const newDate = getParisDate();
     setOpenDate(newDate);
     setOpenTime('09:00');
     setCloseTime('19:00');
     setExclusiveIds([]);
-    saveSettings({ open_date: newDate, open_time: '09:00', close_time: '19:00', exclusive_ids: [] });
+    await saveExclusiveSettings({ open_date: newDate, open_time: '09:00', close_time: '19:00', exclusive_ids: [] });
   };
 
   const toggleItem = (id: string) => {

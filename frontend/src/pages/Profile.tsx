@@ -30,10 +30,10 @@ function saveLives(lives: any[]) {
   localStorage.setItem('mb_lives', JSON.stringify(lives));
 }
 
-function loadMyOrders(userId: string): any[] {
+function loadMyOrders(userId: string, userEmail: string): any[] {
   try {
     const all = JSON.parse(localStorage.getItem('mb_orders') || '[]');
-    return all.filter((o: any) => o.buyer_id === userId || o.buyer_email === userId);
+    return all.filter((o: any) => o.buyer_id === userId || o.buyer_email === userEmail);
   } catch { return []; }
 }
 
@@ -114,7 +114,7 @@ export default function Profile() {
   useEffect(() => {
     if (!user) return;
     if (tab === 'orders') {
-      const local = loadMyOrders(user.id || user.email);
+      const local = loadMyOrders(user.id, user.email);
       setOrders(local);
       api.get('/orders/mine').then(d => {
         if (d.orders?.length) setOrders(d.orders);
@@ -145,13 +145,17 @@ export default function Profile() {
       setForm(x => ({ ...x, avatar: url }));
       updateUser({ avatar: url });
     } catch {
-      // Fallback: store as base64 in localStorage
+      // Fallback: store as base64 in localStorage (cap at 500KB to avoid quota errors)
+      if (file.size > 500 * 1024) {
+        setAvatarUploading(false);
+        return;
+      }
       const reader = new FileReader();
       reader.onload = ev => {
         const b64 = ev.target?.result as string;
         setForm(x => ({ ...x, avatar: b64 }));
         updateUser({ avatar: b64 });
-        localStorage.setItem(`mb_avatar_${user?.email}`, b64);
+        try { localStorage.setItem(`mb_avatar_${user?.email}`, b64); } catch {}
       };
       reader.readAsDataURL(file);
     } finally {
@@ -169,7 +173,7 @@ export default function Profile() {
   };
 
   const changeEmail = async () => {
-    if (!newEmail.trim() || !newEmail.includes('@')) { setEmailError('Email invalide'); return; }
+    if (!newEmail.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(newEmail.trim())) { setEmailError('Email invalide'); return; }
     setEmailError('');
     try {
       const { error } = await supabase.auth.updateUser({ email: newEmail.trim() });
@@ -184,10 +188,17 @@ export default function Profile() {
 
   const changePassword = async () => {
     setPwError('');
-    if (!pwForm.next || pwForm.next.length < 8) { setPwError('Le mot de passe doit faire au moins 8 caractères'); return; }
+    if (!pwForm.current) { setPwError('Veuillez saisir votre mot de passe actuel'); return; }
+    if (!pwForm.next || pwForm.next.length < 8) { setPwError('Le nouveau mot de passe doit faire au moins 8 caractères'); return; }
     if (pwForm.next !== pwForm.confirm) { setPwError('Les mots de passe ne correspondent pas'); return; }
     setPwLoading(true);
     try {
+      // Reauthenticate with current password first
+      const { error: reAuthError } = await supabase.auth.signInWithPassword({
+        email: user?.email || '',
+        password: pwForm.current,
+      });
+      if (reAuthError) { setPwError('Mot de passe actuel incorrect'); setPwLoading(false); return; }
       const { error } = await supabase.auth.updateUser({ password: pwForm.next });
       if (error) throw error;
       setPwSaved(true);

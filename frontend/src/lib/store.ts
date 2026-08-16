@@ -110,26 +110,6 @@ export const useStore = create<Store>((set, get) => ({
     }
     const token = get().token;
     if (!token) return;
-    // Token demo local — ne pas appeler le backend
-    if (token.startsWith('demo.')) {
-      // Restore user from demo token payload
-      try {
-        const payload = JSON.parse(atob(token.split('.')[1]));
-        const DEMO_ACCOUNTS: Record<string, any> = {
-          'static-admin': { id: 'static-admin', email: 'admin@magaliberdah.com', name: 'Magali Berdah', role: 'admin', verified: 1 },
-          'static-buyer': { id: 'static-buyer', email: 'acheteur@test.com', name: 'Sophie Martin', role: 'buyer', verified: 1 },
-          'static-pro': { id: 'static-pro', email: 'boutique@test.com', name: 'Élise Dupont', role: 'pro', verified: 1 },
-        };
-        const DEMO_SHOPS: Record<string, any> = {
-          'static-pro': { id: 'static-shop', shop_name: 'La Boutique Élise', subscription_active: 1, commission_rate: 5, wallet_balance: 0, total_sales: 0 },
-        };
-        const user = DEMO_ACCOUNTS[payload.id];
-        if (user && !get().user) {
-          set({ user, shop: DEMO_SHOPS[payload.id] || null });
-        }
-      } catch {}
-      return;
-    }
     try {
       const data = await api.get('/auth/me');
       set({ user: data.user, shop: data.shop || null });

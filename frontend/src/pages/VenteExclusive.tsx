@@ -36,13 +36,30 @@ function getSecondsUntilOpen(openDate: string, openTime: string): number {
   const [oh, om] = openTime.split(':').map(Number);
 
   if (openDate > today) {
-    // Future date: compute full seconds until that date+time
+    // Future date: compute seconds until that date+time in Paris timezone
     const nowMs = Date.now();
-    const target = new Date(`${openDate}T${openTime}:00`);
-    // Adjust for Paris offset
-    const parisOffset = -new Intl.DateTimeFormat('en', { timeZone: 'Europe/Paris', timeZoneName: 'shortOffset' })
-      .formatToParts(target).find(p => p.type === 'timeZoneName')!.value.replace('GMT', '').replace(':', '') as any * 36;
-    return Math.max(0, Math.floor((target.getTime() - nowMs) / 1000));
+    // Build a UTC timestamp corresponding to openDate+openTime in Paris local time
+    const [oh, om] = openTime.split(':').map(Number);
+    const [y, mo, d] = openDate.split('-').map(Number);
+    // Use Intl to find what UTC time corresponds to the Paris local date+time
+    const parisLocal = new Date(Date.UTC(y, mo - 1, d, oh, om, 0));
+    const parisStr = new Intl.DateTimeFormat('sv-SE', { timeZone: 'Europe/Paris', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false }).format(parisLocal);
+    const utcGuess = parisLocal.getTime();
+    const checkStr = new Intl.DateTimeFormat('sv-SE', { timeZone: 'Europe/Paris', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false }).format(new Date(utcGuess));
+    void parisStr; void checkStr;
+    // Simpler: use the offset between Paris "now" and UTC "now" to shift the target
+    const nowParisParts = new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Paris', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false }).formatToParts(new Date());
+    const pY = parseInt(nowParisParts.find(p => p.type === 'year')!.value);
+    const pM = parseInt(nowParisParts.find(p => p.type === 'month')!.value) - 1;
+    const pD = parseInt(nowParisParts.find(p => p.type === 'day')!.value);
+    const pH = parseInt(nowParisParts.find(p => p.type === 'hour')!.value);
+    const pMin = parseInt(nowParisParts.find(p => p.type === 'minute')!.value);
+    const pSec = parseInt(nowParisParts.find(p => p.type === 'second')!.value);
+    const parisNowAsUtc = Date.UTC(pY, pM, pD, pH, pMin, pSec);
+    const offsetMs = nowMs - parisNowAsUtc; // offset = UTC - Paris local
+    const targetParisMs = Date.UTC(y, mo - 1, d, oh, om, 0);
+    const targetUtcMs = targetParisMs + offsetMs;
+    return Math.max(0, Math.floor((targetUtcMs - nowMs) / 1000));
   }
 
   const curSecs = paris.h * 3600 + paris.m * 60 + paris.s;
