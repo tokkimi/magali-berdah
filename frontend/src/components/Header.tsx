@@ -280,7 +280,7 @@ export default function Header() {
                   <button onClick={handleInstall}
                     style={{ display: 'flex', alignItems: 'center', gap: '10px', width: '100%', backgroundColor: '#1a1a1a', border: 'none', padding: '11px 14px', cursor: 'pointer', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.8rem', color: '#c9a96e', letterSpacing: '0.05em' }}>
                     <Smartphone size={16} color="#c9a96e" />
-                    Ajouter à mon écran d'accueil
+                    Installer l'application
                     <Download size={14} color="#c9a96e" style={{ marginLeft: 'auto' }} />
                   </button>
                   {showIOSHint && (
