@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ChevronRight, ShoppingBag, Gavel, Shield, Truck, Radio, Lock, Star } from 'lucide-react';
+import { ChevronRight, ShoppingBag, Gavel, Shield, Truck, Radio, Lock, Star, Clock } from 'lucide-react';
 import { useT } from '../lib/store';
 import ItemCard from '../components/ItemCard';
 import LiveRail from '../components/LiveRail';
@@ -48,7 +48,7 @@ function getSecondsUntilOpen(od: string, ot: string) {
   return Math.max(0, openSecs - curSecs);
 }
 
-function ExclusiveTeaser() {
+function ExclusiveSection() {
   const [settings, setSettings] = useState(getExclusiveSettings);
   const [open, setOpen] = useState(() => isWindowOpen(settings.open_date, settings.open_time, settings.close_time));
   const [secs, setSecs] = useState(() => getSecondsUntilOpen(settings.open_date, settings.open_time));
@@ -68,45 +68,105 @@ function ExclusiveTeaser() {
   const ss = String(secs % 60).padStart(2, '0');
 
   const dateLabel = settings.open_date && settings.open_date !== getParisDate()
-    ? `${new Intl.DateTimeFormat('fr-FR', { day: 'numeric', month: 'long' }).format(new Date(settings.open_date + 'T12:00'))} à ${settings.open_time}`
+    ? `Le ${new Intl.DateTimeFormat('fr-FR', { day: 'numeric', month: 'long' }).format(new Date(settings.open_date + 'T12:00'))} à ${settings.open_time}`
     : `Aujourd'hui à ${settings.open_time}`;
 
-  return (
-    <Link to="/vente-exclusive" style={{ display: 'block', textDecoration: 'none', backgroundColor: '#0f0f0f' }}>
-      <style>{`@keyframes goldPulse{0%,100%{opacity:1}50%{opacity:0.45}}`}</style>
-      <div style={{ padding: '1.6rem 1.25rem 1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-          <div style={{
-            width: '44px', height: '44px', borderRadius: '50%', flexShrink: 0,
-            backgroundColor: 'rgba(201,169,110,0.12)', border: '1px solid rgba(201,169,110,0.35)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            animation: open ? undefined : 'goldPulse 2s infinite',
-          }}>
-            {open ? <Star size={18} color="#c9a96e" fill="#c9a96e" /> : <Lock size={17} color="#c9a96e" />}
-          </div>
+  const allItems = filterStaticItems({ limit: 20 }).items;
+  const exclusiveItems = allItems.filter((i: any) => settings.exclusive_ids.includes(i.id));
+
+  // OPEN — articles en scroll horizontal
+  if (open) {
+    return (
+      <div style={{ backgroundColor: '#0f0f0f' }}>
+        <style>{`.hscroll-excl::-webkit-scrollbar{display:none}`}</style>
+        {/* Header */}
+        <div style={{ padding: '1.25rem 1rem 0.75rem', display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between' }}>
           <div>
-            <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.52rem', letterSpacing: '0.28em', color: '#c9a96e', marginBottom: '5px' }}>
-              {open ? 'VENTE EXCLUSIVE · OUVERTE MAINTENANT' : 'VENTE EXCLUSIVE · ACCÈS LIMITÉ'}
-            </p>
-            {open ? (
-              <p style={{ fontFamily: 'Georgia, serif', fontSize: '1.15rem', color: 'white', lineHeight: 1.2 }}>
-                Sélection du jour<br />
-                <span style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.5)', fontFamily: 'Helvetica Neue, Arial, sans-serif' }}>Ferme à {settings.close_time}</span>
-              </p>
-            ) : (
-              <div>
-                <p style={{ fontFamily: 'Georgia, serif', fontSize: '1.15rem', color: 'white', lineHeight: 1.2, marginBottom: '4px' }}>
-                  {dateLabel}
-                </p>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                  <span style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.72rem', color: 'rgba(255,255,255,0.4)' }}>Dans</span>
-                  <span style={{ fontFamily: 'Georgia, serif', fontSize: '1.2rem', color: '#c9a96e', letterSpacing: '0.04em' }}>{hh}:{mm}:{ss}</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '4px' }}>
+              <Star size={11} color="#c9a96e" fill="#c9a96e" />
+              <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.52rem', letterSpacing: '0.28em', color: '#c9a96e' }}>VENTE EXCLUSIVE · AUJOURD'HUI SEULEMENT</p>
+              <Star size={11} color="#c9a96e" fill="#c9a96e" />
+            </div>
+            <h2 style={{ fontFamily: 'Georgia, serif', fontSize: '1.25rem', fontWeight: 400, color: 'white' }}>Sélection du jour</h2>
+          </div>
+          <Link to="/vente-exclusive" style={{ display: 'flex', alignItems: 'center', gap: '3px', textDecoration: 'none', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.62rem', color: '#c9a96e' }}>
+            Tout voir <ChevronRight size={12} />
+          </Link>
+        </div>
+        {/* Fermeture countdown */}
+        <div style={{ padding: '0 1rem 0.75rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
+          <Clock size={12} color="rgba(255,255,255,0.4)" />
+          <span style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.7rem', color: 'rgba(255,255,255,0.4)' }}>Ferme à {settings.close_time}</span>
+        </div>
+        {/* Scroll */}
+        <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch', scrollbarWidth: 'none', padding: '0 1rem 1.5rem' }}>
+          <div className="hscroll-excl" style={{ display: 'flex', gap: '10px', width: 'max-content', alignItems: 'stretch' }}>
+            {exclusiveItems.length === 0
+              ? [1,2,3].map(i => <SkeletonCard key={i} />)
+              : exclusiveItems.map((item: any) => (
+                <div key={item.id} style={{ flexShrink: 0, width: '158px', display: 'flex', flexDirection: 'column' }}>
+                  <ItemCard item={item} />
                 </div>
-              </div>
-            )}
+              ))
+            }
+            <Link to="/vente-exclusive" style={{ flexShrink: 0, width: '110px', borderRadius: '12px', border: '1.5px solid rgba(201,169,110,0.3)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '6px', textDecoration: 'none', backgroundColor: 'rgba(201,169,110,0.06)' }}>
+              <ChevronRight size={22} color="#c9a96e" />
+              <span style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.58rem', color: '#c9a96e', letterSpacing: '0.08em', textAlign: 'center' }}>VOIR TOUT</span>
+            </Link>
           </div>
         </div>
-        <ChevronRight size={18} color={open ? '#c9a96e' : '#444'} style={{ flexShrink: 0 }} />
+      </div>
+    );
+  }
+
+  // CLOSED — bloc suspense
+  return (
+    <Link to="/vente-exclusive" style={{ display: 'block', textDecoration: 'none', backgroundColor: '#0f0f0f' }}>
+      <style>{`@keyframes goldPulse{0%,100%{opacity:1}50%{opacity:0.45}} @keyframes fadeInUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}`}</style>
+      <div style={{ padding: '2rem 1.25rem 2rem', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
+        {/* Icône */}
+        <div style={{ width: '52px', height: '52px', borderRadius: '50%', backgroundColor: 'rgba(201,169,110,0.1)', border: '1px solid rgba(201,169,110,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1rem', animation: 'goldPulse 2s infinite' }}>
+          <Lock size={22} color="#c9a96e" />
+        </div>
+        <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.52rem', letterSpacing: '0.3em', color: '#c9a96e', marginBottom: '0.5rem', animation: 'fadeInUp 0.5s ease' }}>
+          VENTE EXCLUSIVE · ACCÈS LIMITÉ
+        </p>
+        <h2 style={{ fontFamily: 'Georgia, serif', fontSize: 'clamp(1.2rem, 4vw, 1.8rem)', color: 'white', fontWeight: 400, lineHeight: 1.3, marginBottom: '0.5rem', animation: 'fadeInUp 0.7s ease' }}>
+          La sélection ouvre {dateLabel.toLowerCase()}
+        </h2>
+        <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.75rem', color: 'rgba(255,255,255,0.38)', marginBottom: '1.25rem', animation: 'fadeInUp 0.9s ease' }}>
+          Des pièces d'exception disponibles pour quelques heures seulement
+        </p>
+        {/* Countdown */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 'clamp(8px, 3vw, 20px)', marginBottom: '1.5rem', animation: 'fadeInUp 1.1s ease' }}>
+          {[{ v: hh, l: 'HEURES' }, { v: mm, l: 'MIN' }, { v: ss, l: 'SEC' }].map(({ v, l }, i) => (
+            <>
+              {i > 0 && <span key={`sep${i}`} style={{ fontFamily: 'Georgia, serif', fontSize: 'clamp(1.5rem, 5vw, 2.5rem)', color: 'rgba(201,169,110,0.35)', lineHeight: 1 }}>:</span>}
+              <div key={l} style={{ textAlign: 'center' }}>
+                <div style={{ fontFamily: 'Georgia, serif', fontSize: 'clamp(2rem, 7vw, 3.5rem)', color: '#c9a96e', lineHeight: 1, fontWeight: 400 }}>{v}</div>
+                <div style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.45rem', letterSpacing: '0.2em', color: 'rgba(255,255,255,0.4)', marginTop: '5px' }}>{l}</div>
+              </div>
+            </>
+          ))}
+        </div>
+        {/* Aperçu flouté si articles configurés */}
+        {exclusiveItems.length > 0 && (
+          <div style={{ display: 'flex', gap: '8px', marginBottom: '1.5rem', animation: 'fadeInUp 1.3s ease' }}>
+            {exclusiveItems.slice(0, 4).map((item: any) => (
+              <div key={item.id} style={{ width: '64px', height: '86px', borderRadius: '6px', overflow: 'hidden', flexShrink: 0, position: 'relative' }}>
+                {(item.image || item.images?.[0]) && (
+                  <img src={item.image || item.images[0]} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', filter: 'blur(6px) brightness(0.35)' }} />
+                )}
+                <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <Lock size={14} color="rgba(201,169,110,0.6)" />
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '4px', color: 'rgba(255,255,255,0.25)', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.65rem' }}>
+          Découvrir la sélection <ChevronRight size={13} color="rgba(255,255,255,0.25)" />
+        </div>
       </div>
     </Link>
   );
@@ -222,22 +282,18 @@ function HScrollSection({ title, label, link, items, loading, seeAll, seeMore }:
 
 export default function Home() {
   const t = useT();
-  const [auctions, setAuctions] = useState<any[]>([]);
   const [women, setWomen] = useState<any[]>([]);
   const [men, setMen] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     Promise.allSettled([
-      getSharedItems({ type: 'auction', limit: 8 }),
       getSharedItems({ category: 'women', limit: 8 }),
       getSharedItems({ category: 'men', limit: 8 }),
-    ]).then(([a, w, m]) => {
-      const aItems = a.status === 'fulfilled' ? a.value : [];
+    ]).then(([w, m]) => {
       const wItems = w.status === 'fulfilled' ? w.value : [];
       const mItems = m.status === 'fulfilled' ? m.value : [];
       const merge = (shared: any[], fallback: any[]) => [...new Map([...fallback, ...shared].map(item => [item.id, item])).values()].filter(item => item.status === 'active').slice(0, 8);
-      setAuctions(merge(aItems, filterStaticItems({ type: 'auction', limit: 8 }).items));
       setWomen(merge(wItems, filterStaticItems({ category: 'women', limit: 8 }).items));
       setMen(merge(mItems, filterStaticItems({ category: 'men', limit: 8 }).items));
       setLoading(false);
@@ -284,23 +340,13 @@ export default function Home() {
       </div>
 
       {/* Vente Exclusive */}
-      <ExclusiveTeaser />
+      <ExclusiveSection />
 
       {/* Lives */}
       <LivesHScroll />
 
       {/* Enchères */}
       <LiveRail />
-
-      <HScrollSection
-        label={t('sectionOngoing')}
-        title={t('featuredAuctions')}
-        link="/catalogue?type=auction"
-        items={auctions}
-        loading={loading}
-        seeAll={t('seeAll')}
-        seeMore={t('seeMore')}
-      />
 
       {/* Sélection Femme */}
       <HScrollSection
