@@ -56,39 +56,45 @@ function ExclusiveTeaser() {
     return () => clearInterval(iv);
   }, []);
 
-  if (settings.exclusive_ids.length === 0) return null;
-
-  const h = String(Math.floor(secs / 3600)).padStart(2, '0');
-  const m = String(Math.floor((secs % 3600) / 60)).padStart(2, '0');
-  const s = String(secs % 60).padStart(2, '0');
+  const hh = String(Math.floor(secs / 3600)).padStart(2, '0');
+  const mm = String(Math.floor((secs % 3600) / 60)).padStart(2, '0');
+  const ss = String(secs % 60).padStart(2, '0');
 
   return (
-    <Link to="/vente-exclusive" style={{ display: 'block', textDecoration: 'none', margin: '0', backgroundColor: '#0f0f0f', padding: '1rem 1.25rem', borderBottom: '1px solid #1e1e1e' }}>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          {open
-            ? <Star size={16} color="#c9a96e" fill="#c9a96e" />
-            : <Lock size={15} color="#c9a96e" />
-          }
+    <Link to="/vente-exclusive" style={{ display: 'block', textDecoration: 'none', backgroundColor: '#0f0f0f' }}>
+      <div style={{ padding: '1.1rem 1.25rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <div style={{
+            width: '36px', height: '36px', borderRadius: '50%', flexShrink: 0,
+            backgroundColor: 'rgba(201,169,110,0.12)', border: '1px solid rgba(201,169,110,0.3)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            animation: open ? undefined : 'goldPulse 2s infinite',
+          }}>
+            {open ? <Star size={15} color="#c9a96e" fill="#c9a96e" /> : <Lock size={14} color="#c9a96e" />}
+          </div>
           <div>
-            <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.55rem', letterSpacing: '0.25em', color: '#c9a96e', marginBottom: '2px' }}>
-              {open ? 'VENTE EXCLUSIVE · OUVERTE MAINTENANT' : 'VENTE EXCLUSIVE · BIENTÔT'}
+            <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.5rem', letterSpacing: '0.28em', color: '#c9a96e', marginBottom: '3px' }}>
+              {open ? 'VENTE EXCLUSIVE · OUVERTE MAINTENANT' : 'VENTE EXCLUSIVE · ACCÈS LIMITÉ'}
             </p>
-            <p style={{ fontFamily: 'Georgia, serif', fontSize: '0.9rem', color: 'white', fontWeight: 400 }}>
-              {open
-                ? `Sélection du jour — ferme à ${settings.close_time}`
-                : `Ouvre à ${settings.open_time} · Dans ${h}h ${m}m ${s}s`
-              }
-            </p>
+            {open ? (
+              <p style={{ fontFamily: 'Georgia, serif', fontSize: '0.95rem', color: 'white' }}>
+                Sélection du jour — ferme à {settings.close_time}
+              </p>
+            ) : (
+              <div style={{ display: 'flex', alignItems: 'baseline', gap: '6px' }}>
+                <p style={{ fontFamily: 'Georgia, serif', fontSize: '0.85rem', color: 'rgba(255,255,255,0.6)' }}>
+                  Ouvre à {settings.open_time} · Dans
+                </p>
+                <p style={{ fontFamily: 'Georgia, serif', fontSize: '1.05rem', color: '#c9a96e', letterSpacing: '0.05em' }}>
+                  {hh}:{mm}:{ss}
+                </p>
+              </div>
+            )}
           </div>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '4px', flexShrink: 0 }}>
-          <span style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.62rem', color: open ? '#c9a96e' : '#666', letterSpacing: '0.1em' }}>
-            {open ? 'VOIR' : ''}
-          </span>
-          <ChevronRight size={14} color={open ? '#c9a96e' : '#444'} />
-        </div>
+        <ChevronRight size={16} color={open ? '#c9a96e' : '#555'} style={{ flexShrink: 0 }} />
       </div>
+      <style>{`@keyframes goldPulse{0%,100%{opacity:1}50%{opacity:0.5}}`}</style>
     </Link>
   );
 }
