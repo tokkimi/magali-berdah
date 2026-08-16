@@ -402,12 +402,12 @@ export default function Home() {
       </div>
 
       {/* Trust */}
-      <div style={{ padding: '1.5rem 1rem 7rem', backgroundColor: '#1a1a1a' }}>
+      <div style={{ padding: '1.5rem 1rem 2rem', backgroundColor: '#1a1a1a' }}>
         <div className="trust-inner" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
           {[
-            { icon: Shield, t1: t('verifiedSellers'), t2: t('siretChecked') },
+            { icon: Lock, t1: 'Enchères sécurisées', t2: 'Carte vérifiée obligatoire' },
             { icon: Truck, t1: t('shippingIncluded'), t2: t('realTimeTracking') },
-            { icon: Gavel, t1: t('secureAuctions'), t2: t('securePayment') },
+            { icon: Shield, t1: t('authenticity'), t2: 'Pièces garanties authentiques' },
             { icon: ShoppingBag, t1: t('returns14'), t2: t('euRights') },
           ].map(({ icon: Icon, t1, t2 }) => (
             <div key={t1} style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>

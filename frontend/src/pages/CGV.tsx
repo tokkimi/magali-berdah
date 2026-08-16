@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 
-const LAST_UPDATE = '16 août 2026';
+const LAST_UPDATE = '16 août 2026 — mis à jour : enchères fictives et politique de bannissement';
 const CONTACT_EMAIL = 'contact@magaliberdah.com';
 const SITE_URL = 'https://magali-berdah.vercel.app';
 
@@ -54,22 +54,26 @@ Lors de l'inscription, l'utilisateur fournit des informations exactes, complète
 La Plateforme se réserve le droit de suspendre ou supprimer tout compte en cas de non-respect des présentes CGV, de fraude suspectée ou d'informations inexactes.`,
   },
   {
-    title: '6. Ventes aux enchères — règles et engagement',
+    title: '6. Ventes aux enchères — règles, engagement et lutte contre les enchères fictives',
     content: `**6.1 Nature juridique.** Les enchères organisées sur la Plateforme constituent des ventes aux enchères de gré à gré (et non des ventes aux enchères publiques au sens de l'article L.321-1 du Code de commerce). Le droit de rétractation prévu à l'article L.221-18 du Code de la consommation s'applique dans les conditions légales.
 
-**6.2 Participation.** Toute participation nécessite : (i) un compte utilisateur actif et vérifié, (ii) un moyen de paiement valide enregistré et pré-autorisé, (iii) l'acceptation des règles spécifiques à chaque enchère affichées sur la fiche article.
+**6.2 Conditions impératives de participation.** Toute participation à une enchère est strictement subordonnée à : (i) la création et la vérification d'un compte utilisateur avec adresse email valide et identité confirmée, (ii) l'enregistrement d'un moyen de paiement valide (carte bancaire Visa, Mastercard ou American Express) préalablement à toute offre, (iii) la pré-autorisation automatique du montant de l'offre dès que celle-ci est placée, (iv) l'acceptation sans réserve des présentes CGV et des règles spécifiques à chaque enchère. Il n'est pas possible d'enchérir anonymement ou sans moyen de paiement enregistré.
 
-**6.3 Pré-autorisation de la carte bancaire.** Lorsqu'un utilisateur place une enchère, sa carte bancaire fait l'objet d'une pré-autorisation (empreinte) du montant de l'offre, conformément aux bonnes pratiques de la profession. Cette pré-autorisation n'est pas un débit effectif : elle constitue une réservation des fonds pour la durée de l'enchère. En cas d'enchère perdante, la pré-autorisation est annulée sans frais dans un délai de 7 jours ouvrés. En cas d'enchère gagnante, le débit est effectué automatiquement à la clôture de l'enchère.
+**6.3 Pré-autorisation obligatoire de la carte bancaire.** Dès qu'un utilisateur place une offre, sa carte bancaire fait l'objet d'une pré-autorisation (empreinte) du montant exact de l'offre. Cette pré-autorisation n'est pas un débit effectif : elle constitue une réservation de fonds qui garantit la solvabilité de l'enchérisseur et son intention sérieuse d'achat. En cas d'enchère perdante, la pré-autorisation est annulée automatiquement et sans frais dans un délai de 7 jours ouvrés. En cas d'enchère gagnante, le débit est effectué automatiquement et immédiatement à la clôture de l'enchère, sans action supplémentaire requise de la part de l'acheteur.
 
-**6.4 Prix de départ et prix de réserve.** Chaque enchère comporte un prix de départ visible. Un prix de réserve (plancher confidentiel) peut être fixé ; si aucune offre n'atteint ce prix de réserve à la clôture, la vente est annulée et les éventuelles pré-autorisations sont levées. Le vendeur et l'acheteur en sont informés dans les 24 heures.
+**6.4 Interdiction absolue des enchères fictives ou spéculatives.** Il est strictement interdit de placer une offre sans intention réelle d'achat, dans le but de faire monter artificiellement les enchères ou de nuire à d'autres participants (pratique connue sous le nom de « shill bidding »). Cette pratique constitue une faute contractuelle grave pouvant engager la responsabilité civile de son auteur et est susceptible de constituer une escroquerie au sens de l'article 313-1 du Code pénal. La Plateforme se réserve le droit de signaler tout comportement suspect aux autorités compétentes.
 
-**6.5 Engagement de l'enchérisseur.** Toute offre placée constitue un engagement ferme et irrévocable d'acheter l'article au montant proposé si cette offre est la plus haute à la clôture. L'enchérisseur gagnant doit finaliser son paiement dans les 24 heures suivant la notification de gain. À défaut, la Plateforme peut annuler la transaction, facturer des frais d'annulation et exclure temporairement l'utilisateur.
+**6.5 Engagement ferme et irrévocable de l'enchérisseur.** Toute offre placée constitue un engagement ferme, définitif et irrévocable d'acheter l'article au montant proposé si cette offre est la plus haute à la clôture. Le simple fait de placer une enchère vaut acceptation de cet engagement. L'enchérisseur reconnaît expressément qu'une enchère gagnante non honorée constitue une inexécution contractuelle fautive.
 
-**6.6 Surenchère.** En cas de surenchère, la nouvelle offre supplante automatiquement la précédente. L'enchérisseur supplanté en est notifié par email et/ou notification dans l'application.
+**6.6 Politique de bannissement — enchères non honorées.** En cas d'enchère gagnante dont le paiement échoue ou est refusé : lors du 1er incident, l'utilisateur est averti par email et dispose de 24 heures pour régulariser, faute de quoi son compte est suspendu temporairement (7 jours) ; lors du 2ème incident, le compte est suspendu pour 30 jours et l'utilisateur est placé sous surveillance renforcée ; lors du 3ème incident, le compte est définitivement banni de la Plateforme, toutes les sessions actives sont révoquées et l'adresse email associée est bloquée. La Plateforme se réserve également le droit d'exercer un recours judiciaire pour le recouvrement des sommes dues et des préjudices subis. Le bannissement ne donne droit à aucun remboursement de services déjà rendus.
 
-**6.7 Clôture et notification.** À l'heure de clôture, l'enchère est définitivement fermée. L'enchérisseur gagnant et le vendeur reçoivent une confirmation sur support durable.
+**6.7 Prix de départ et prix de réserve.** Chaque enchère comporte un prix de départ visible. Un prix de réserve (plancher confidentiel) peut être fixé ; si aucune offre n'atteint ce prix à la clôture, la vente est annulée et les pré-autorisations sont levées. Vendeur et acheteur en sont informés dans les 24 heures.
 
-**6.8 Vente exclusive quotidienne.** Les articles de la sélection exclusive sont mis aux enchères pendant une fenêtre horaire limitée définie chaque jour. En dehors de cette fenêtre, les articles ne sont pas accessibles. Cette exclusivité est une caractéristique commerciale, sans incidence sur les droits légaux de l'acheteur.`,
+**6.8 Surenchère.** En cas de surenchère, la nouvelle offre supplante automatiquement la précédente. L'enchérisseur supplanté en est notifié par email et/ou notification, et la pré-autorisation sur sa carte est annulée.
+
+**6.9 Clôture et notification.** À l'heure de clôture, l'enchère est définitivement fermée. L'enchérisseur gagnant reçoit une confirmation sur support durable. Le débit de sa carte intervient immédiatement.
+
+**6.10 Vente exclusive.** Les articles de la sélection exclusive sont disponibles pendant une fenêtre horaire limitée, définie à la discrétion de la Plateforme. Cette exclusivité est une caractéristique commerciale sans incidence sur les droits légaux de l'acheteur.`,
   },
   {
     title: '7. Modalités de paiement',
