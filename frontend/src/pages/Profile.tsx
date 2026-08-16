@@ -1,9 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useStore, useT } from '../lib/store';
 import { api } from '../lib/api';
 import {
   User, Package, Gavel, Heart, Truck, ExternalLink, Send,
-  ShoppingBag, Wallet, CheckCircle, CreditCard, Building2, Plus, Minus, Radio,
+  ShoppingBag, Wallet, CheckCircle, CreditCard, Building2, Plus, Minus, Radio, Camera, Lock,
 } from 'lucide-react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { getAllItems } from '../lib/staticItems';
@@ -11,6 +11,8 @@ import ItemCard from '../components/ItemCard';
 import WhatnotProfilePanel from '../components/WhatnotProfilePanel';
 import { getSavedWhatnotToken } from '../lib/whatnot';
 import { getMyAuctionWins } from '../lib/marketplace';
+import { supabase } from '../lib/supabase';
+import { uploadFile } from '../lib/api';
 
 function isAmbassador(email: string): boolean {
   try { return (JSON.parse(localStorage.getItem('mb_ambassadors') || '[]') as string[]).includes(email); } catch { return false; }
@@ -64,9 +66,25 @@ export default function Profile() {
   const [form, setForm] = useState({
     name: user?.name || '', phone: user?.phone || '',
     address: user?.address || '', city: user?.city || '',
-    country: user?.country || 'FR', dob: user?.dob || '', avatar: user?.avatar || '',
+    country: user?.country || 'FR', dob: user?.dob || '',
+    avatar: user?.avatar || (user ? localStorage.getItem(`mb_avatar_${user.email}`) || '' : ''),
   });
   const [saved, setSaved] = useState(false);
+  const [avatarUploading, setAvatarUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Email change
+  const [emailEdit, setEmailEdit] = useState(false);
+  const [newEmail, setNewEmail] = useState('');
+  const [emailSaved, setEmailSaved] = useState(false);
+  const [emailError, setEmailError] = useState('');
+
+  // Password change
+  const [pwForm, setPwForm] = useState({ current: '', next: '', confirm: '' });
+  const [pwSaved, setPwSaved] = useState(false);
+  const [pwError, setPwError] = useState('');
+  const [pwLoading, setPwLoading] = useState(false);
+
   const [orders, setOrders] = useState<any[]>([]);
   const [wallet, setWallet] = useState<any>({ pending: 0, available: 0, transactions: [] });
   const [auctionWins, setAuctionWins] = useState<any[]>([]);
@@ -117,6 +135,30 @@ export default function Profile() {
     if (user) setWallet(getWallet(user.email));
   }, [user]);
 
+  const handleAvatarFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setAvatarUploading(true);
+    try {
+      // Try backend upload first
+      const url = await uploadFile(file);
+      setForm(x => ({ ...x, avatar: url }));
+      updateUser({ avatar: url });
+    } catch {
+      // Fallback: store as base64 in localStorage
+      const reader = new FileReader();
+      reader.onload = ev => {
+        const b64 = ev.target?.result as string;
+        setForm(x => ({ ...x, avatar: b64 }));
+        updateUser({ avatar: b64 });
+        localStorage.setItem(`mb_avatar_${user?.email}`, b64);
+      };
+      reader.readAsDataURL(file);
+    } finally {
+      setAvatarUploading(false);
+    }
+  };
+
   const saveProfile = async () => {
     try {
       const data = await api.put('/auth/me', form);
@@ -124,6 +166,38 @@ export default function Profile() {
     } catch { updateUser(form); }
     setSaved(true);
     setTimeout(() => setSaved(false), 3000);
+  };
+
+  const changeEmail = async () => {
+    if (!newEmail.trim() || !newEmail.includes('@')) { setEmailError('Email invalide'); return; }
+    setEmailError('');
+    try {
+      const { error } = await supabase.auth.updateUser({ email: newEmail.trim() });
+      if (error) throw error;
+      setEmailSaved(true);
+      setEmailEdit(false);
+      setTimeout(() => setEmailSaved(false), 5000);
+    } catch (e: any) {
+      setEmailError(e.message || 'Erreur lors du changement d\'email');
+    }
+  };
+
+  const changePassword = async () => {
+    setPwError('');
+    if (!pwForm.next || pwForm.next.length < 8) { setPwError('Le mot de passe doit faire au moins 8 caractères'); return; }
+    if (pwForm.next !== pwForm.confirm) { setPwError('Les mots de passe ne correspondent pas'); return; }
+    setPwLoading(true);
+    try {
+      const { error } = await supabase.auth.updateUser({ password: pwForm.next });
+      if (error) throw error;
+      setPwSaved(true);
+      setPwForm({ current: '', next: '', confirm: '' });
+      setTimeout(() => setPwSaved(false), 4000);
+    } catch (e: any) {
+      setPwError(e.message || 'Erreur lors du changement de mot de passe');
+    } finally {
+      setPwLoading(false);
+    }
   };
 
   const savePaymentMethod = () => {
@@ -325,12 +399,30 @@ export default function Profile() {
               {/* Informations personnelles */}
               <section style={{ backgroundColor: 'white', border: '1px solid #e8d5b7', padding: '1.5rem' }}>
                 <p style={sectionLabel}>INFORMATIONS PERSONNELLES</p>
-                <div className="profile-form-grid" style={{ gap: '1rem' }}>
-                  <div style={{ gridColumn: '1 / -1' }}>
-                    <label style={labelStyle}>PHOTO DE PROFIL (URL)</label>
-                    <input value={form.avatar} onChange={e => setForm(x => ({ ...x, avatar: e.target.value }))}
-                      placeholder="https://..." style={inputStyle} />
+                {/* Avatar upload */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.25rem' }}>
+                  <div style={{ position: 'relative', flexShrink: 0 }}>
+                    <div style={{ width: '72px', height: '72px', borderRadius: '50%', border: '2px solid #c9a96e', overflow: 'hidden', backgroundColor: '#f8f4ef', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      {form.avatar ? (
+                        <img src={form.avatar} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }} />
+                      ) : (
+                        <span style={{ fontFamily: 'Georgia, serif', fontSize: '1.8rem', color: '#c9a96e' }}>{user.name[0]?.toUpperCase()}</span>
+                      )}
+                    </div>
+                    <button onClick={() => fileInputRef.current?.click()} disabled={avatarUploading}
+                      style={{ position: 'absolute', bottom: 0, right: 0, width: '24px', height: '24px', borderRadius: '50%', backgroundColor: '#1a1a1a', border: '2px solid white', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
+                      <Camera size={12} color="#c9a96e" />
+                    </button>
+                    <input ref={fileInputRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={handleAvatarFile} />
                   </div>
+                  <div>
+                    <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.8rem', color: '#1a1a1a', fontWeight: 500 }}>{user.name}</p>
+                    <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.72rem', color: '#9e8e7e', marginTop: '2px' }}>{user.email}</p>
+                    {avatarUploading && <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.65rem', color: '#c9a96e', marginTop: '4px' }}>Chargement…</p>}
+                  </div>
+                </div>
+
+                <div className="profile-form-grid" style={{ gap: '1rem' }}>
                   {[
                     { label: 'Nom complet', key: 'name', type: 'text' },
                     { label: 'Téléphone', key: 'phone', type: 'tel' },
@@ -338,7 +430,7 @@ export default function Profile() {
                     { label: 'Adresse', key: 'address', type: 'text' },
                     { label: 'Ville', key: 'city', type: 'text' },
                   ].map(f => (
-                    <div key={f.key} style={f.key === 'address' || f.key === 'dob' ? {} : {}}>
+                    <div key={f.key}>
                       <label style={labelStyle}>{f.label.toUpperCase()}</label>
                       <input type={f.type} value={(form as any)[f.key]}
                         onChange={e => setForm(x => ({ ...x, [f.key]: e.target.value }))}
@@ -357,6 +449,65 @@ export default function Profile() {
                 <div style={{ marginTop: '1.25rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
                   <button onClick={saveProfile} className="btn-gold" style={{ fontSize: '0.78rem' }}>ENREGISTRER</button>
                   {saved && <span style={{ color: '#2e7d32', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.8rem' }}>✓ Enregistré</span>}
+                </div>
+              </section>
+
+              {/* Email */}
+              <section style={{ backgroundColor: 'white', border: '1px solid #e8d5b7', padding: '1.5rem' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                  <p style={sectionLabel}>ADRESSE EMAIL</p>
+                  {!emailEdit && (
+                    <button onClick={() => { setEmailEdit(true); setNewEmail(user.email); }}
+                      style={{ background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.72rem', color: '#c9a96e' }}>
+                      Modifier
+                    </button>
+                  )}
+                </div>
+                {emailEdit ? (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                    <div>
+                      <label style={labelStyle}>NOUVEL EMAIL</label>
+                      <input type="email" value={newEmail} onChange={e => setNewEmail(e.target.value)} style={inputStyle} />
+                    </div>
+                    {emailError && <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.72rem', color: '#cc0000' }}>{emailError}</p>}
+                    <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.68rem', color: '#9e8e7e' }}>
+                      Un email de confirmation sera envoyé à la nouvelle adresse.
+                    </p>
+                    <div style={{ display: 'flex', gap: '0.75rem' }}>
+                      <button onClick={changeEmail} className="btn-gold" style={{ fontSize: '0.75rem' }}>CONFIRMER</button>
+                      <button onClick={() => setEmailEdit(false)} style={{ background: 'none', border: '1px solid #e8d5b7', padding: '8px 16px', cursor: 'pointer', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.75rem', color: '#9e8e7e' }}>ANNULER</button>
+                    </div>
+                  </div>
+                ) : (
+                  <div>
+                    <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.88rem', color: '#1a1a1a' }}>{user.email}</p>
+                    {emailSaved && <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.72rem', color: '#2e7d32', marginTop: '6px' }}>✓ Email de confirmation envoyé à {newEmail}</p>}
+                  </div>
+                )}
+              </section>
+
+              {/* Mot de passe */}
+              <section style={{ backgroundColor: 'white', border: '1px solid #e8d5b7', padding: '1.5rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '1rem' }}>
+                  <Lock size={14} color="#c9a96e" />
+                  <p style={sectionLabel}>MOT DE PASSE</p>
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                  <div>
+                    <label style={labelStyle}>NOUVEAU MOT DE PASSE</label>
+                    <input type="password" value={pwForm.next} onChange={e => setPwForm(f => ({ ...f, next: e.target.value }))}
+                      placeholder="8 caractères minimum" autoComplete="new-password" style={inputStyle} />
+                  </div>
+                  <div>
+                    <label style={labelStyle}>CONFIRMER LE MOT DE PASSE</label>
+                    <input type="password" value={pwForm.confirm} onChange={e => setPwForm(f => ({ ...f, confirm: e.target.value }))}
+                      autoComplete="new-password" style={inputStyle} />
+                  </div>
+                  {pwError && <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.72rem', color: '#cc0000' }}>{pwError}</p>}
+                  {pwSaved && <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.72rem', color: '#2e7d32' }}>✓ Mot de passe mis à jour</p>}
+                  <button onClick={changePassword} disabled={pwLoading || !pwForm.next} className="btn-gold" style={{ fontSize: '0.75rem', opacity: (!pwForm.next || pwLoading) ? 0.5 : 1 }}>
+                    {pwLoading ? 'ENREGISTREMENT…' : 'CHANGER LE MOT DE PASSE'}
+                  </button>
                 </div>
               </section>
 
