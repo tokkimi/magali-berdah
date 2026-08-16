@@ -1,7 +1,13 @@
 import { useEffect, useState } from 'react';
-import { CheckCircle, XCircle, Ban, UserCheck, Copy } from 'lucide-react';
+import { CheckCircle, XCircle, Ban, UserCheck, Copy, Radio } from 'lucide-react';
 import { adminConnectWhatnot, adminListAmbassadorRequests, adminReviewAmbassadorRequest } from '../../lib/whatnot';
 import { supabase } from '../../lib/supabase';
+function getAmbassadors(): string[] {
+  try { return JSON.parse(localStorage.getItem('mb_ambassadors') || '[]'); } catch { return []; }
+}
+function setAmbassadors(list: string[]) {
+  localStorage.setItem('mb_ambassadors', JSON.stringify(list));
+}
 
 export default function AdminUsers() {
   const [users, setUsers] = useState<any[]>([]);
@@ -55,7 +61,12 @@ export default function AdminUsers() {
       const token = await adminConnectWhatnot({ adminCode: liveAdminCode, email: selected.email, displayName: selected.name, ...directLive });
       setCreatedLiveCode(token);
       setLiveMessage(`${selected.name} est maintenant autorisé à diffuser.`);
-    } catch { setLiveMessage('Impossible d’autoriser ce profil. Vérifiez le code administrateur et les informations Whatnot.'); }
+    } catch { setLiveMessage('Impossible d’autoriser ce profil. Vérifiez le code administrateur et les informations Whatnot.'); }  };
+
+  const toggleAmbassador = (email: string) => {
+    const list = getAmbassadors();
+    setAmbassadors(list.includes(email) ? list.filter(e => e !== email) : [...list, email]);
+    setUsers(u => [...u]);
   };
 
   const filtered = users.filter(u => {
@@ -123,7 +134,7 @@ export default function AdminUsers() {
           <table style={{ width: '100%', borderCollapse: 'collapse' }}>
             <thead>
               <tr style={{ borderBottom: '1px solid #e8d5b7', backgroundColor: '#f8f4ef' }}>
-                {['Nom', 'Email', 'Rôle', 'Vérifié', 'Ventes', 'Inscrit', 'Actions'].map(h => (
+                {['Nom', 'Email', 'Rôle', 'Vérifié', 'Ambassadeur', 'Ventes', 'Inscrit', 'Actions'].map(h => (
                   <th key={h} style={{ padding: '10px 14px', textAlign: 'left', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.6rem', letterSpacing: '0.15em', color: '#9e8e7e' }}>{h.toUpperCase()}</th>
                 ))}
               </tr>
@@ -143,6 +154,13 @@ export default function AdminUsers() {
                   </td>
                   <td style={{ padding: '10px 14px' }}>
                     {u.verified ? <CheckCircle size={16} color="#2e7d32" /> : <XCircle size={16} color="#ff9800" />}
+                  </td>
+                  <td style={{ padding: '10px 14px' }} onClick={e => e.stopPropagation()}>
+                    <button onClick={() => toggleAmbassador(u.email)} title={getAmbassadors().includes(u.email) ? 'Révoquer ambassadeur' : 'Nommer ambassadeur'}
+                      style={{ background: 'none', border: 'none', cursor: 'pointer', color: getAmbassadors().includes(u.email) ? '#e53935' : '#ccc', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                      <Radio size={16} />
+                      {getAmbassadors().includes(u.email) && <span style={{ fontSize: '0.6rem', fontFamily: 'Helvetica Neue, Arial, sans-serif', color: '#e53935' }}>AMBASSADEUR</span>}
+                    </button>
                   </td>
                   <td style={{ padding: '10px 14px', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.78rem', color: '#1a1a1a' }}>
                     {u.total_sales ? `${u.total_sales.toLocaleString('fr-FR')} €` : '-'}

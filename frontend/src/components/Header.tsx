@@ -1,10 +1,14 @@
 import { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Search, User, Heart, Bell, ChevronDown, Menu, X, Radio } from 'lucide-react';
+import { Search, User, Heart, Bell, ChevronDown, Menu, X, ShoppingBag, Radio } from 'lucide-react';
 import { useStore, useT } from '../lib/store';
 import { api } from '../lib/api';
 import AuthModal from './AuthModal';
 import { getSavedWhatnotToken } from '../lib/whatnot';
+
+function getLiveCount(): number {
+  try { return JSON.parse(localStorage.getItem('mb_lives') || '[]').filter((l: any) => l.is_live).length; } catch { return 0; }
+}
 
 const NAV_ITEMS = [
   {
@@ -35,7 +39,13 @@ export default function Header() {
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [notifications, setNotifications] = useState<any[]>([]);
   const [showNotifs, setShowNotifs] = useState(false);
+  const [liveCount, setLiveCount] = useState(getLiveCount());
   const navRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const iv = setInterval(() => setLiveCount(getLiveCount()), 5000);
+    return () => clearInterval(iv);
+  }, []);
 
   useEffect(() => {
     if (user) {
@@ -84,6 +94,12 @@ export default function Header() {
 
           {/* Desktop Nav */}
           <nav className="hidden md:flex items-center gap-8" ref={navRef}>
+            <Link to="/lives" style={{ textDecoration: 'none', color: liveCount > 0 ? '#e53935' : '#1a1a1a', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.75rem', letterSpacing: '0.15em', display: 'flex', alignItems: 'center', gap: '5px', fontWeight: liveCount > 0 ? 700 : 400 }}>
+              {liveCount > 0 && <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#e53935', display: 'inline-block', animation: 'pulse 1.5s infinite' }} />}
+              <Radio size={13} />
+              LIVE
+              {liveCount > 0 && <span style={{ backgroundColor: '#e53935', color: 'white', fontSize: '0.55rem', padding: '1px 5px', borderRadius: '10px' }}>{liveCount}</span>}
+            </Link>
             {NAV_ITEMS.map(item => (
               <div key={item.key}
                 onMouseEnter={() => setActiveNav(item.key)}
@@ -107,9 +123,7 @@ export default function Header() {
                 )}
               </div>
             ))}
-            <Link to="/lives" style={{ textDecoration: 'none', color: '#e11d48', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.75rem', letterSpacing: '0.15em', display: 'flex', alignItems: 'center', gap: '5px' }}>
-              <Radio size={14} /> LIVE
-            </Link>
+
           </nav>
 
           {/* Search & Actions */}
@@ -202,6 +216,10 @@ export default function Header() {
                 style={{ border: 'none', outline: 'none', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.8rem', flex: 1 }} />
               <button type="submit" style={{ background: 'none', border: 'none', cursor: 'pointer' }}><Search size={16} /></button>
             </form>
+            <Link to="/lives" onClick={() => setMobileOpen(false)}
+              style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '10px 0', textDecoration: 'none', color: liveCount > 0 ? '#e53935' : '#1a1a1a', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.85rem', letterSpacing: '0.1em', borderBottom: '1px solid #f0ece6', fontWeight: liveCount > 0 ? 700 : 400 }}>
+              <Radio size={15} /> LIVE {liveCount > 0 && `(${liveCount})`}
+            </Link>
             {NAV_ITEMS.map(item => (
               <Link key={item.key} to={`/catalogue?type=${item.key === 'auctions' ? 'auction' : 'fixed'}`}
                 onClick={() => setMobileOpen(false)}

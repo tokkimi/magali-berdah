@@ -1,11 +1,62 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ChevronRight, ShoppingBag, Gavel, Shield, Truck } from 'lucide-react';
+import { ChevronRight, ShoppingBag, Gavel, Shield, Truck, Radio, ExternalLink } from 'lucide-react';
 import { useT } from '../lib/store';
 import ItemCard from '../components/ItemCard';
 import LiveRail from '../components/LiveRail';
 import { filterStaticItems } from '../lib/staticItems';
 import { getSharedItems } from '../lib/marketplace';
+
+function getLives(): any[] {
+  try { return JSON.parse(localStorage.getItem('mb_lives') || '[]').filter((l: any) => l.is_live); } catch { return []; }
+}
+
+function LivesHScroll() {
+  const [lives, setLives] = useState<any[]>([]);
+  useEffect(() => {
+    setLives(getLives());
+    const iv = setInterval(() => setLives(getLives()), 5000);
+    return () => clearInterval(iv);
+  }, []);
+
+  if (lives.length === 0) return null;
+
+  return (
+    <div style={{ padding: '1rem 0 0' }}>
+      <div style={{ padding: '0.75rem 1rem 0.5rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <span style={{ width: '7px', height: '7px', borderRadius: '50%', backgroundColor: '#e53935', display: 'inline-block', animation: 'pulse 1.5s infinite' }} />
+          <p style={{ fontFamily: 'Georgia, serif', fontSize: '1rem', fontWeight: 400, color: '#1a1a1a' }}>En direct maintenant</p>
+        </div>
+        <Link to="/lives" style={{ display: 'flex', alignItems: 'center', gap: '3px', textDecoration: 'none', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.65rem', color: '#9e8e7e' }}>
+          Voir tout <ChevronRight size={12} />
+        </Link>
+      </div>
+      <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch', scrollbarWidth: 'none', padding: '0 1rem 1rem' }}>
+        <style>{`.hscroll-lives::-webkit-scrollbar{display:none} @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}`}</style>
+        <div className="hscroll-lives" style={{ display: 'flex', gap: '10px', width: 'max-content' }}>
+          {lives.map(live => (
+            <a key={live.id} href={`https://www.whatnot.com/${live.whatnot_username}`} target="_blank" rel="noopener noreferrer"
+              style={{ flexShrink: 0, width: '120px', textDecoration: 'none', display: 'block' }}>
+              <div style={{ position: 'relative', borderRadius: '10px', overflow: 'hidden', backgroundColor: '#1a1a1a', paddingBottom: '133%' }}>
+                {live.avatar && <img src={live.avatar} alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', opacity: 0.7 }} />}
+                <div style={{ position: 'absolute', top: '6px', left: '6px', backgroundColor: '#e53935', color: 'white', fontSize: '0.55rem', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontWeight: 700, padding: '2px 6px', borderRadius: '2px' }}>LIVE</div>
+                <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '1rem 0.5rem 0.4rem', background: 'linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 100%)' }}>
+                  <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.65rem', fontWeight: 700, color: 'white' }}>@{live.whatnot_username}</p>
+                </div>
+              </div>
+            </a>
+          ))}
+          <Link to="/lives" style={{ flexShrink: 0, width: '80px', borderRadius: '10px', border: '1.5px solid #e8d5b7', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '4px', textDecoration: 'none', backgroundColor: '#faf7f4' }}>
+            <Radio size={18} color="#c9a96e" />
+            <span style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.55rem', color: '#9e8e7e', letterSpacing: '0.05em', textAlign: 'center' }}>VOIR TOUS</span>
+          </Link>
+        </div>
+      </div>
+      <div style={{ height: '1px', backgroundColor: '#f0ece6', margin: '0 1rem' }} />
+    </div>
+  );
+}
 
 function SkeletonCard() {
   return (
@@ -133,6 +184,9 @@ export default function Home() {
           </div>
         </div>
       </div>
+
+      {/* Lives */}
+      <LivesHScroll />
 
       {/* Enchères */}
       <LiveRail />

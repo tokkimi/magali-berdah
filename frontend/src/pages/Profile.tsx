@@ -12,6 +12,22 @@ import WhatnotProfilePanel from '../components/WhatnotProfilePanel';
 import { getSavedWhatnotToken } from '../lib/whatnot';
 import { getMyAuctionWins } from '../lib/marketplace';
 
+function isAmbassador(email: string): boolean {
+  try { return (JSON.parse(localStorage.getItem('mb_ambassadors') || '[]') as string[]).includes(email); } catch { return false; }
+}
+function getWhatnotUsername(email: string): string {
+  return localStorage.getItem(`mb_whatnot_${email}`) || '';
+}
+function saveWhatnotUsername(email: string, username: string) {
+  localStorage.setItem(`mb_whatnot_${email}`, username);
+}
+function getLives(): any[] {
+  try { return JSON.parse(localStorage.getItem('mb_lives') || '[]'); } catch { return []; }
+}
+function saveLives(lives: any[]) {
+  localStorage.setItem('mb_lives', JSON.stringify(lives));
+}
+
 function loadMyOrders(userId: string): any[] {
   try {
     const all = JSON.parse(localStorage.getItem('mb_orders') || '[]');
@@ -71,6 +87,11 @@ export default function Profile() {
   const [topupAmount, setTopupAmount] = useState('');
   const [topupDone, setTopupDone] = useState(false);
   const [transferDone, setTransferDone] = useState(false);
+
+  // Whatnot
+  const [whatnotInput, setWhatnotInput] = useState(() => user ? getWhatnotUsername(user.email) : '');
+  const [whatnotSaved, setWhatnotSaved] = useState(false);
+  const [isLive, setIsLive] = useState(false);
 
   useEffect(() => {
     if (!user) return;
@@ -184,6 +205,44 @@ export default function Profile() {
   const favItems = getAllItems().filter((item: any) => favIds.has(item.id));
   const mySellerItems = user ? getAllItems().filter((item: any) => item.seller_email === user.email) : [];
   const totalBalance = (wallet.available || 0) + (wallet.pending || 0);
+  const userIsAmbassador = user ? (user.role === 'admin' || isAmbassador(user.email)) : false;
+
+  useEffect(() => {
+    if (!user) return;
+    const lives = getLives();
+    setIsLive(lives.some((l: any) => l.user_email === user.email && l.is_live));
+  }, [user]);
+
+  const saveWhatnot = () => {
+    if (!user) return;
+    saveWhatnotUsername(user.email, whatnotInput.trim().replace('@', ''));
+    setWhatnotSaved(true);
+    setTimeout(() => setWhatnotSaved(false), 3000);
+  };
+
+  const goLive = () => {
+    if (!user) return;
+    const username = getWhatnotUsername(user.email);
+    if (!username) { alert('Entrez d\'abord votre pseudo Whatnot.'); return; }
+    const lives = getLives();
+    const existing = lives.find((l: any) => l.user_email === user.email);
+    if (existing) {
+      existing.is_live = true;
+      existing.started_at = new Date().toISOString();
+    } else {
+      lives.push({ id: `live_${Date.now()}`, user_email: user.email, whatnot_username: username, display_name: user.name, started_at: new Date().toISOString(), is_live: true, avatar: user.avatar || null });
+    }
+    saveLives(lives);
+    setIsLive(true);
+    window.open(`https://www.whatnot.com/${username}`, '_blank');
+  };
+
+  const stopLive = () => {
+    if (!user) return;
+    const lives = getLives().map((l: any) => l.user_email === user.email ? { ...l, is_live: false } : l);
+    saveLives(lives);
+    setIsLive(false);
+  };
 
   const tabs = [
     { id: 'profile', label: 'Mon profil', icon: User },
@@ -410,6 +469,52 @@ export default function Profile() {
                   </div>
                 )}
               </section>
+
+              {/* Whatnot — ambassador only */}
+              {userIsAmbassador && (
+                <section style={{ backgroundColor: 'white', border: '1px solid #e53935', padding: '1.5rem' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '1rem' }}>
+                    <Radio size={16} color="#e53935" />
+                    <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.65rem', letterSpacing: '0.2em', color: '#e53935', fontWeight: 700 }}>COMPTE WHATNOT · AMBASSADEUR</p>
+                  </div>
+                  <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.75rem', color: '#9e8e7e', marginBottom: '1rem' }}>
+                    Connectez votre compte Whatnot pour apparaître en direct sur le site lors de vos lives.
+                  </p>
+                  <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', flexWrap: 'wrap' }}>
+                    <div style={{ flex: 1, minWidth: '200px' }}>
+                      <label style={labelStyle}>PSEUDO WHATNOT</label>
+                      <div style={{ display: 'flex', alignItems: 'center', border: '1px solid #e8d5b7' }}>
+                        <span style={{ padding: '8px 10px', backgroundColor: '#f8f4ef', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.85rem', color: '#9e8e7e', borderRight: '1px solid #e8d5b7' }}>@</span>
+                        <input value={whatnotInput} onChange={e => setWhatnotInput(e.target.value.replace('@', ''))}
+                          placeholder="votre_pseudo" style={{ ...inputStyle, border: 'none', borderRadius: 0 }} />
+                      </div>
+                    </div>
+                    <button onClick={saveWhatnot} style={{ backgroundColor: '#1a1a1a', color: 'white', border: 'none', padding: '9px 18px', cursor: 'pointer', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.75rem', letterSpacing: '0.1em', marginTop: '16px' }}>
+                      ENREGISTRER
+                    </button>
+                    {whatnotSaved && <span style={{ color: '#2e7d32', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.75rem', marginTop: '16px' }}>✓ Enregistré</span>}
+                  </div>
+                  {getWhatnotUsername(user.email) && (
+                    <div style={{ marginTop: '1.25rem', display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
+                      {isLive ? (
+                        <button onClick={stopLive}
+                          style={{ backgroundColor: '#cc0000', color: 'white', border: 'none', padding: '10px 20px', cursor: 'pointer', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.78rem', letterSpacing: '0.1em', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '6px' }}>
+                          ⏹ ARRÊTER LE LIVE
+                        </button>
+                      ) : (
+                        <button onClick={goLive}
+                          style={{ backgroundColor: '#e53935', color: 'white', border: 'none', padding: '10px 20px', cursor: 'pointer', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.78rem', letterSpacing: '0.1em', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '6px' }}>
+                          <Radio size={14} /> PASSER EN LIVE
+                        </button>
+                      )}
+                      <a href={`https://www.whatnot.com/${getWhatnotUsername(user.email)}`} target="_blank" rel="noopener noreferrer"
+                        style={{ display: 'flex', alignItems: 'center', gap: '5px', textDecoration: 'none', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.75rem', color: '#9e8e7e', padding: '10px 0' }}>
+                        Voir mon profil Whatnot <ExternalLink size={12} />
+                      </a>
+                    </div>
+                  )}
+                </section>
+              )}
             </div>
           )}
 
