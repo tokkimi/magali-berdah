@@ -228,7 +228,9 @@ export default function Home() {
       <style>{`
         @keyframes shimmer{0%{background-position:400% 0}100%{background-position:-400% 0}}
         .hero-img { object-fit: cover; object-position: center 25%; }
+        .hero-btns { display: none; }
         @media (min-width: 768px) {
+          .hero-btns { display: flex; }
           .hero-img { object-position: center 15%; }
           .hero-text { padding: 3rem 4rem !important; }
           .comment-acheter-inner { max-width: 1100px; margin: 0 auto; }
@@ -251,7 +253,7 @@ export default function Home() {
             {t('heroTitle')}{' '}
             <span style={{ color: '#c9a96e' }}>{t('heroHighlight')}</span>
           </h1>
-          <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
+          <div className="hero-btns" style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
             <Link to="/catalogue?type=fixed" className="btn-gold" style={{ fontSize: '0.68rem', padding: '10px 18px' }}>{t('heroCtaSales')}</Link>
             <Link to="/catalogue?type=auction" style={{ border: '1px solid #c9a96e', color: '#c9a96e', padding: '10px 18px', textDecoration: 'none', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.68rem', letterSpacing: '0.1em', borderRadius: '2px' }}>
               {t('heroCtaAuctions')}
