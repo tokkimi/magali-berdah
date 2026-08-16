@@ -67,44 +67,47 @@ function ExclusiveTeaser() {
   const mm = String(Math.floor((secs % 3600) / 60)).padStart(2, '0');
   const ss = String(secs % 60).padStart(2, '0');
 
+  const dateLabel = settings.open_date && settings.open_date !== getParisDate()
+    ? `${new Intl.DateTimeFormat('fr-FR', { day: 'numeric', month: 'long' }).format(new Date(settings.open_date + 'T12:00'))} à ${settings.open_time}`
+    : `Aujourd'hui à ${settings.open_time}`;
+
   return (
     <Link to="/vente-exclusive" style={{ display: 'block', textDecoration: 'none', backgroundColor: '#0f0f0f' }}>
-      <div style={{ padding: '1.1rem 1.25rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+      <style>{`@keyframes goldPulse{0%,100%{opacity:1}50%{opacity:0.45}}`}</style>
+      <div style={{ padding: '1.6rem 1.25rem 1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
           <div style={{
-            width: '36px', height: '36px', borderRadius: '50%', flexShrink: 0,
-            backgroundColor: 'rgba(201,169,110,0.12)', border: '1px solid rgba(201,169,110,0.3)',
+            width: '44px', height: '44px', borderRadius: '50%', flexShrink: 0,
+            backgroundColor: 'rgba(201,169,110,0.12)', border: '1px solid rgba(201,169,110,0.35)',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             animation: open ? undefined : 'goldPulse 2s infinite',
           }}>
-            {open ? <Star size={15} color="#c9a96e" fill="#c9a96e" /> : <Lock size={14} color="#c9a96e" />}
+            {open ? <Star size={18} color="#c9a96e" fill="#c9a96e" /> : <Lock size={17} color="#c9a96e" />}
           </div>
           <div>
-            <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.5rem', letterSpacing: '0.28em', color: '#c9a96e', marginBottom: '3px' }}>
+            <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.52rem', letterSpacing: '0.28em', color: '#c9a96e', marginBottom: '5px' }}>
               {open ? 'VENTE EXCLUSIVE · OUVERTE MAINTENANT' : 'VENTE EXCLUSIVE · ACCÈS LIMITÉ'}
             </p>
             {open ? (
-              <p style={{ fontFamily: 'Georgia, serif', fontSize: '0.95rem', color: 'white' }}>
-                Sélection du jour — ferme à {settings.close_time}
+              <p style={{ fontFamily: 'Georgia, serif', fontSize: '1.15rem', color: 'white', lineHeight: 1.2 }}>
+                Sélection du jour<br />
+                <span style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.5)', fontFamily: 'Helvetica Neue, Arial, sans-serif' }}>Ferme à {settings.close_time}</span>
               </p>
             ) : (
-              <div style={{ display: 'flex', alignItems: 'baseline', gap: '6px', flexWrap: 'wrap' }}>
-                <p style={{ fontFamily: 'Georgia, serif', fontSize: '0.82rem', color: 'rgba(255,255,255,0.55)' }}>
-                  {settings.open_date && settings.open_date !== getParisDate()
-                    ? `${new Intl.DateTimeFormat('fr-FR', { day: 'numeric', month: 'long' }).format(new Date(settings.open_date + 'T12:00'))} à ${settings.open_time} · Dans`
-                    : `Ouvre à ${settings.open_time} · Dans`
-                  }
+              <div>
+                <p style={{ fontFamily: 'Georgia, serif', fontSize: '1.15rem', color: 'white', lineHeight: 1.2, marginBottom: '4px' }}>
+                  {dateLabel}
                 </p>
-                <p style={{ fontFamily: 'Georgia, serif', fontSize: '1rem', color: '#c9a96e', letterSpacing: '0.05em' }}>
-                  {hh}:{mm}:{ss}
-                </p>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                  <span style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.72rem', color: 'rgba(255,255,255,0.4)' }}>Dans</span>
+                  <span style={{ fontFamily: 'Georgia, serif', fontSize: '1.2rem', color: '#c9a96e', letterSpacing: '0.04em' }}>{hh}:{mm}:{ss}</span>
+                </div>
               </div>
             )}
           </div>
         </div>
-        <ChevronRight size={16} color={open ? '#c9a96e' : '#555'} style={{ flexShrink: 0 }} />
+        <ChevronRight size={18} color={open ? '#c9a96e' : '#444'} style={{ flexShrink: 0 }} />
       </div>
-      <style>{`@keyframes goldPulse{0%,100%{opacity:1}50%{opacity:0.5}}`}</style>
     </Link>
   );
 }
@@ -222,7 +225,6 @@ export default function Home() {
   const [auctions, setAuctions] = useState<any[]>([]);
   const [women, setWomen] = useState<any[]>([]);
   const [men, setMen] = useState<any[]>([]);
-  const [bags, setBags] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -230,19 +232,14 @@ export default function Home() {
       getSharedItems({ type: 'auction', limit: 8 }),
       getSharedItems({ category: 'women', limit: 8 }),
       getSharedItems({ category: 'men', limit: 8 }),
-      getSharedItems({ category: 'bags', limit: 8 }),
-    ]).then(([a, w, m, b]) => {
+    ]).then(([a, w, m]) => {
       const aItems = a.status === 'fulfilled' ? a.value : [];
       const wItems = w.status === 'fulfilled' ? w.value : [];
       const mItems = m.status === 'fulfilled' ? m.value : [];
-      const bItems = b.status === 'fulfilled' ? b.value : [];
-
-      // Use static fallback if API returns nothing
       const merge = (shared: any[], fallback: any[]) => [...new Map([...fallback, ...shared].map(item => [item.id, item])).values()].filter(item => item.status === 'active').slice(0, 8);
       setAuctions(merge(aItems, filterStaticItems({ type: 'auction', limit: 8 }).items));
       setWomen(merge(wItems, filterStaticItems({ category: 'women', limit: 8 }).items));
       setMen(merge(mItems, filterStaticItems({ category: 'men', limit: 8 }).items));
-      setBags(merge(bItems, filterStaticItems({ category: 'bags', limit: 8 }).items));
       setLoading(false);
     });
   }, []);
@@ -322,17 +319,6 @@ export default function Home() {
         title={t('menSection')}
         link="/catalogue?category=men"
         items={men}
-        loading={loading}
-        seeAll={t('seeAll')}
-        seeMore={t('seeMore')}
-      />
-
-      {/* Sacs */}
-      <HScrollSection
-        label={t('sectionTrend')}
-        title={t('bagsSection')}
-        link="/catalogue?category=bags"
-        items={bags}
         loading={loading}
         seeAll={t('seeAll')}
         seeMore={t('seeMore')}
