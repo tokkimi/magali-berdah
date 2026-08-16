@@ -41,7 +41,7 @@ export default function Header() {
   const [showNotifs, setShowNotifs] = useState(false);
   const [liveCount, setLiveCount] = useState(getLiveCount());
   const [installPrompt, setInstallPrompt] = useState<any>(null);
-  const [showIOSHint, setShowIOSHint] = useState(false);
+  const [showIOSHint, setShowIOSHint] = useState(() => /iphone|ipad|ipod/i.test(navigator.userAgent) && !(window as any).MSStream);
   const [installed, setInstalled] = useState(false);
   const navRef = useRef<HTMLDivElement>(null);
 
@@ -284,8 +284,16 @@ export default function Header() {
                     <Download size={14} color="#c9a96e" style={{ marginLeft: 'auto' }} />
                   </button>
                   {showIOSHint && (
-                    <div style={{ backgroundColor: '#f8f4ef', border: '1px solid #e8d5b7', padding: '12px 14px', marginTop: '6px', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.75rem', color: '#555', lineHeight: 1.6 }}>
-                      Appuyez sur <strong>Partager</strong> (icône en bas de Safari) puis <strong>Sur l'écran d'accueil</strong>.
+                    <div style={{ backgroundColor: '#f8f4ef', border: '1px solid #e8d5b7', borderRadius: '8px', padding: '14px', marginTop: '6px', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.78rem', color: '#444', lineHeight: 1.7 }}>
+                      <div style={{ fontWeight: 600, marginBottom: '10px', color: '#1a1a1a' }}>2 étapes pour installer l'app :</div>
+                      <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', marginBottom: '8px' }}>
+                        <span style={{ background: '#c9a96e', color: '#fff', borderRadius: '50%', width: '20px', height: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, fontSize: '11px', fontWeight: 700 }}>1</span>
+                        <span>Appuyez sur <svg style={{ display: 'inline', verticalAlign: 'middle', margin: '0 2px' }} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#007AFF" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg> <strong style={{ color: '#007AFF' }}>Partager</strong> en bas de Safari</span>
+                      </div>
+                      <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
+                        <span style={{ background: '#c9a96e', color: '#fff', borderRadius: '50%', width: '20px', height: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, fontSize: '11px', fontWeight: 700 }}>2</span>
+                        <span>Choisissez <strong>Sur l'écran d'accueil</strong> <svg style={{ display: 'inline', verticalAlign: 'middle', margin: '0 2px' }} width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#555" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg></span>
+                      </div>
                     </div>
                   )}
                 </div>
