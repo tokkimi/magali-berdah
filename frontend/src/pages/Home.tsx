@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ChevronRight, ShoppingBag, Gavel, Shield, Truck, Radio, ExternalLink } from 'lucide-react';
+import { ChevronRight, ShoppingBag, Gavel, Shield, Truck, Radio, Lock, Star } from 'lucide-react';
 import { useT } from '../lib/store';
 import ItemCard from '../components/ItemCard';
 import LiveRail from '../components/LiveRail';
@@ -9,6 +9,80 @@ import { getSharedItems } from '../lib/marketplace';
 
 function getLives(): any[] {
   try { return JSON.parse(localStorage.getItem('mb_lives') || '[]').filter((l: any) => l.is_live); } catch { return []; }
+}
+
+const SETTINGS_KEY = 'mb_exclusive_settings';
+function getExclusiveSettings() {
+  try {
+    const s = JSON.parse(localStorage.getItem(SETTINGS_KEY) || '{}');
+    return { open_time: s.open_time || '09:00', close_time: s.close_time || '19:00', exclusive_ids: (s.exclusive_ids as string[]) || [] };
+  } catch { return { open_time: '09:00', close_time: '19:00', exclusive_ids: [] }; }
+}
+function isWindowOpen(ot: string, ct: string) {
+  const now = new Date();
+  const [oh, om] = ot.split(':').map(Number);
+  const [ch, cm] = ct.split(':').map(Number);
+  const cur = now.getHours() * 60 + now.getMinutes();
+  return cur >= oh * 60 + om && cur < ch * 60 + cm;
+}
+function getSecondsUntilOpen(ot: string) {
+  const now = new Date();
+  const [oh, om] = ot.split(':').map(Number);
+  const d = new Date(now); d.setHours(oh, om, 0, 0);
+  if (d <= now) d.setDate(d.getDate() + 1);
+  return Math.floor((d.getTime() - now.getTime()) / 1000);
+}
+
+function ExclusiveTeaser() {
+  const [settings, setSettings] = useState(getExclusiveSettings);
+  const [open, setOpen] = useState(() => isWindowOpen(settings.open_time, settings.close_time));
+  const [secs, setSecs] = useState(() => getSecondsUntilOpen(settings.open_time));
+
+  useEffect(() => {
+    const iv = setInterval(() => {
+      const s = getExclusiveSettings();
+      setSettings(s);
+      setOpen(isWindowOpen(s.open_time, s.close_time));
+      setSecs(getSecondsUntilOpen(s.open_time));
+    }, 1000);
+    return () => clearInterval(iv);
+  }, []);
+
+  if (settings.exclusive_ids.length === 0) return null;
+
+  const h = String(Math.floor(secs / 3600)).padStart(2, '0');
+  const m = String(Math.floor((secs % 3600) / 60)).padStart(2, '0');
+  const s = String(secs % 60).padStart(2, '0');
+
+  return (
+    <Link to="/vente-exclusive" style={{ display: 'block', textDecoration: 'none', margin: '0', backgroundColor: '#0f0f0f', padding: '1rem 1.25rem', borderBottom: '1px solid #1e1e1e' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          {open
+            ? <Star size={16} color="#c9a96e" fill="#c9a96e" />
+            : <Lock size={15} color="#c9a96e" />
+          }
+          <div>
+            <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.55rem', letterSpacing: '0.25em', color: '#c9a96e', marginBottom: '2px' }}>
+              {open ? 'VENTE EXCLUSIVE · OUVERTE MAINTENANT' : 'VENTE EXCLUSIVE · BIENTÔT'}
+            </p>
+            <p style={{ fontFamily: 'Georgia, serif', fontSize: '0.9rem', color: 'white', fontWeight: 400 }}>
+              {open
+                ? `Sélection du jour — ferme à ${settings.close_time}`
+                : `Ouvre à ${settings.open_time} · Dans ${h}h ${m}m ${s}s`
+              }
+            </p>
+          </div>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '4px', flexShrink: 0 }}>
+          <span style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.62rem', color: open ? '#c9a96e' : '#666', letterSpacing: '0.1em' }}>
+            {open ? 'VOIR' : ''}
+          </span>
+          <ChevronRight size={14} color={open ? '#c9a96e' : '#444'} />
+        </div>
+      </div>
+    </Link>
+  );
 }
 
 function LivesHScroll() {
@@ -76,6 +150,7 @@ function HScrollSection({ title, label, link, items, loading, seeAll, seeMore }:
   items: any[]; loading: boolean; seeAll: string; seeMore: string;
 }) {
   const navigate = useNavigate();
+  if (!loading && items.length === 0) return null;
   return (
     <div style={{ marginBottom: '0' }}>
       {/* Header */}
@@ -184,6 +259,9 @@ export default function Home() {
           </div>
         </div>
       </div>
+
+      {/* Vente Exclusive */}
+      <ExclusiveTeaser />
 
       {/* Lives */}
       <LivesHScroll />
