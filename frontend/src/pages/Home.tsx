@@ -175,11 +175,11 @@ function HScrollSection({ title, label, link, items, loading, seeAll, seeMore }:
       {/* Horizontal scroll */}
       <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch', scrollbarWidth: 'none', msOverflowStyle: 'none', padding: '0 1rem 1.25rem' }}>
         <style>{`.hscroll::-webkit-scrollbar{display:none}`}</style>
-        <div className="hscroll" style={{ display: 'flex', gap: '10px', width: 'max-content' }}>
+        <div className="hscroll" style={{ display: 'flex', gap: '10px', width: 'max-content', alignItems: 'stretch' }}>
           {loading
             ? [1,2,3,4].map(i => <SkeletonCard key={i} />)
             : items.map(item => (
-                <div key={item.id} style={{ flexShrink: 0, width: '158px' }}>
+                <div key={item.id} style={{ flexShrink: 0, width: '158px', display: 'flex', flexDirection: 'column' }}>
                   <ItemCard item={item} />
                 </div>
               ))

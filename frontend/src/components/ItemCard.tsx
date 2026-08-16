@@ -62,13 +62,14 @@ export default function ItemCard({ item }: { item: Item }) {
   const isEnding = countdown && countdown !== 'Terminée' && !countdown.includes('j');
 
   return (
-    <Link to={`/article/${item.id}`} style={{ textDecoration: 'none', color: 'inherit', display: 'block' }}>
+    <Link to={`/article/${item.id}`} style={{ textDecoration: 'none', color: 'inherit', display: 'flex', height: '100%' }}>
       <div style={{
         borderRadius: '12px',
         overflow: 'hidden',
         backgroundColor: '#fff',
         boxShadow: '0 2px 12px rgba(0,0,0,0.07)',
         transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+        display: 'flex', flexDirection: 'column', width: '100%',
       }}
         onMouseEnter={e => {
           (e.currentTarget as HTMLDivElement).style.transform = 'translateY(-3px)';
@@ -136,7 +137,7 @@ export default function ItemCard({ item }: { item: Item }) {
         </div>
 
         {/* Infos */}
-        <div style={{ padding: '10px 10px 12px', display: 'flex', flexDirection: 'column' }}>
+        <div style={{ padding: '10px 10px 12px', display: 'flex', flexDirection: 'column', minHeight: '100px' }}>
           {/* Marque + catégorie */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '4px', marginBottom: '3px', overflow: 'hidden', flexShrink: 0 }}>
             <p style={{
@@ -157,10 +158,12 @@ export default function ItemCard({ item }: { item: Item }) {
             )}
           </div>
 
-          {/* Titre */}
+          {/* Titre — 2 lignes max */}
           <p style={{
             fontFamily: 'Georgia, serif', fontSize: '0.82rem',
             color: '#1a1a1a', lineHeight: '1.3', marginBottom: '6px',
+            display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden',
+            flex: 1,
           }}>
             {item.title}
           </p>
