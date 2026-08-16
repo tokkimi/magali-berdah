@@ -1,5 +1,5 @@
 import { Link, Outlet, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Users, Package, ShoppingBag, Mail, BarChart2, Search, Inbox, Radio } from 'lucide-react';
+import { LayoutDashboard, Users, Package, ShoppingBag, Mail, BarChart2, Search, Inbox, Radio, Settings } from 'lucide-react';
 import { useStore } from '../../lib/store';
 
 function getPendingCount() {
@@ -24,6 +24,7 @@ export default function AdminLayout() {
     { to: '/admin/newsletter', label: 'Newsletter', icon: Mail },
     { to: '/admin/analytics', label: 'Analytics', icon: BarChart2 },
     { to: '/admin/seo', label: 'SEO', icon: Search },
+    { to: '/admin/parametres', label: 'Paramètres', icon: Settings },
   ];
 
   const isActive = (to: string, exact?: boolean) =>

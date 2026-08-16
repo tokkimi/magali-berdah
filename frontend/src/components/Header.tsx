@@ -100,6 +100,9 @@ export default function Header() {
               LIVE
               {liveCount > 0 && <span style={{ backgroundColor: '#e53935', color: 'white', fontSize: '0.55rem', padding: '1px 5px', borderRadius: '10px' }}>{liveCount}</span>}
             </Link>
+            <Link to="/vente-exclusive" style={{ textDecoration: 'none', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.75rem', letterSpacing: '0.15em', color: '#c9a96e', fontWeight: 600 }}>
+              ✦ EXCLU
+            </Link>
             {NAV_ITEMS.map(item => (
               <div key={item.key}
                 onMouseEnter={() => setActiveNav(item.key)}
@@ -219,6 +222,10 @@ export default function Header() {
             <Link to="/lives" onClick={() => setMobileOpen(false)}
               style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '10px 0', textDecoration: 'none', color: liveCount > 0 ? '#e53935' : '#1a1a1a', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.85rem', letterSpacing: '0.1em', borderBottom: '1px solid #f0ece6', fontWeight: liveCount > 0 ? 700 : 400 }}>
               <Radio size={15} /> LIVE {liveCount > 0 && `(${liveCount})`}
+            </Link>
+            <Link to="/vente-exclusive" onClick={() => setMobileOpen(false)}
+              style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '10px 0', textDecoration: 'none', color: '#c9a96e', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.85rem', letterSpacing: '0.1em', borderBottom: '1px solid #f0ece6', fontWeight: 600 }}>
+              ✦ VENTE EXCLUSIVE
             </Link>
             {NAV_ITEMS.map(item => (
               <Link key={item.key} to={`/catalogue?type=${item.key === 'auctions' ? 'auction' : 'fixed'}`}
