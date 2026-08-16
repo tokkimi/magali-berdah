@@ -98,7 +98,7 @@ export default function Header() {
         {/* Top bar */}
         <div style={{ backgroundColor: '#1a1a1a', color: '#c9a96e', fontSize: '0.7rem', letterSpacing: '0.15em', fontFamily: 'Helvetica Neue, Arial, sans-serif' }}
           className="flex items-center justify-between px-6 py-1.5">
-          <span>LIVRAISON OFFERTE POUR TOUT ACHAT / FREE SHIPPING ON ALL ORDERS</span>
+          <span>{lang === 'fr' ? 'LIVRAISON OFFERTE POUR TOUT ACHAT' : 'FREE SHIPPING ON ALL ORDERS'}</span>
           <div className="hidden md:flex items-center gap-2">
             <button onClick={() => setLang(lang === 'fr' ? 'en' : 'fr')}
               style={{ color: '#c9a96e', background: 'transparent', border: '1px solid #c9a96e', padding: '2px 10px', cursor: 'pointer', fontSize: '0.65rem', letterSpacing: '0.1em' }}>
