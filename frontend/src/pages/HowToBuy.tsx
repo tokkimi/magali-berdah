@@ -1,36 +1,36 @@
 import { Link } from 'react-router-dom';
-import { Search, UserCheck, CreditCard, Package, MessageCircle, RotateCcw } from 'lucide-react';
+import { Search, UserCheck, CreditCard, Package, ShieldCheck, RotateCcw } from 'lucide-react';
 
 const steps = [
   {
     icon: Search,
     num: '01',
-    title: 'Parcourez le catalogue',
-    text: 'Explorez nos sélections par catégorie (Femme, Homme, Sacs, Accessoires) ou utilisez la recherche. Filtrez par marque, prix, taille ou état. Chaque pièce vient d\'une boutique professionnelle vérifiée.'
+    title: 'Parcourez la sélection',
+    text: 'Explorez les articles par catégorie (Femme, Homme, Sacs, Accessoires) ou utilisez la recherche. Chaque pièce est sélectionnée et authentifiée personnellement par Magali Berdah — il n\'y a pas de vendeurs tiers sur la plateforme.'
   },
   {
     icon: UserCheck,
     num: '02',
     title: 'Créez votre compte',
-    text: 'Inscrivez-vous gratuitement avec votre adresse e-mail. Votre compte vous permet de suivre vos achats et enchères, de sauvegarder vos favoris et de contacter les vendeurs.'
+    text: 'Inscrivez-vous gratuitement avec votre adresse e-mail. Votre compte vous permet de suivre vos achats et enchères, de sauvegarder vos favoris et de recevoir les alertes de ventes exclusives.'
   },
   {
     icon: CreditCard,
     num: '03',
     title: 'Achetez ou enchérissez',
-    text: 'Deux façons d\'acheter : prix fixe (achat immédiat) ou enchères (proposez un montant avant la fin du compte à rebours). Pour les enchères, vous êtes notifié si vous êtes surpassé. Le plus offrant remporte la pièce.'
+    text: 'Deux façons d\'acheter : prix fixe (achat immédiat) ou enchères (proposez un montant avant la fin du compte à rebours). Un écran de confirmation s\'affiche avant chaque offre — toute enchère est ferme et irrévocable.'
   },
   {
     icon: Package,
     num: '04',
-    title: 'Livraison suivie',
-    text: 'La livraison est toujours incluse dans le prix affiché. Le vendeur prépare votre colis et vous communique le numéro de suivi via la messagerie de commande. Délai moyen : 3 à 5 jours ouvrés.'
+    title: 'Livraison suivie, incluse',
+    text: 'La livraison est toujours incluse dans le prix affiché. Votre colis est expédié sous 48h après confirmation. Délai moyen : 2 à 5 jours ouvrés en France. Vous recevez un numéro de suivi par e-mail.'
   },
   {
-    icon: MessageCircle,
+    icon: ShieldCheck,
     num: '05',
-    title: 'Messagerie avec le vendeur',
-    text: 'Après votre achat, un chat direct s\'ouvre avec la boutique. Posez vos questions sur l\'emballage, le suivi ou l\'état de la pièce. Le vendeur a l\'obligation de répondre sous 48h.'
+    title: 'Authenticité garantie',
+    text: 'Toutes les pièces sont authentifiées avant mise en ligne. Les photos montrent l\'article réel. Si l\'article reçu ne correspond pas à la description, nous prenons en charge le retour et vous remboursons intégralement.'
   },
   {
     icon: RotateCcw,
@@ -73,7 +73,6 @@ export default function HowToBuy() {
         })}
       </div>
 
-      {/* CTA */}
       <div style={{ backgroundColor: '#f8f4ef', borderRadius: '12px', padding: '1.5rem', textAlign: 'center', marginTop: '1rem' }}>
         <p style={{ fontFamily: 'Georgia, serif', fontSize: '1rem', color: '#1a1a1a', marginBottom: '1rem' }}>
           Prêt(e) à découvrir nos pièces ?

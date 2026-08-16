@@ -8,19 +8,27 @@ const faqs = [
     items: [
       {
         q: 'Comment fonctionne une enchère ?',
-        a: "Chaque article en enchère affiche un prix de départ et une date de fin. Vous proposez un montant supérieur à l'offre actuelle. Si quelqu'un surenchérit, vous recevez une notification. À la fin du compte à rebours, le plus offrant remporte la pièce et reçoit une commande automatiquement."
-      },
-      {
-        q: 'Puis-je acheter au prix fixe et enchérir sur le même article ?',
-        a: "Certains vendeurs activent les deux options. Si un prix fixe est disponible, vous pouvez acheter immédiatement et mettre fin aux enchères. Sinon, seule l'enchère est disponible jusqu'à la date de clôture."
+        a: "Chaque article en enchère affiche un prix de départ et une date de fin. Vous proposez un montant supérieur à l'offre actuelle. Si quelqu'un surenchérit, vous recevez une notification. À la fin du compte à rebours, le plus offrant remporte la pièce et une commande est créée automatiquement."
       },
       {
         q: 'Que se passe-t-il si je remporte une enchère ?',
-        a: "Vous êtes automatiquement notifié et une commande est créée. Le montant remporté est votre prix d'achat. La livraison est toujours incluse. Vous avez accès à la messagerie du vendeur pour coordonner l'envoi."
+        a: "Vous êtes notifié par e-mail et une commande est créée automatiquement à votre nom. Le montant de votre offre est votre prix d'achat. La livraison est incluse. Vous pouvez suivre l'envoi directement depuis votre espace commandes."
       },
       {
         q: "Mon offre a été surpassée, que faire ?",
-        a: "Vous recevez une notification en temps réel. Retournez sur la page de l'article pour placer une nouvelle offre. Rien ne vous y oblige — vous n'êtes débité que si vous remportez l'enchère."
+        a: "Vous recevez une notification en temps réel. Retournez sur la page de l'article pour placer une nouvelle offre. Vous n'êtes débité que si vous remportez l'enchère — aucun frais si vous perdez."
+      },
+      {
+        q: "Puis-je annuler une enchère ?",
+        a: "Non. Conformément aux CGV, toute offre placée est ferme et irrévocable. En enchérissant, vous vous engagez contractuellement à payer si vous remportez la vente. C'est pourquoi un écran de confirmation s'affiche avant chaque offre."
+      },
+      {
+        q: "Qu'est-ce que la Vente Exclusive ?",
+        a: "La Vente Exclusive est une sélection de pièces rares proposées sur une fenêtre horaire limitée — souvent quelques heures seulement. Ces articles ne sont pas disponibles en dehors de cette période. Activez les notifications pour ne pas manquer l'ouverture."
+      },
+      {
+        q: "Comment acheter à prix fixe ?",
+        a: "Sur les articles affichant un prix fixe, cliquez sur 'Acheter maintenant'. Un récapitulatif s'affiche avant de confirmer. Le paiement est sécurisé et la livraison incluse."
       },
     ]
   },
@@ -29,11 +37,11 @@ const faqs = [
     items: [
       {
         q: 'La livraison est-elle vraiment incluse ?',
-        a: "Oui, toujours. Le prix affiché (fixe ou enchère) inclut les frais de livraison vers la France métropolitaine. Pour les livraisons internationales, des frais supplémentaires peuvent s'appliquer selon le vendeur."
+        a: "Oui, toujours. Le prix affiché inclut les frais de livraison vers la France métropolitaine. Pour les livraisons internationales, des frais supplémentaires peuvent s'appliquer — ils sont indiqués au moment de la commande."
       },
       {
         q: 'Combien de temps pour recevoir ma commande ?',
-        a: "Dès que votre paiement est confirmé, le vendeur a 48h pour expédier. La livraison prend ensuite 2 à 5 jours ouvrés en France. Vous recevrez un numéro de suivi via la messagerie de commande."
+        a: "Votre colis est expédié sous 48h après confirmation du paiement. La livraison prend ensuite 2 à 5 jours ouvrés en France. Vous recevrez un numéro de suivi par e-mail dès l'expédition."
       },
       {
         q: 'Puis-je retourner un article ?',
@@ -42,36 +50,36 @@ const faqs = [
     ]
   },
   {
+    cat: 'Authenticité & Qualité',
+    items: [
+      {
+        q: "Comment garantissez-vous l'authenticité des pièces ?",
+        a: "Chaque article est sélectionné et authentifié personnellement par Magali Berdah avant d'être mis en ligne. Il n'y a pas de vendeurs tiers sur la plateforme — toutes les pièces proviennent directement de la boutique officielle Magali Berdah."
+      },
+      {
+        q: "Les photos correspondent-elles vraiment aux articles ?",
+        a: "Oui. Toutes les photos sont prises par nos soins et montrent l'article réel — état, couleur, détails. La description précise l'état de la pièce (neuf, très bon état, bon état). En cas de doute, contactez-nous avant d'enchérir."
+      },
+      {
+        q: "Et si l'article reçu ne correspond pas à la description ?",
+        a: "Contactez-nous immédiatement à contact@magaliberdah.com avec des photos. Si l'article ne correspond pas, nous prenons en charge les frais de retour et vous remboursons intégralement."
+      },
+    ]
+  },
+  {
     cat: 'Compte & Sécurité',
     items: [
       {
         q: "Comment créer un compte ?",
-        a: "Cliquez sur 'S'inscrire' en haut à droite. Entrez votre nom, e-mail et un mot de passe sécurisé. C'est gratuit et sans abonnement pour les acheteurs."
-      },
-      {
-        q: "Les vendeurs sont-ils vérifiés ?",
-        a: "Tous les vendeurs professionnels fournissent leur SIRET lors de l'inscription. Notre équipe vérifie les informations et valide manuellement chaque boutique avant la première mise en ligne."
+        a: "Cliquez sur 'S'inscrire' en haut à droite. Entrez votre prénom, nom, e-mail et un mot de passe. C'est gratuit et sans abonnement."
       },
       {
         q: "Mes données personnelles sont-elles protégées ?",
         a: "Oui. Conformément au RGPD, vos données ne sont jamais revendues à des tiers. Vous pouvez demander la suppression de votre compte à tout moment en écrivant à contact@magaliberdah.com."
       },
-    ]
-  },
-  {
-    cat: 'Vendre sur Magali Berdah',
-    items: [
       {
-        q: "Comment ouvrir ma boutique ?",
-        a: "Cliquez sur 'Espace Pro' et inscrivez-vous avec votre SIRET. Après vérification (24-48h), vous pouvez publier jusqu'à 10 articles gratuitement avec une commission de 20%."
-      },
-      {
-        q: "Qu'est-ce que l'abonnement Premium ?",
-        a: "À 129€/mois, le Premium vous donne un nombre illimité d'articles et réduit la commission à 5%. Idéal si vous vendez régulièrement plus de 10 pièces par mois."
-      },
-      {
-        q: "Comment suis-je payé ?",
-        a: "Vos revenus (prix de vente - commission) sont crédités sur votre portefeuille Magali Berdah dès que la commande est marquée comme livrée. Vous pouvez ensuite demander un virement bancaire."
+        q: "Que se passe-t-il si je ne paie pas après avoir remporté une enchère ?",
+        a: "Toute enchère remportée non payée est signalée comme incident. Au 1er incident : avertissement + 7 jours de suspension. Au 2e : 30 jours de suspension. Au 3e : bannissement définitif et blocage de l'adresse e-mail. Des poursuites peuvent être engagées pour escroquerie (Code pénal, art. 313-1)."
       },
     ]
   },
@@ -105,7 +113,7 @@ export default function FAQ() {
         Questions fréquentes
       </h1>
       <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.85rem', color: '#9e8e7e', marginBottom: '2.5rem', lineHeight: 1.7 }}>
-        Retrouvez toutes les réponses à vos questions sur les achats, livraisons et la vente.
+        Toutes les réponses sur les achats, enchères, livraisons et l'authenticité des pièces.
       </p>
 
       {faqs.map(section => (

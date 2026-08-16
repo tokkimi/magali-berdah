@@ -380,11 +380,11 @@ export default function Home() {
           {[
             { icon: ShoppingBag, title: t('buyGuide').toUpperCase(), desc: t('buyGuideDesc') },
             { icon: Gavel, title: t('faqLabel'), desc: t('faqDesc') },
-            { icon: Shield, title: t('authenticity'), desc: t('authenticityDesc') },
+            { icon: Shield, title: 'CONDITIONS GÉNÉRALES', desc: 'Enchères, paiement, retours' },
           ].map(({ icon: Icon, title, desc }, i) => (
             <Link
               key={title}
-              to={i === 0 ? '/comment-acheter' : i === 1 ? '/faq' : '/pro'}
+              to={i === 0 ? '/comment-acheter' : i === 1 ? '/faq' : '/cgv'}
               style={{ display: 'flex', alignItems: 'center', gap: '1rem', padding: '1rem 0', textDecoration: 'none', borderBottom: i < 2 ? '1px solid #f0ece6' : 'none' }}
             >
               <div style={{ width: '40px', height: '40px', backgroundColor: '#f8f4ef', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
