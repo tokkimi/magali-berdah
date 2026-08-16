@@ -195,15 +195,15 @@ function ExclusiveWidget() {
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '8px' }}>
             <div>
               <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.52rem', color: 'rgba(255,255,255,0.35)', marginBottom: '5px', display: 'flex', alignItems: 'center', gap: '3px' }}><CalendarDays size={9} /> DATE</p>
-              <input type="date" value={settings.open_date} min={today} onChange={e => setSettings(s => ({ ...s, open_date: e.target.value }))} style={{ ...inp, padding: '8px 6px', fontSize: '13px', minWidth: 0 }} />
+              <input type="date" value={settings.open_date} min={today} onChange={e => setSettings(s => ({ ...s, open_date: e.target.value }))} style={{ ...inp, padding: '5px 3px', fontSize: '11px', minWidth: 0 }} />
             </div>
             <div>
               <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.52rem', color: 'rgba(255,255,255,0.35)', marginBottom: '5px' }}>OUVERTURE</p>
-              <input type="time" value={settings.open_time} onChange={e => setSettings(s => ({ ...s, open_time: e.target.value }))} style={{ ...inp, padding: '8px 6px', fontSize: '13px', minWidth: 0 }} />
+              <input type="time" value={settings.open_time} onChange={e => setSettings(s => ({ ...s, open_time: e.target.value }))} style={{ ...inp, padding: '5px 3px', fontSize: '11px', minWidth: 0 }} />
             </div>
             <div>
               <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.52rem', color: 'rgba(255,255,255,0.35)', marginBottom: '5px' }}>FERMETURE</p>
-              <input type="time" value={settings.close_time} onChange={e => setSettings(s => ({ ...s, close_time: e.target.value }))} style={{ ...inp, padding: '8px 6px', fontSize: '13px', minWidth: 0 }} />
+              <input type="time" value={settings.close_time} onChange={e => setSettings(s => ({ ...s, close_time: e.target.value }))} style={{ ...inp, padding: '5px 3px', fontSize: '11px', minWidth: 0 }} />
             </div>
           </div>
           <button onClick={save} style={{ marginTop: '12px', width: '100%', padding: '11px', backgroundColor: saved ? '#2e7d32' : '#c9a96e', border: 'none', cursor: 'pointer', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.75rem', letterSpacing: '0.1em', color: 'white', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', transition: 'background 0.3s' }}>
