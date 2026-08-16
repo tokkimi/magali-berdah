@@ -18,19 +18,27 @@ function getExclusiveSettings() {
     return { open_time: s.open_time || '09:00', close_time: s.close_time || '19:00', exclusive_ids: (s.exclusive_ids as string[]) || [] };
   } catch { return { open_time: '09:00', close_time: '19:00', exclusive_ids: [] }; }
 }
+function getNowParis() {
+  const parts = new Intl.DateTimeFormat('fr-FR', {
+    timeZone: 'Europe/Paris', hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: false,
+  }).formatToParts(new Date());
+  const get = (t: string) => parseInt(parts.find(p => p.type === t)?.value || '0');
+  return { h: get('hour'), m: get('minute'), s: get('second') };
+}
 function isWindowOpen(ot: string, ct: string) {
-  const now = new Date();
+  const { h, m } = getNowParis();
   const [oh, om] = ot.split(':').map(Number);
   const [ch, cm] = ct.split(':').map(Number);
-  const cur = now.getHours() * 60 + now.getMinutes();
+  const cur = h * 60 + m;
   return cur >= oh * 60 + om && cur < ch * 60 + cm;
 }
 function getSecondsUntilOpen(ot: string) {
-  const now = new Date();
+  const paris = getNowParis();
   const [oh, om] = ot.split(':').map(Number);
-  const d = new Date(now); d.setHours(oh, om, 0, 0);
-  if (d <= now) d.setDate(d.getDate() + 1);
-  return Math.floor((d.getTime() - now.getTime()) / 1000);
+  const curSecs = paris.h * 3600 + paris.m * 60 + paris.s;
+  const openSecs = oh * 3600 + om * 60;
+  const diff = openSecs - curSecs;
+  return diff > 0 ? diff : 86400 + diff;
 }
 
 function ExclusiveTeaser() {

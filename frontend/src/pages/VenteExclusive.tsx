@@ -17,21 +17,29 @@ function getExclusiveSettings() {
   } catch { return { open_time: '09:00', close_time: '19:00', exclusive_ids: [] }; }
 }
 
+function getNowParis() {
+  const parts = new Intl.DateTimeFormat('fr-FR', {
+    timeZone: 'Europe/Paris', hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: false,
+  }).formatToParts(new Date());
+  const get = (t: string) => parseInt(parts.find(p => p.type === t)?.value || '0');
+  return { h: get('hour'), m: get('minute'), s: get('second') };
+}
+
 function isWindowOpen(openTime: string, closeTime: string) {
-  const now = new Date();
+  const { h, m } = getNowParis();
   const [oh, om] = openTime.split(':').map(Number);
   const [ch, cm] = closeTime.split(':').map(Number);
-  const currentMinutes = now.getHours() * 60 + now.getMinutes();
-  return currentMinutes >= oh * 60 + om && currentMinutes < ch * 60 + cm;
+  const cur = h * 60 + m;
+  return cur >= oh * 60 + om && cur < ch * 60 + cm;
 }
 
 function getSecondsUntilOpen(openTime: string): number {
-  const now = new Date();
+  const paris = getNowParis();
   const [oh, om] = openTime.split(':').map(Number);
-  const openDate = new Date(now);
-  openDate.setHours(oh, om, 0, 0);
-  if (openDate <= now) openDate.setDate(openDate.getDate() + 1);
-  return Math.floor((openDate.getTime() - now.getTime()) / 1000);
+  const curSecs = paris.h * 3600 + paris.m * 60 + paris.s;
+  const openSecs = oh * 3600 + om * 60;
+  const diff = openSecs - curSecs;
+  return diff > 0 ? diff : 86400 + diff;
 }
 
 function formatCountdown(seconds: number) {
@@ -187,11 +195,11 @@ function CloseCountdown({ closeTime }: { closeTime: string }) {
 
   useEffect(() => {
     const calc = () => {
-      const now = new Date();
+      const paris = getNowParis();
       const [ch, cm] = closeTime.split(':').map(Number);
-      const close = new Date(now);
-      close.setHours(ch, cm, 0, 0);
-      return Math.max(0, Math.floor((close.getTime() - now.getTime()) / 1000));
+      const curSecs = paris.h * 3600 + paris.m * 60 + paris.s;
+      const closeSecs = ch * 3600 + cm * 60;
+      return Math.max(0, closeSecs - curSecs);
     };
     setSecs(calc());
     const iv = setInterval(() => setSecs(calc()), 1000);

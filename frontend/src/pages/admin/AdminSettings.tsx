@@ -46,14 +46,16 @@ export default function AdminSettings() {
     i.brand?.toLowerCase().includes(search.toLowerCase())
   );
 
-  // Current window status
-  const now = new Date();
+  // Current window status — heure Paris
+  const parisParts = new Intl.DateTimeFormat('fr-FR', {
+    timeZone: 'Europe/Paris', hour: 'numeric', minute: 'numeric', hour12: false,
+  }).formatToParts(new Date());
+  const parisH = parseInt(parisParts.find(p => p.type === 'hour')?.value || '0');
+  const parisM = parseInt(parisParts.find(p => p.type === 'minute')?.value || '0');
   const [oh, om] = openTime.split(':').map(Number);
   const [ch, cm] = closeTime.split(':').map(Number);
-  const openMinutes = oh * 60 + om;
-  const closeMinutes = ch * 60 + cm;
-  const currentMinutes = now.getHours() * 60 + now.getMinutes();
-  const isOpen = currentMinutes >= openMinutes && currentMinutes < closeMinutes;
+  const currentMinutes = parisH * 60 + parisM;
+  const isOpen = currentMinutes >= oh * 60 + om && currentMinutes < ch * 60 + cm;
 
   const sectionLabel: React.CSSProperties = { fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.6rem', letterSpacing: '0.2em', color: '#9e8e7e', marginBottom: '1rem', display: 'block' };
   const inputStyle: React.CSSProperties = { border: '1px solid #e8d5b7', padding: '8px 12px', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.85rem', width: '100%', boxSizing: 'border-box', outline: 'none', backgroundColor: 'white' };
