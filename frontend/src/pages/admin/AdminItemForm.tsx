@@ -217,8 +217,9 @@ export default function AdminItemForm() {
         .admin-item-form form>div{padding:16px!important;border-radius:12px}
         .admin-item-form [style*="grid-template-columns"]{grid-template-columns:1fr!important}
         .admin-item-form input,.admin-item-form select,.admin-item-form textarea{min-height:46px;font-size:16px!important}
-        .admin-item-form form>div:last-child{position:sticky;bottom:76px;z-index:10;background:#f8f4ef!important;padding:10px 0!important;display:grid!important;grid-template-columns:1fr!important}
-        .admin-item-form form>div:last-child button{min-height:50px}
+        .admin-item-form form{padding-bottom:160px!important}
+        .admin-item-form .form-actions{position:fixed!important;bottom:76px;left:0;right:0;z-index:10;background:#f8f4ef!important;padding:10px 16px!important;display:grid!important;grid-template-columns:1fr!important;gap:8px!important;box-shadow:0 -4px 16px rgba(0,0,0,0.08)}
+        .admin-item-form .form-actions button{min-height:50px}
       }`}</style>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '2rem' }}>
         <h1 style={{ fontFamily: 'Georgia, serif', fontSize: '1.8rem', fontWeight: 400, color: '#1a1a1a' }}>{isEdit ? 'Modifier l’article' : 'Ajouter un article'}</h1>
@@ -416,7 +417,7 @@ export default function AdminItemForm() {
           </label>
         </div>
 
-        <div style={{ display: 'flex', gap: '1rem' }}>
+        <div className="form-actions" style={{ display: 'flex', gap: '1rem' }}>
           <button type="submit" disabled={saving} className="btn-gold"
             style={{ flex: 1, fontSize: '0.8rem', letterSpacing: '0.1em', opacity: saving ? 0.7 : 1 }}>
             {saving ? 'ENREGISTREMENT...' : isEdit ? 'ENREGISTRER LES MODIFICATIONS' : 'PUBLIER L\'ARTICLE'}
