@@ -15,8 +15,8 @@ const SETTINGS_KEY = 'mb_exclusive_settings';
 function getExclusiveSettings() {
   try {
     const s = JSON.parse(localStorage.getItem(SETTINGS_KEY) || '{}');
-    return { open_time: s.open_time || '09:00', close_time: s.close_time || '19:00', exclusive_ids: (s.exclusive_ids as string[]) || [] };
-  } catch { return { open_time: '09:00', close_time: '19:00', exclusive_ids: [] }; }
+    return { open_date: s.open_date || '', open_time: s.open_time || '09:00', close_time: s.close_time || '19:00', exclusive_ids: (s.exclusive_ids as string[]) || [] };
+  } catch { return { open_date: '', open_time: '09:00', close_time: '19:00', exclusive_ids: [] }; }
 }
 function getNowParis() {
   const parts = new Intl.DateTimeFormat('fr-FR', {
@@ -25,33 +25,40 @@ function getNowParis() {
   const get = (t: string) => parseInt(parts.find(p => p.type === t)?.value || '0');
   return { h: get('hour'), m: get('minute'), s: get('second') };
 }
-function isWindowOpen(ot: string, ct: string) {
+function getParisDate() {
+  return new Intl.DateTimeFormat('fr-CA', { timeZone: 'Europe/Paris' }).format(new Date());
+}
+function isWindowOpen(od: string, ot: string, ct: string) {
+  if (getParisDate() !== od) return false;
   const { h, m } = getNowParis();
   const [oh, om] = ot.split(':').map(Number);
   const [ch, cm] = ct.split(':').map(Number);
   const cur = h * 60 + m;
   return cur >= oh * 60 + om && cur < ch * 60 + cm;
 }
-function getSecondsUntilOpen(ot: string) {
+function getSecondsUntilOpen(od: string, ot: string) {
   const paris = getNowParis();
+  const today = getParisDate();
   const [oh, om] = ot.split(':').map(Number);
+  if (od > today) {
+    return Math.max(0, Math.floor((new Date(`${od}T${ot}:00`).getTime() - Date.now()) / 1000));
+  }
   const curSecs = paris.h * 3600 + paris.m * 60 + paris.s;
   const openSecs = oh * 3600 + om * 60;
-  const diff = openSecs - curSecs;
-  return diff > 0 ? diff : 86400 + diff;
+  return Math.max(0, openSecs - curSecs);
 }
 
 function ExclusiveTeaser() {
   const [settings, setSettings] = useState(getExclusiveSettings);
-  const [open, setOpen] = useState(() => isWindowOpen(settings.open_time, settings.close_time));
-  const [secs, setSecs] = useState(() => getSecondsUntilOpen(settings.open_time));
+  const [open, setOpen] = useState(() => isWindowOpen(settings.open_date, settings.open_time, settings.close_time));
+  const [secs, setSecs] = useState(() => getSecondsUntilOpen(settings.open_date, settings.open_time));
 
   useEffect(() => {
     const iv = setInterval(() => {
       const s = getExclusiveSettings();
       setSettings(s);
-      setOpen(isWindowOpen(s.open_time, s.close_time));
-      setSecs(getSecondsUntilOpen(s.open_time));
+      setOpen(isWindowOpen(s.open_date, s.open_time, s.close_time));
+      setSecs(getSecondsUntilOpen(s.open_date, s.open_time));
     }, 1000);
     return () => clearInterval(iv);
   }, []);
@@ -81,11 +88,14 @@ function ExclusiveTeaser() {
                 Sélection du jour — ferme à {settings.close_time}
               </p>
             ) : (
-              <div style={{ display: 'flex', alignItems: 'baseline', gap: '6px' }}>
-                <p style={{ fontFamily: 'Georgia, serif', fontSize: '0.85rem', color: 'rgba(255,255,255,0.6)' }}>
-                  Ouvre à {settings.open_time} · Dans
+              <div style={{ display: 'flex', alignItems: 'baseline', gap: '6px', flexWrap: 'wrap' }}>
+                <p style={{ fontFamily: 'Georgia, serif', fontSize: '0.82rem', color: 'rgba(255,255,255,0.55)' }}>
+                  {settings.open_date && settings.open_date !== getParisDate()
+                    ? `${new Intl.DateTimeFormat('fr-FR', { day: 'numeric', month: 'long' }).format(new Date(settings.open_date + 'T12:00'))} à ${settings.open_time} · Dans`
+                    : `Ouvre à ${settings.open_time} · Dans`
+                  }
                 </p>
-                <p style={{ fontFamily: 'Georgia, serif', fontSize: '1.05rem', color: '#c9a96e', letterSpacing: '0.05em' }}>
+                <p style={{ fontFamily: 'Georgia, serif', fontSize: '1rem', color: '#c9a96e', letterSpacing: '0.05em' }}>
                   {hh}:{mm}:{ss}
                 </p>
               </div>

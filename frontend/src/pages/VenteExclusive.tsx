@@ -10,11 +10,12 @@ function getExclusiveSettings() {
   try {
     const s = JSON.parse(localStorage.getItem(SETTINGS_KEY) || '{}');
     return {
+      open_date: s.open_date || '',
       open_time: s.open_time || '09:00',
       close_time: s.close_time || '19:00',
       exclusive_ids: (s.exclusive_ids as string[]) || [],
     };
-  } catch { return { open_time: '09:00', close_time: '19:00', exclusive_ids: [] }; }
+  } catch { return { open_date: '', open_time: '09:00', close_time: '19:00', exclusive_ids: [] }; }
 }
 
 function getNowParis() {
@@ -25,7 +26,12 @@ function getNowParis() {
   return { h: get('hour'), m: get('minute'), s: get('second') };
 }
 
-function isWindowOpen(openTime: string, closeTime: string) {
+function getParisDate() {
+  return new Intl.DateTimeFormat('fr-CA', { timeZone: 'Europe/Paris' }).format(new Date());
+}
+
+function isWindowOpen(openDate: string, openTime: string, closeTime: string) {
+  if (getParisDate() !== openDate) return false;
   const { h, m } = getNowParis();
   const [oh, om] = openTime.split(':').map(Number);
   const [ch, cm] = closeTime.split(':').map(Number);
@@ -33,13 +39,25 @@ function isWindowOpen(openTime: string, closeTime: string) {
   return cur >= oh * 60 + om && cur < ch * 60 + cm;
 }
 
-function getSecondsUntilOpen(openTime: string): number {
+function getSecondsUntilOpen(openDate: string, openTime: string): number {
   const paris = getNowParis();
+  const today = getParisDate();
   const [oh, om] = openTime.split(':').map(Number);
+
+  if (openDate > today) {
+    // Future date: compute full seconds until that date+time
+    const nowMs = Date.now();
+    const target = new Date(`${openDate}T${openTime}:00`);
+    // Adjust for Paris offset
+    const parisOffset = -new Intl.DateTimeFormat('en', { timeZone: 'Europe/Paris', timeZoneName: 'shortOffset' })
+      .formatToParts(target).find(p => p.type === 'timeZoneName')!.value.replace('GMT', '').replace(':', '') as any * 36;
+    return Math.max(0, Math.floor((target.getTime() - nowMs) / 1000));
+  }
+
   const curSecs = paris.h * 3600 + paris.m * 60 + paris.s;
   const openSecs = oh * 3600 + om * 60;
   const diff = openSecs - curSecs;
-  return diff > 0 ? diff : 86400 + diff;
+  return diff > 0 ? diff : 0;
 }
 
 function formatCountdown(seconds: number) {
@@ -60,15 +78,15 @@ function CountdownBlock({ value, label }: { value: string; label: string }) {
 
 export default function VenteExclusive() {
   const settings = getExclusiveSettings();
-  const [open, setOpen] = useState(() => isWindowOpen(settings.open_time, settings.close_time));
-  const [countdown, setCountdown] = useState(() => getSecondsUntilOpen(settings.open_time));
+  const [open, setOpen] = useState(() => isWindowOpen(settings.open_date, settings.open_time, settings.close_time));
+  const [countdown, setCountdown] = useState(() => getSecondsUntilOpen(settings.open_date, settings.open_time));
   const [tick, setTick] = useState(0);
 
   useEffect(() => {
     const iv = setInterval(() => {
       const s = getExclusiveSettings();
-      setOpen(isWindowOpen(s.open_time, s.close_time));
-      setCountdown(getSecondsUntilOpen(s.open_time));
+      setOpen(isWindowOpen(s.open_date, s.open_time, s.close_time));
+      setCountdown(getSecondsUntilOpen(s.open_date, s.open_time));
       setTick(t => t + 1);
     }, 1000);
     return () => clearInterval(iv);
@@ -100,7 +118,10 @@ export default function VenteExclusive() {
           La sélection du jour ouvre dans…
         </h1>
         <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.82rem', color: 'rgba(255,255,255,0.45)', marginBottom: '3rem', animation: 'fadeInUp 1s ease' }}>
-          Des pièces d'exception, disponibles uniquement de {settings.open_time} à {settings.close_time}
+          {settings.open_date && settings.open_date !== getParisDate()
+            ? `Le ${new Intl.DateTimeFormat('fr-FR', { day: 'numeric', month: 'long' }).format(new Date(settings.open_date + 'T12:00'))} à ${settings.open_time}`
+            : `Aujourd'hui à ${settings.open_time}`
+          } — fermeture à {settings.close_time}
         </p>
 
         {/* Countdown */}
