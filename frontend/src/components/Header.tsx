@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Search, User, Heart, Bell, ChevronDown, Menu, X, ShoppingBag, Radio } from 'lucide-react';
+import { Search, User, Heart, Bell, ChevronDown, Menu, X, Radio, Download, Smartphone } from 'lucide-react';
 import { useStore, useT } from '../lib/store';
 import { api } from '../lib/api';
 import AuthModal from './AuthModal';
@@ -40,7 +40,32 @@ export default function Header() {
   const [notifications, setNotifications] = useState<any[]>([]);
   const [showNotifs, setShowNotifs] = useState(false);
   const [liveCount, setLiveCount] = useState(getLiveCount());
+  const [installPrompt, setInstallPrompt] = useState<any>(null);
+  const [showIOSHint, setShowIOSHint] = useState(false);
+  const [installed, setInstalled] = useState(false);
   const navRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handler = (e: any) => { e.preventDefault(); setInstallPrompt(e); };
+    window.addEventListener('beforeinstallprompt', handler);
+    window.addEventListener('appinstalled', () => setInstalled(true));
+    return () => window.removeEventListener('beforeinstallprompt', handler);
+  }, []);
+
+  const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent) && !(window as any).MSStream;
+  const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
+
+  const handleInstall = async () => {
+    if (isStandalone || installed) return;
+    if (installPrompt) {
+      await installPrompt.prompt();
+      const choice = await installPrompt.userChoice;
+      if (choice.outcome === 'accepted') setInstalled(true);
+      setInstallPrompt(null);
+    } else if (isIOS) {
+      setShowIOSHint(h => !h);
+    }
+  };
 
   useEffect(() => {
     const iv = setInterval(() => setLiveCount(getLiveCount()), 5000);
@@ -74,7 +99,7 @@ export default function Header() {
         <div style={{ backgroundColor: '#1a1a1a', color: '#c9a96e', fontSize: '0.7rem', letterSpacing: '0.15em', fontFamily: 'Helvetica Neue, Arial, sans-serif' }}
           className="flex items-center justify-between px-6 py-1.5">
           <span>LIVRAISON OFFERTE POUR TOUT ACHAT / FREE SHIPPING ON ALL ORDERS</span>
-          <div className="header-actions flex items-center gap-2">
+          <div className="hidden md:flex items-center gap-2">
             <button onClick={() => setLang(lang === 'fr' ? 'en' : 'fr')}
               style={{ color: '#c9a96e', background: 'transparent', border: '1px solid #c9a96e', padding: '2px 10px', cursor: 'pointer', fontSize: '0.65rem', letterSpacing: '0.1em' }}>
               {lang === 'fr' ? 'EN' : 'FR'}
@@ -241,6 +266,34 @@ export default function Header() {
                 <button onClick={() => { openRegister(); setMobileOpen(false); }} className="btn-gold" style={{ width: '100%', padding: '10px' }}>{t('register')}</button>
               </div>
             )}
+
+            {/* Langue + Install */}
+            <div style={{ marginTop: '1.25rem', paddingTop: '1rem', borderTop: '1px solid #f0ece6', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              <button onClick={() => setLang(lang === 'fr' ? 'en' : 'fr')}
+                style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', background: 'none', border: '1px solid #e8d5b7', padding: '10px 14px', cursor: 'pointer', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.8rem', color: '#1a1a1a' }}>
+                <span>{lang === 'fr' ? 'Version anglaise' : 'Version française'}</span>
+                <span style={{ color: '#c9a96e', fontWeight: 600, letterSpacing: '0.1em' }}>{lang === 'fr' ? 'EN →' : 'FR →'}</span>
+              </button>
+
+              {!isStandalone && !installed && (
+                <div>
+                  <button onClick={handleInstall}
+                    style={{ display: 'flex', alignItems: 'center', gap: '10px', width: '100%', backgroundColor: '#1a1a1a', border: 'none', padding: '11px 14px', cursor: 'pointer', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.8rem', color: '#c9a96e', letterSpacing: '0.05em' }}>
+                    <Smartphone size={16} color="#c9a96e" />
+                    Ajouter à mon écran d'accueil
+                    <Download size={14} color="#c9a96e" style={{ marginLeft: 'auto' }} />
+                  </button>
+                  {showIOSHint && (
+                    <div style={{ backgroundColor: '#f8f4ef', border: '1px solid #e8d5b7', padding: '12px 14px', marginTop: '6px', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.75rem', color: '#555', lineHeight: 1.6 }}>
+                      Appuyez sur <strong>Partager</strong> (icône en bas de Safari) puis <strong>Sur l'écran d'accueil</strong>.
+                    </div>
+                  )}
+                </div>
+              )}
+              {(isStandalone || installed) && (
+                <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.72rem', color: '#2e7d32', textAlign: 'center', padding: '8px 0' }}>✓ Application installée</p>
+              )}
+            </div>
           </div>
         )}
       </header>
