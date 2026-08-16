@@ -73,7 +73,6 @@ function ArticlePickerModal({ exclusiveIds, onAdd, onClose }: { exclusiveIds: st
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', backgroundColor: 'rgba(255,255,255,0.08)', borderRadius: '8px', padding: '8px 12px' }}>
             <Search size={15} color="rgba(255,255,255,0.4)" />
             <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Rechercher..."
-              autoFocus
               style={{ flex: 1, background: 'none', border: 'none', outline: 'none', color: 'white', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '16px' }} />
             {search && <button onClick={() => setSearch('')} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'rgba(255,255,255,0.4)', padding: 0 }}><X size={14} /></button>}
           </div>
@@ -188,23 +187,23 @@ function ExclusiveWidget() {
           </div>
         </div>
 
-        {/* Horaires — vertical sur mobile */}
+        {/* Horaires */}
         <div style={{ padding: '0.875rem 1.25rem', borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
           <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.55rem', letterSpacing: '0.18em', color: 'rgba(255,255,255,0.35)', marginBottom: '10px', display: 'flex', alignItems: 'center', gap: '5px' }}>
             <Clock size={10} /> HORAIRES (HEURE DE PARIS)
           </p>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '8px' }}>
-            <div style={{ display: 'grid', gridTemplateColumns: 'auto 1fr', alignItems: 'center', gap: '10px' }}>
-              <span style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.6rem', color: 'rgba(255,255,255,0.4)', display: 'flex', alignItems: 'center', gap: '4px', whiteSpace: 'nowrap' }}><CalendarDays size={11} /> Date</span>
-              <input type="date" value={settings.open_date} min={today} onChange={e => setSettings(s => ({ ...s, open_date: e.target.value }))} style={inp} />
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '8px' }}>
+            <div>
+              <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.52rem', color: 'rgba(255,255,255,0.35)', marginBottom: '5px', display: 'flex', alignItems: 'center', gap: '3px' }}><CalendarDays size={9} /> DATE</p>
+              <input type="date" value={settings.open_date} min={today} onChange={e => setSettings(s => ({ ...s, open_date: e.target.value }))} style={{ ...inp, padding: '8px 6px', fontSize: '13px', minWidth: 0 }} />
             </div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'auto 1fr', alignItems: 'center', gap: '10px' }}>
-              <span style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.6rem', color: 'rgba(255,255,255,0.4)', whiteSpace: 'nowrap' }}>Ouverture</span>
-              <input type="time" value={settings.open_time} onChange={e => setSettings(s => ({ ...s, open_time: e.target.value }))} style={inp} />
+            <div>
+              <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.52rem', color: 'rgba(255,255,255,0.35)', marginBottom: '5px' }}>OUVERTURE</p>
+              <input type="time" value={settings.open_time} onChange={e => setSettings(s => ({ ...s, open_time: e.target.value }))} style={{ ...inp, padding: '8px 6px', fontSize: '13px', minWidth: 0 }} />
             </div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'auto 1fr', alignItems: 'center', gap: '10px' }}>
-              <span style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.6rem', color: 'rgba(255,255,255,0.4)', whiteSpace: 'nowrap' }}>Fermeture</span>
-              <input type="time" value={settings.close_time} onChange={e => setSettings(s => ({ ...s, close_time: e.target.value }))} style={inp} />
+            <div>
+              <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.52rem', color: 'rgba(255,255,255,0.35)', marginBottom: '5px' }}>FERMETURE</p>
+              <input type="time" value={settings.close_time} onChange={e => setSettings(s => ({ ...s, close_time: e.target.value }))} style={{ ...inp, padding: '8px 6px', fontSize: '13px', minWidth: 0 }} />
             </div>
           </div>
           <button onClick={save} style={{ marginTop: '12px', width: '100%', padding: '11px', backgroundColor: saved ? '#2e7d32' : '#c9a96e', border: 'none', cursor: 'pointer', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.75rem', letterSpacing: '0.1em', color: 'white', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', transition: 'background 0.3s' }}>
