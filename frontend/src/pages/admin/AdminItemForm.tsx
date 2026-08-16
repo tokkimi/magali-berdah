@@ -48,9 +48,20 @@ export default function AdminItemForm() {
     saleType: 'fixed' as 'fixed' | 'auction',
     fixed_price: '', auction_start_price: '', auction_min_price: '',
     auction_days: '7', auction_end_time: '',
-    certified: false, featured: false, isVintage: false,
+    certified: false, featured: false, isVintage: false, inExclusive: false,
     seller_email: '', seller_payout: '',
   });
+
+  const getExclusiveIds = (): string[] => {
+    try { return JSON.parse(localStorage.getItem('mb_exclusive_settings') || '{}').exclusive_ids || []; }
+    catch { return []; }
+  };
+  const setExclusiveIds = (ids: string[]) => {
+    try {
+      const s = JSON.parse(localStorage.getItem('mb_exclusive_settings') || '{}');
+      localStorage.setItem('mb_exclusive_settings', JSON.stringify({ ...s, exclusive_ids: ids }));
+    } catch {}
+  };
 
   const set = (k: string, v: any) => setForm(f => ({ ...f, [k]: v }));
 
@@ -69,6 +80,7 @@ export default function AdminItemForm() {
         auction_min_price: (existing.auction_reserve_price ?? existing.auction_min_price)?.toString() || '', auction_days: '7',
         auction_end_time: existing.auction_end_time ? new Date(existing.auction_end_time).toISOString().slice(0, 16) : '',
         certified: Boolean(existing.certified), featured: Boolean(existing.featured), isVintage: false,
+        inExclusive: getExclusiveIds().includes(id || ''),
         seller_email: existing.seller_email || '', seller_payout: existing.seller_payout?.toString() || '',
       });
     }).catch(() => navigate('/admin/articles'));
@@ -165,6 +177,15 @@ export default function AdminItemForm() {
       setSaving(false);
       alert(`Impossible d'ajouter l'article : ${error.message}`);
       return;
+    }
+
+    // Sync exclusive selection
+    {
+      const ids = getExclusiveIds();
+      const updated = form.inExclusive
+        ? ids.includes(itemId) ? ids : [...ids, itemId]
+        : ids.filter(x => x !== itemId);
+      setExclusiveIds(updated);
     }
 
     // Also persist certifiedIds if certified
@@ -364,6 +385,35 @@ export default function AdminItemForm() {
               {opt.label}
             </label>
           ))}
+        </div>
+
+        {/* Vente Exclusive */}
+        <div style={{ backgroundColor: '#0f0f0f', padding: '1.25rem 1.5rem', border: '1px solid rgba(201,169,110,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem' }}>
+          <div>
+            <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.62rem', letterSpacing: '0.2em', color: '#c9a96e', marginBottom: '3px' }}>✦ VENTE EXCLUSIVE</p>
+            <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.75rem', color: 'rgba(255,255,255,0.55)', lineHeight: 1.4 }}>
+              Ajouter à la sélection exclusive du jour (configurer horaires dans Paramètres)
+            </p>
+          </div>
+          <label style={{ flexShrink: 0, display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer' }}>
+            <div
+              onClick={() => set('inExclusive', !form.inExclusive)}
+              style={{
+                width: '44px', height: '24px', borderRadius: '12px', position: 'relative', cursor: 'pointer',
+                backgroundColor: form.inExclusive ? '#c9a96e' : 'rgba(255,255,255,0.15)',
+                transition: 'background 0.2s',
+              }}
+            >
+              <div style={{
+                position: 'absolute', top: '3px', left: form.inExclusive ? '23px' : '3px',
+                width: '18px', height: '18px', borderRadius: '50%', backgroundColor: 'white',
+                transition: 'left 0.2s', boxShadow: '0 1px 4px rgba(0,0,0,0.3)',
+              }} />
+            </div>
+            <span style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.8rem', color: form.inExclusive ? '#c9a96e' : 'rgba(255,255,255,0.4)', fontWeight: 600 }}>
+              {form.inExclusive ? 'Dans la sélection' : 'Hors sélection'}
+            </span>
+          </label>
         </div>
 
         <div style={{ display: 'flex', gap: '1rem' }}>
