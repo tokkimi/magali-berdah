@@ -114,3 +114,18 @@
   background-color: rgba(255, 253, 248, .28) !important;
 }
 .mobile-glass-menu input { background: transparent !important; }
+
+@media (max-width: 700px) {
+  .site-header {
+    position: absolute !important;
+    inset: 0 0 auto 0 !important;
+    background: transparent !important;
+    border-bottom: 0 !important;
+  }
+  .site-header > div:first-child { display: none !important; }
+  .site-header > div:nth-child(2) {
+    background: rgba(255, 253, 248, .34) !important;
+    backdrop-filter: blur(22px) saturate(145%) !important;
+    -webkit-backdrop-filter: blur(22px) saturate(145%) !important;
+  }
+}
