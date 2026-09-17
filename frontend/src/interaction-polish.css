@@ -138,6 +138,17 @@
 .quick-buy-sheet p:not(.eyebrow) { color: #6f6559; font: 13px/1.55 Arial,sans-serif; }
 .quick-close { position: absolute; top: 12px; right: 12px; border: 0; background: transparent; cursor: pointer; color: #6f6252; }
 .quick-action { margin-top: 22px; display: inline-flex; align-items: center; gap: 10px; padding: 13px 18px; border: 0; background: #29251f; color: #fff; cursor: pointer; font: 12px Arial,sans-serif; }
+.card-actions button { display:block; width:100%; text-align:center; text-decoration:none; font:11px Arial,sans-serif; padding:11px 5px; border:1px solid #d8cbb8; color:#66553b; background:transparent; cursor:pointer; }
+.card-actions button:first-child { background:#29251f; color:#fff; border-color:#29251f; }
+.item-action-overlay { position:fixed; inset:0; z-index:700; display:grid; place-items:center; padding:16px; background:rgba(25,20,14,.32); backdrop-filter:blur(5px); }
+.item-action-sheet { position:relative; width:min(420px,100%); padding:28px; border-radius:22px; background:rgba(255,253,248,.92); border:1px solid rgba(255,255,255,.9); backdrop-filter:blur(28px) saturate(160%); box-shadow:0 24px 70px rgba(20,15,10,.28); }
+.item-action-sheet h2 { margin:8px 0 6px; font:24px Georgia,serif; color:#29251f; }
+.item-action-price { font:20px Georgia,serif; color:#a88752; margin-bottom:18px; }
+.item-action-close { position:absolute; top:11px; right:11px; border:0; background:transparent; cursor:pointer; color:#6f6252; }
+.item-action-sheet label { display:block; margin-top:12px; color:#6f6559; font:11px Arial,sans-serif; }
+.item-action-sheet input { display:block; width:100%; box-sizing:border-box; margin-top:6px; padding:12px; border:1px solid #d8cdbd; background:rgba(255,255,255,.55); font:13px Arial,sans-serif; }
+.item-action-submit { width:100%; margin-top:20px; padding:14px; border:0; background:#29251f; color:#fff; cursor:pointer; font:12px Arial,sans-serif; display:flex; align-items:center; justify-content:center; gap:8px; }
+.item-action-success { color:#66553b; font:13px/1.55 Arial,sans-serif; padding:12px 0; }
 
 @media (max-width: 700px) {
   .mobile-glass-menu {

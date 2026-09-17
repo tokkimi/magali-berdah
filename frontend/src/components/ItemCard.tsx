@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Heart, Clock } from 'lucide-react';
+import { Heart, Clock, X, ArrowUpRight } from 'lucide-react';
 import { useStore } from '../lib/store';
 import { api, imgUrl } from '../lib/api';
 
@@ -60,6 +60,8 @@ export default function ItemCard({ item }: { item: Item }) {
 
   const isAuction = Boolean(item.auction_enabled);
   const isEnding = countdown && countdown !== 'Terminée' && !countdown.includes('j');
+  const [action, setAction] = useState<'buy' | 'bid' | null>(null);
+  const [sent, setSent] = useState(false);
 
   return (
     <div className="bag-card-wrap" style={{ textDecoration: 'none', color: 'inherit', display: 'flex', height: '100%' }}>
@@ -216,8 +218,9 @@ export default function ItemCard({ item }: { item: Item }) {
             )}
           </div>
         </div>
-        <div className="card-actions">{item.fixed_price && item.fixed_price > 0 ? <Link to={`/achat/${item.id}`}>Acheter · {item.fixed_price.toLocaleString('fr-FR')} €</Link> : null}{isAuction && countdown!=='Terminée' && <Link to={`/article/${item.id}#encherir`}>Enchérir →</Link>}</div>
+        <div className="card-actions">{item.fixed_price && item.fixed_price > 0 ? <button type="button" onClick={() => { setAction('buy'); setSent(false); }}>Acheter · {item.fixed_price.toLocaleString('fr-FR')} €</button> : null}{isAuction && countdown!=='Terminée' && <button type="button" onClick={() => { setAction('bid'); setSent(false); }}>Enchérir →</button>}</div>
       </div>
+      {action && <div className="item-action-overlay" role="dialog" aria-modal="true"><div className="item-action-sheet"><button className="item-action-close" onClick={() => setAction(null)} aria-label="Fermer"><X size={17}/></button><p className="eyebrow">{action === 'buy' ? 'ACHAT IMMÉDIAT' : 'ENCHÈRE EN COURS'}</p><h2>{item.title}</h2><p className="item-action-price">{price.toLocaleString('fr-FR')} €</p>{sent ? <p className="item-action-success">{action === 'buy' ? 'Votre demande d’achat est enregistrée. Le reçu sera envoyé par email.' : 'Votre offre est enregistrée. Vous recevrez une confirmation par email.'}</p> : <form onSubmit={e => { e.preventDefault(); setSent(true); }}><label>Email de confirmation<input type="email" required placeholder="vous@exemple.com" /></label>{action === 'bid' && <label>Votre offre<input type="number" min={price + 1} required placeholder={`Minimum ${price + 1} €`} /></label>}<button className="item-action-submit" type="submit">{action === 'buy' ? 'Confirmer l’achat' : 'Placer mon enchère'} <ArrowUpRight size={15}/></button></form>}</div></div>}
     </div>
   );
 }
