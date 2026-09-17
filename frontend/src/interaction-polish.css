@@ -115,6 +115,23 @@
 }
 .mobile-glass-menu input { background: transparent !important; }
 
+/* Keep the opened menu a compact floating card at every viewport width. */
+.mobile-glass-menu {
+  position: absolute !important;
+  top: calc(100% + 10px) !important;
+  right: 16px !important;
+  left: auto !important;
+  width: min(390px, calc(100vw - 32px)) !important;
+  max-height: min(78svh, 620px) !important;
+  overflow-y: auto !important;
+  border-radius: 20px !important;
+  background: rgba(255, 253, 248, .38) !important;
+  backdrop-filter: blur(30px) saturate(155%) !important;
+  -webkit-backdrop-filter: blur(30px) saturate(155%) !important;
+}
+
+.site-header { background: rgba(255, 253, 248, .30) !important; }
+
 @media (max-width: 700px) {
   .mobile-glass-menu {
     position: absolute !important;
