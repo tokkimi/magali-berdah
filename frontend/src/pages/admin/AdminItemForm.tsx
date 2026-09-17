@@ -12,15 +12,6 @@ const CATEGORIES = [
   { id: 'bags-clutch', fr: 'Pochettes', en: 'Clutches' },
   { id: 'bags-tote', fr: 'Totes', en: 'Totes' },
   { id: 'bags-backpack', fr: 'Sacs à Dos', en: 'Backpacks' },
-  { id: 'shoes-heels', fr: 'Escarpins', en: 'Heels' },
-  { id: 'shoes-flats', fr: 'Chaussures Plates', en: 'Flats' },
-  { id: 'shoes-boots', fr: 'Bottes', en: 'Boots' },
-  { id: 'acc-watches', fr: 'Montres', en: 'Watches' },
-  { id: 'acc-jewelry', fr: 'Bijoux', en: 'Jewelry' },
-  { id: 'acc-scarves', fr: 'Foulards', en: 'Scarves' },
-  { id: 'clothing-dresses', fr: 'Robes', en: 'Dresses' },
-  { id: 'clothing-tops', fr: 'Hauts', en: 'Tops' },
-  { id: 'clothing-coats', fr: 'Manteaux', en: 'Coats' },
 ];
 
 const CONDITIONS = [
@@ -49,7 +40,7 @@ export default function AdminItemForm() {
     fixed_price: '', auction_start_price: '', auction_min_price: '',
     auction_days: '7', auction_end_time: '',
     certified: false, featured: false, isVintage: false, inExclusive: false,
-    seller_email: '', seller_payout: '',
+    seller_email: '', seller_payout: '', entrupy_certificate_url: '',
   });
 
   const getExclusiveIds = (): string[] => {
@@ -81,7 +72,7 @@ export default function AdminItemForm() {
         auction_end_time: existing.auction_end_time ? new Date(existing.auction_end_time).toISOString().slice(0, 16) : '',
         certified: Boolean(existing.certified), featured: Boolean(existing.featured), isVintage: false,
         inExclusive: getExclusiveIds().includes(id || ''),
-        seller_email: existing.seller_email || '', seller_payout: existing.seller_payout?.toString() || '',
+        entrupy_certificate_url: existing.entrupy_certificate_url || '', seller_email: existing.seller_email || '', seller_payout: existing.seller_payout?.toString() || '',
       });
     }).catch(() => navigate('/admin/articles'));
   }, [id, navigate]);
@@ -115,6 +106,8 @@ export default function AdminItemForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if(form.entrupy_certificate_url){try{const u=new URL(form.entrupy_certificate_url);if(u.protocol!=='https:'||u.hostname!=='cert.entrupy.com'||u.username||u.password)throw Error();}catch{alert('Utilisez un lien https://cert.entrupy.com/… valide.');return;}}
+    if(form.fixed_price && (Number(form.fixed_price)<=0 || (form.saleType==='auction' && Number(form.fixed_price)<=Number(form.auction_start_price)))){alert('Le prix d’achat direct doit être positif et supérieur à la mise de départ.');return;}
     setSaving(true);
 
     const cat = CATEGORIES.find(c => c.id === form.category_id);
@@ -139,7 +132,8 @@ export default function AdminItemForm() {
       size: form.size,
       photos: photos.length ? photos : ['https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=600&q=80'],
       videos: videoUrls,
-      fixed_price: form.saleType === 'fixed' ? parseFloat(form.fixed_price) || null : null,
+      fixed_price: parseFloat(form.fixed_price) || null,
+      entrupy_certificate_url: form.entrupy_certificate_url.trim() || null,
       auction_enabled: form.saleType === 'auction' ? 1 : 0,
       auction_start_price: form.saleType === 'auction' ? parseFloat(form.auction_start_price) || null : null,
       auction_min_price: form.saleType === 'auction' ? parseFloat(form.auction_min_price) || null : null,
@@ -160,6 +154,7 @@ export default function AdminItemForm() {
       category_id: item.category_id, category_name_fr: item.category_name_fr,
       condition: item.condition, color: item.color, size: item.size, photos: item.photos, videos: item.videos,
       fixed_price: item.fixed_price,
+      entrupy_certificate_url: item.entrupy_certificate_url,
       auction_enabled: Boolean(item.auction_enabled),
       auction_start_price: item.auction_start_price,
       auction_reserve_price: item.auction_min_price,
@@ -312,6 +307,8 @@ export default function AdminItemForm() {
             ))}
           </div>
 
+          <label style={{display:'block',marginBottom:20}}>Certificat Entrupy<input type="url" placeholder="https://cert.entrupy.com/…" value={form.entrupy_certificate_url} onChange={e=>set('entrupy_certificate_url',e.target.value)} style={{display:'block',width:'100%',padding:12,border:'1px solid #ddd'}}/></label>
+          {form.saleType==='auction'&&<label style={{display:'block',marginBottom:20}}>Prix d’achat immédiat (facultatif, €)<input type="number" min="1" step="0.01" value={form.fixed_price} onChange={e=>set('fixed_price',e.target.value)} style={{display:'block',width:'100%',padding:12,border:'1px solid #ddd'}}/></label>}
           {form.saleType === 'fixed' ? (
             <div style={{ maxWidth: '220px' }}>
               <label style={labelStyle}>PRIX DE VENTE (€) *</label>

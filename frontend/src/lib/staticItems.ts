@@ -160,7 +160,7 @@ function loadAdminItems(): any[] {
 }
 
 export function getAllItems(): any[] {
-  return [...loadAdminItems(), ...STATIC_ITEMS];
+  return [...loadAdminItems(), ...STATIC_ITEMS].filter(item => item.category_id?.startsWith('bags-'));
 }
 
 export function filterStaticItems(q: {

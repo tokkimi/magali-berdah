@@ -1,3 +1,4 @@
+import BagHero from '../components/BagHero';
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ChevronRight, ShoppingBag, Gavel, Shield, Truck, Radio, Lock, Star, Clock } from 'lucide-react';
@@ -283,143 +284,18 @@ function HScrollSection({ title, label, link, items, loading, seeAll, seeMore }:
 }
 
 export default function Home() {
-  const t = useT();
-  const [women, setWomen] = useState<any[]>([]);
-  const [men, setMen] = useState<any[]>([]);
+  const [items, setItems] = useState<any[]>(() => filterStaticItems({ category: 'bags', limit: 20 }).items);
   const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    Promise.allSettled([
-      getSharedItems({ category: 'women', limit: 8 }),
-      getSharedItems({ category: 'men', limit: 8 }),
-    ]).then(([w, m]) => {
-      const wItems = w.status === 'fulfilled' ? w.value : [];
-      const mItems = m.status === 'fulfilled' ? m.value : [];
-      const merge = (shared: any[], fallback: any[]) => [...new Map([...fallback, ...shared].map(item => [item.id, item])).values()].filter(item => item.status === 'active').slice(0, 8);
-      setWomen(merge(wItems, filterStaticItems({ category: 'women', limit: 8 }).items));
-      setMen(merge(mItems, filterStaticItems({ category: 'men', limit: 8 }).items));
-      setLoading(false);
-    });
-  }, []);
-
-  return (
-    <div style={{ backgroundColor: '#faf7f4' }}>
-      <style>{`
-        @keyframes shimmer{0%{background-position:400% 0}100%{background-position:-400% 0}}
-        .hero-img { object-fit: cover; object-position: center 25%; }
-        .hero-btns { display: none; }
-        @media (min-width: 768px) {
-          .hero-btns { display: flex; }
-          .hero-img { object-position: center 15%; }
-          .hero-text { padding: 3rem 4rem !important; }
-          .comment-acheter-inner { max-width: 1100px; margin: 0 auto; }
-          .comment-acheter-links { flex-direction: row !important; gap: 0 !important; }
-          .comment-acheter-links a { flex: 1; border-right: 1px solid #e8e0d8; padding: 1.5rem 2rem !important; border-bottom: none !important; }
-          .comment-acheter-links a:last-child { border-right: none; }
-          .trust-inner { max-width: 1100px; margin: 0 auto; grid-template-columns: repeat(4, 1fr) !important; }
-        }
-      `}</style>
-
-      {/* Hero */}
-      <div className="hero-section" style={{ position: 'relative', backgroundColor: '#1a1a1a', minHeight: '65vh', display: 'flex', alignItems: 'flex-end', overflow: 'hidden' }}>
-        <img src="/hero.jpeg" alt="" className="hero-img" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }} />
-        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(10,8,6,0.88) 0%, rgba(10,8,6,0.55) 35%, rgba(10,8,6,0.1) 100%)' }} />
-        <div className="hero-text" style={{ position: 'relative', zIndex: 1, padding: '2rem 1.5rem 2.5rem', maxWidth: '560px', width: '100%' }}>
-          <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.58rem', letterSpacing: '0.4em', color: '#c9a96e', marginBottom: '0.75rem' }}>
-            {t('heroTagline')}
-          </p>
-          <h1 style={{ fontFamily: 'Georgia, serif', fontSize: 'clamp(1.7rem, 5vw, 3rem)', color: 'white', fontWeight: 400, lineHeight: '1.2', marginBottom: '1.25rem' }}>
-            {t('heroTitle')}{' '}
-            <span style={{ color: '#c9a96e' }}>{t('heroHighlight')}</span>
-          </h1>
-          <div className="hero-btns" style={{ gap: '0.75rem', flexWrap: 'wrap' }}>
-            <Link to="/catalogue?type=fixed" className="btn-gold" style={{ fontSize: '0.68rem', padding: '10px 18px' }}>{t('heroCtaSales')}</Link>
-            <Link to="/catalogue?type=auction" style={{ border: '1px solid #c9a96e', color: '#c9a96e', padding: '10px 18px', textDecoration: 'none', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.68rem', letterSpacing: '0.1em', borderRadius: '2px' }}>
-              {t('heroCtaAuctions')}
-            </Link>
-          </div>
-        </div>
-      </div>
-
-      {/* Vente Exclusive */}
-      <ExclusiveSection />
-
-      {/* Lives */}
-      <LivesHScroll />
-
-      {/* Enchères */}
-      <LiveRail />
-
-      {/* Sélection Femme */}
-      <HScrollSection
-        label={t('sectionSelection')}
-        title={t('womenSection')}
-        link="/catalogue?category=women"
-        items={women}
-        loading={loading}
-        seeAll={t('seeAll')}
-        seeMore={t('seeMore')}
-      />
-
-      {/* Sélection Homme */}
-      <HScrollSection
-        label={t('sectionSelection')}
-        title={t('menSection')}
-        link="/catalogue?category=men"
-        items={men}
-        loading={loading}
-        seeAll={t('seeAll')}
-        seeMore={t('seeMore')}
-      />
-
-      {/* Comment acheter */}
-      <div style={{ padding: '2rem 1rem 1.5rem', backgroundColor: '#faf7f4' }}>
-        <div className="comment-acheter-inner">
-        <h2 style={{ fontFamily: 'Georgia, serif', fontSize: '1.1rem', fontWeight: 400, color: '#1a1a1a', marginBottom: '1rem' }}>{t('howToBuy')}</h2>
-        <div className="comment-acheter-links" style={{ display: 'flex', flexDirection: 'column', gap: '0' }}>
-          {[
-            { icon: ShoppingBag, title: t('buyGuide').toUpperCase(), desc: t('buyGuideDesc') },
-            { icon: Gavel, title: t('faqLabel'), desc: t('faqDesc') },
-            { icon: Shield, title: 'CONDITIONS GÉNÉRALES', desc: 'Enchères, paiement, retours' },
-          ].map(({ icon: Icon, title, desc }, i) => (
-            <Link
-              key={title}
-              to={i === 0 ? '/comment-acheter' : i === 1 ? '/faq' : '/cgv'}
-              style={{ display: 'flex', alignItems: 'center', gap: '1rem', padding: '1rem 0', textDecoration: 'none', borderBottom: i < 2 ? '1px solid #f0ece6' : 'none' }}
-            >
-              <div style={{ width: '40px', height: '40px', backgroundColor: '#f8f4ef', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                <Icon size={18} color="#c9a96e" />
-              </div>
-              <div>
-                <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.1em', color: '#1a1a1a', marginBottom: '2px' }}>{title}</p>
-                <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.7rem', color: '#9e8e7e' }}>{desc}</p>
-              </div>
-              <ChevronRight size={16} color="#c9a96e" style={{ marginLeft: 'auto' }} />
-            </Link>
-          ))}
-        </div>
-        </div>
-      </div>
-
-      {/* Trust */}
-      <div style={{ padding: '1.5rem 1rem 2rem', backgroundColor: '#1a1a1a' }}>
-        <div className="trust-inner" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-          {[
-            { icon: Lock, t1: 'Enchères sécurisées', t2: 'Carte vérifiée obligatoire' },
-            { icon: Truck, t1: t('shippingIncluded'), t2: t('realTimeTracking') },
-            { icon: Shield, t1: t('authenticity'), t2: 'Pièces garanties authentiques' },
-            { icon: ShoppingBag, t1: t('returns14'), t2: t('euRights') },
-          ].map(({ icon: Icon, t1, t2 }) => (
-            <div key={t1} style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <Icon size={18} color="#c9a96e" style={{ flexShrink: 0 }} />
-              <div>
-                <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.65rem', color: 'white', fontWeight: 600 }}>{t1}</p>
-                <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.6rem', color: '#9e8e7e' }}>{t2}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
+  useEffect(() => { let active = true; getSharedItems({category:'bags'}).then(shared => { if(active) setItems([...new Map([...filterStaticItems({category:'bags',limit:100}).items,...shared].map(i=>[i.id,i])).values()].filter(i=>i.status==='active')); }).catch(()=>{}).finally(()=>{if(active)setLoading(false)}); return ()=>{active=false}; }, []);
+  const auctions=items.filter(i=>i.auction_enabled);
+  const direct=items.filter(i=>i.fixed_price>0);
+  return <div style={{background:'#faf8f4'}}>
+    <BagHero />
+    <ExclusiveSection />
+    <section className="premium-section"><div className="premium-section-heading"><div><p className="eyebrow">À VOUS DE JOUER</p><h2>Les sacs aux enchères</h2></div><Link to="/catalogue?type=auction">Tout voir →</Link></div><div className="premium-products">{auctions.slice(0,4).map(item=><ItemCard key={item.id} item={item}/>)}</div>{!auctions.length&&<p className="bag-empty">{loading?'Chargement de la sélection…':'Les prochaines enchères arrivent bientôt.'}</p>}</section>
+    <div className="entrupy-strip"><strong>Nos pièces de luxe sont vérifiées et contrôlées avec Entrupy.</strong><p>Retrouvez le certificat disponible sur la fiche de votre sac.</p></div>
+    <section className="premium-section"><div className="premium-section-heading"><div><p className="eyebrow">SANS ATTENDRE</p><h2>Le coup de cœur n’attend pas.</h2></div><Link to="/catalogue?type=fixed">Tout voir →</Link></div><div className="premium-products">{direct.slice(0,4).map(item=><ItemCard key={item.id} item={item}/>)}</div>{!direct.length&&<p className="bag-empty">{loading?'Chargement de la sélection…':'La prochaine sélection sera bientôt disponible.'}</p>}</section>
+    <LivesHScroll />
+    <div className="entrupy-strip"><strong>Un sac. Deux façons de le faire vôtre.</strong><p>Achetez au prix affiché, ou placez votre offre aux enchères.</p><Link to="/comment-acheter">Le guide d’achat</Link></div>
+  </div>;
 }

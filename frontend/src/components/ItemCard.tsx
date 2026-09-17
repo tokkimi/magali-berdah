@@ -58,11 +58,11 @@ export default function ItemCard({ item }: { item: Item }) {
     ? (item.current_bid || item.auction_start_price || 0)
     : (item.fixed_price || 0);
 
-  const isAuction = item.auction_enabled === 1;
+  const isAuction = Boolean(item.auction_enabled);
   const isEnding = countdown && countdown !== 'Terminée' && !countdown.includes('j');
 
   return (
-    <Link to={`/article/${item.id}`} style={{ textDecoration: 'none', color: 'inherit', display: 'flex', height: '100%' }}>
+    <div style={{ textDecoration: 'none', color: 'inherit', display: 'flex', height: '100%' }}>
       <div style={{
         borderRadius: '12px',
         overflow: 'hidden',
@@ -80,6 +80,7 @@ export default function ItemCard({ item }: { item: Item }) {
           (e.currentTarget as HTMLDivElement).style.boxShadow = '0 2px 12px rgba(0,0,0,0.07)';
         }}
       >
+        <Link to={`/article/${item.id}`} style={{textDecoration:'none',color:'inherit'}}>
         {/* Image */}
         <div style={{ position: 'relative', height: '200px', overflow: 'hidden', backgroundColor: '#f8f4ef', flexShrink: 0 }}>
           <img
@@ -116,6 +117,7 @@ export default function ItemCard({ item }: { item: Item }) {
               </div>
             )}
             <button
+              aria-label={faved ? "Retirer des favoris" : "Ajouter aux favoris"}
               onClick={toggleFav}
               style={{
                 width: '30px', height: '30px', borderRadius: '50%',
@@ -136,6 +138,7 @@ export default function ItemCard({ item }: { item: Item }) {
           </div>
         </div>
 
+        </Link>
         {/* Infos */}
         <div style={{ padding: '10px 10px 12px', display: 'flex', flexDirection: 'column', minHeight: '100px' }}>
           {/* Marque + catégorie */}
@@ -213,7 +216,8 @@ export default function ItemCard({ item }: { item: Item }) {
             )}
           </div>
         </div>
+        <div className="card-actions">{item.fixed_price && item.fixed_price > 0 ? <Link to={`/achat/${item.id}`}>Acheter · {item.fixed_price.toLocaleString('fr-FR')} €</Link> : null}{isAuction && countdown!=='Terminée' && <Link to={`/article/${item.id}#encherir`}>Enchérir →</Link>}</div>
       </div>
-    </Link>
+    </div>
   );
 }

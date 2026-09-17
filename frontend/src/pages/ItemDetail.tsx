@@ -476,6 +476,7 @@ export default function ItemDetail() {
                 <p style={{ fontFamily: 'Georgia, serif', fontSize: '2.2rem', color: '#1a1a1a', marginBottom: '1rem' }}>
                   {item.fixed_price.toLocaleString('fr-FR')} €
                 </p>
+                <Link to={`/achat/${item.id}`} className="btn-gold" style={{ display:'block', textAlign:'center', textDecoration:'none', width:'100%', fontSize:'0.85rem', padding:'1rem', letterSpacing:'0.1em', marginBottom:'0.75rem' }}>ACHETER SANS COMPTE</Link>
                 {user ? (
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                     {item.status === 'sold' ? (

@@ -1,3 +1,5 @@
+import BrandLoading from './components/BrandLoading';
+import MyAuctionsBubble from './components/MyAuctionsBubble';
 import { useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { useStore } from './lib/store';
@@ -24,6 +26,7 @@ import MesSoumissions from './pages/MesSoumissions';
 import Lives from './pages/Lives';
 import VenteExclusive from './pages/VenteExclusive';
 import NotFound from './pages/NotFound';
+import GuestCheckout from './pages/GuestCheckout';
 
 // Admin
 import AdminLayout from './pages/admin/AdminLayout';
@@ -54,6 +57,7 @@ function Layout({ children }: { children: React.ReactNode }) {
       <BottomNav />
       <CookieBanner />
       <Chatbot />
+      <MyAuctionsBubble />
     </div>
   );
 }
@@ -77,6 +81,7 @@ export default function App() {
 
   return (
     <BrowserRouter>
+      <BrandLoading />
       <SeoManager />
       <ScrollToTop />
       <Routes>
@@ -84,6 +89,7 @@ export default function App() {
         <Route path="/" element={<Layout><Home /></Layout>} />
         <Route path="/catalogue" element={<Layout><Catalogue /></Layout>} />
         <Route path="/article/:id" element={<Layout><ItemDetail /></Layout>} />
+        <Route path="/achat/:id" element={<Layout><GuestCheckout /></Layout>} />
         <Route path="/cgv" element={<Layout><CGV /></Layout>} />
         <Route path="/pro" element={<Layout><ProPage /></Layout>} />
         <Route path="/comment-acheter" element={<Layout><HowToBuy /></Layout>} />

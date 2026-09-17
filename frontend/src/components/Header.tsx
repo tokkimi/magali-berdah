@@ -14,15 +14,15 @@ const NAV_ITEMS = [
   {
     key: 'sales', slug: 'ventes',
     subs: [
-      { key: 'women', id: 'women' }, { key: 'men', id: 'men' },
-      { key: 'bags', id: 'bags' }, { key: 'accessories', id: 'accessories' },
+      
+      { key: 'bags', id: 'bags' },
     ]
   },
   {
     key: 'auctions', slug: 'encheres',
     subs: [
-      { key: 'women', id: 'women' }, { key: 'men', id: 'men' },
-      { key: 'bags', id: 'bags' }, { key: 'accessories', id: 'accessories' },
+      
+      { key: 'bags', id: 'bags' },
     ]
   },
 ];
@@ -111,9 +111,9 @@ export default function Header() {
         <div className="flex items-center justify-between px-6 py-4">
           {/* Logo */}
           <Link to="/" style={{ textDecoration: 'none', marginLeft: '0.5rem' }}>
-            <div style={{ fontFamily: 'Georgia, serif', color: '#1a1a1a' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontFamily: 'Georgia, serif', color: '#1a1a1a' }}><img src='/mb-logo.png' alt='' width='52' height='52' style={{objectFit:'contain'}}/><div>
               <div style={{ fontSize: '1.5rem', letterSpacing: '0.3em', fontWeight: 400 }}>MAGALI</div>
-              <div style={{ fontSize: '0.7rem', letterSpacing: '0.4em', color: '#c9a96e', marginTop: '-4px' }}>BERDAH</div>
+              <div style={{ fontSize: '0.7rem', letterSpacing: '0.4em', color: '#c9a96e', marginTop: '-4px' }}>BERDAH</div></div>
             </div>
           </Link>
 
