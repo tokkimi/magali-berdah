@@ -49,3 +49,37 @@
 @media (max-width: 700px) {
   .my-auctions-bubble { bottom: 170px !important; right: 14px !important; }
 }
+
+/* The action strip belongs to the campaign composition; remove the stark white break. */
+.purchase-paths {
+  position: relative;
+  z-index: 1;
+  max-width: none !important;
+  padding: 28px max(6vw, 24px) 12px !important;
+  background: linear-gradient(180deg, rgba(28, 24, 19, .96), #0f0f0f) !important;
+}
+.purchase-paths a {
+  max-width: 560px;
+  background: rgba(255, 253, 248, .08) !important;
+  color: #f7f1e8 !important;
+  border-color: rgba(255, 255, 255, .22) !important;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+.purchase-paths a:first-child {
+  background: rgba(201, 169, 110, .2) !important;
+  border-color: rgba(201, 169, 110, .7) !important;
+  color: #fff !important;
+}
+.bag-discovery {
+  justify-content: center;
+  padding: 12px max(6vw, 20px) 30px !important;
+  background: #0f0f0f !important;
+}
+.bag-discovery a {
+  color: rgba(255, 253, 248, .78) !important;
+  border-color: rgba(255, 255, 255, .16) !important;
+  background: rgba(255, 255, 255, .055);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
