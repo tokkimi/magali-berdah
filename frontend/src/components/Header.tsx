@@ -95,17 +95,6 @@ export default function Header() {
   return (
     <>
       <header style={{ borderBottom: '1px solid #e8d5b7', backgroundColor: 'white' }} className="site-header sticky top-0 z-50">
-        {/* Top bar */}
-        <div style={{ backgroundColor: '#1a1a1a', color: '#c9a96e', fontSize: '0.7rem', letterSpacing: '0.15em', fontFamily: 'Helvetica Neue, Arial, sans-serif' }}
-          className="flex items-center justify-between px-6 py-1.5">
-          <div className="hidden md:flex items-center gap-2">
-            <button onClick={() => setLang(lang === 'fr' ? 'en' : 'fr')}
-              style={{ color: '#c9a96e', background: 'transparent', border: '1px solid #c9a96e', padding: '2px 10px', cursor: 'pointer', fontSize: '0.65rem', letterSpacing: '0.1em' }}>
-              {lang === 'fr' ? 'EN' : 'FR'}
-            </button>
-          </div>
-        </div>
-
         {/* Main header */}
         <div className="flex items-center justify-between px-6 py-4">
           {/* Logo */}
@@ -152,6 +141,10 @@ export default function Header() {
 
           {/* Search & Actions */}
           <div className="flex items-center gap-4">
+            <button onClick={() => setLang(lang === 'fr' ? 'en' : 'fr')}
+              style={{ color: '#8e713d', background: 'rgba(255,255,255,.28)', border: '1px solid rgba(183,151,96,.45)', padding: '7px 11px', cursor: 'pointer', fontSize: '0.65rem', letterSpacing: '0.1em' }}>
+              {lang === 'fr' ? 'EN' : 'FR'}
+            </button>
             <form onSubmit={handleSearch} className="hidden md:flex items-center" style={{ border: '1px solid #e8d5b7', padding: '6px 12px', gap: '8px' }}>
               <input value={search} onChange={e => setSearch(e.target.value)} placeholder={t('search')}
                 style={{ border: 'none', outline: 'none', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.8rem', width: '180px', color: '#1a1a1a' }} />
