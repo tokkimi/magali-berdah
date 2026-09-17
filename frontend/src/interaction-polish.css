@@ -83,3 +83,12 @@
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
 }
+
+/* Let the campaign photography stay visible; the copy remains readable via a soft tint. */
+.bag-hero .campaign-shade {
+  background: linear-gradient(90deg, rgba(27, 23, 18, .34), rgba(27, 23, 18, .08) 62%, rgba(27, 23, 18, 0) 100%) !important;
+}
+.bag-hero .campaign-copy h1,
+.bag-hero .campaign-copy > p:not(.eyebrow) {
+  text-shadow: 0 2px 18px rgba(0, 0, 0, .28);
+}
