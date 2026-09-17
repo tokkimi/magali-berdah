@@ -50,6 +50,30 @@
   .my-auctions-bubble { bottom: 170px !important; right: 20px !important; }
 }
 
+/* Final dark glass treatment for the navigation surfaces. */
+.site-header,
+.site-header > div:first-child,
+.site-header > div:nth-child(2) {
+  background: rgba(15,15,15,.62) !important;
+  color: #fff !important;
+  border-bottom-color: rgba(255,255,255,.15) !important;
+}
+.site-header a, .site-header button, .site-header svg { color: rgba(255,255,255,.9); }
+.mobile-glass-menu, .glass-dropdown {
+  background: rgba(15,15,15,.82) !important;
+  border-color: rgba(201,169,110,.45) !important;
+  box-shadow: 0 20px 55px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.14) !important;
+}
+.mobile-glass-menu a, .mobile-glass-menu label, .mobile-glass-menu span,
+.glass-dropdown a, .glass-dropdown p, .glass-dropdown button { color: rgba(255,255,255,.92) !important; }
+.premium-bottom {
+  background: rgba(15,15,15,.76) !important;
+  border-color: rgba(201,169,110,.42) !important;
+  box-shadow: 0 18px 48px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.14) !important;
+}
+.premium-bottom a { color: rgba(255,255,255,.72) !important; }
+.premium-bottom a[aria-current=page] { color: #d1b276 !important; background: rgba(201,169,110,.22) !important; }
+
 /* The action strip belongs to the campaign composition; remove the stark white break. */
 .purchase-paths {
   position: relative;
