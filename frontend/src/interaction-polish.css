@@ -130,7 +130,14 @@
   -webkit-backdrop-filter: blur(30px) saturate(155%) !important;
 }
 
-.site-header { background: rgba(255, 253, 248, .52) !important; }
+.site-header {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  z-index: 600 !important;
+  background: rgba(255, 253, 248, .52) !important;
+}
 
 .purchase-paths button { flex: 1; display: flex; align-items: center; justify-content: center; gap: 12px; padding: 15px 12px; font: 12px Arial,sans-serif; cursor: pointer; background: rgba(255,253,248,.08); color: #f7f1e8; border: 1px solid rgba(255,255,255,.22); }
 .quick-buy-sheet { position: fixed; z-index: 500; left: 50%; top: 50%; transform: translate(-50%,-50%); width: min(420px, calc(100vw - 32px)); padding: 30px; border-radius: 22px; background: rgba(255,253,248,.88); border: 1px solid rgba(255,255,255,.9); backdrop-filter: blur(28px) saturate(160%); box-shadow: 0 24px 70px rgba(20,15,10,.28); }
