@@ -94,7 +94,7 @@ export default function Header() {
 
   return (
     <>
-      <header style={{ borderBottom: '1px solid #e8d5b7', backgroundColor: 'white' }} className="sticky top-0 z-50">
+      <header style={{ borderBottom: '1px solid #e8d5b7', backgroundColor: 'white' }} className="site-header sticky top-0 z-50">
         {/* Top bar */}
         <div style={{ backgroundColor: '#1a1a1a', color: '#c9a96e', fontSize: '0.7rem', letterSpacing: '0.15em', fontFamily: 'Helvetica Neue, Arial, sans-serif' }}
           className="flex items-center justify-between px-6 py-1.5">
@@ -139,7 +139,7 @@ export default function Header() {
                   <ChevronDown size={12} />
                 </Link>
                 {activeNav === item.key && (
-                  <div style={{ position: 'absolute', top: '100%', left: '50%', transform: 'translateX(-50%)', backgroundColor: 'white', border: '1px solid #e8d5b7', padding: '1rem', minWidth: '160px', zIndex: 100, marginTop: '8px', boxShadow: '0 8px 30px rgba(0,0,0,0.1)' }}>
+                  <div className="glass-dropdown" style={{ position: 'absolute', top: '100%', left: '50%', transform: 'translateX(-50%)', backgroundColor: 'white', border: '1px solid #e8d5b7', padding: '1rem', minWidth: '160px', zIndex: 100, marginTop: '8px', boxShadow: '0 8px 30px rgba(0,0,0,0.1)' }}>
                     {item.subs.map(sub => (
                       <Link key={sub.id} to={`/catalogue?type=${item.key === 'auctions' ? 'auction' : 'fixed'}&category=${sub.id}`}
                         style={{ display: 'block', padding: '6px 0', textDecoration: 'none', color: '#1a1a1a', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.75rem', letterSpacing: '0.1em' }}
@@ -173,7 +173,7 @@ export default function Header() {
                     {unreadCount > 0 && <span className="notif-badge">{unreadCount}</span>}
                   </button>
                   {showNotifs && (
-                    <div style={{ position: 'absolute', right: 0, top: '100%', width: '300px', backgroundColor: 'white', border: '1px solid #e8d5b7', boxShadow: '0 8px 30px rgba(0,0,0,0.1)', zIndex: 100, marginTop: '8px', maxHeight: '400px', overflowY: 'auto' }}>
+                    <div className="glass-dropdown" style={{ position: 'absolute', right: 0, top: '100%', width: '300px', backgroundColor: 'white', border: '1px solid #e8d5b7', boxShadow: '0 8px 30px rgba(0,0,0,0.1)', zIndex: 100, marginTop: '8px', maxHeight: '400px', overflowY: 'auto' }}>
                       {notifications.length === 0 ? (
                         <p style={{ padding: '1rem', color: '#9e8e7e', fontSize: '0.8rem', textAlign: 'center' }}>Aucune notification</p>
                       ) : notifications.map(n => (
@@ -195,7 +195,7 @@ export default function Header() {
                     <ChevronDown size={12} />
                   </button>
                   {showUserMenu && (
-                    <div style={{ position: 'absolute', right: 0, top: '100%', backgroundColor: 'white', border: '1px solid #e8d5b7', minWidth: '180px', zIndex: 100, marginTop: '8px', boxShadow: '0 8px 30px rgba(0,0,0,0.1)' }}>
+                    <div className="glass-dropdown" style={{ position: 'absolute', right: 0, top: '100%', backgroundColor: 'white', border: '1px solid #e8d5b7', minWidth: '180px', zIndex: 100, marginTop: '8px', boxShadow: '0 8px 30px rgba(0,0,0,0.1)' }}>
                       {[
                         { label: t('profile'), to: '/profil' },
                         ...(user.role === 'admin' || getSavedWhatnotToken(user.email) ? [{ label: 'Passer en live', to: '/profil?onglet=live' }] : []),
@@ -238,7 +238,7 @@ export default function Header() {
 
         {/* Mobile menu */}
         {mobileOpen && (
-          <div style={{ backgroundColor: 'white', borderTop: '1px solid #e8d5b7', padding: '1rem' }}>
+          <div className="mobile-glass-menu" style={{ backgroundColor: 'white', borderTop: '1px solid #e8d5b7', padding: '1rem' }}>
             <form onSubmit={handleSearch} className="flex items-center mb-4" style={{ border: '1px solid #e8d5b7', padding: '8px 12px', gap: '8px' }}>
               <input value={search} onChange={e => setSearch(e.target.value)} placeholder={t('search')}
                 style={{ border: 'none', outline: 'none', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.8rem', flex: 1 }} />
