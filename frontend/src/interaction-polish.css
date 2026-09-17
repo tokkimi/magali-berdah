@@ -47,7 +47,7 @@
 }
 
 @media (max-width: 700px) {
-  .my-auctions-bubble { bottom: 170px !important; right: 14px !important; }
+  .my-auctions-bubble { bottom: 170px !important; right: 20px !important; }
 }
 
 /* The action strip belongs to the campaign composition; remove the stark white break. */
