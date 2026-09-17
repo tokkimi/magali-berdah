@@ -591,6 +591,11 @@ export default function ItemDetail() {
               </div>
             ))}
           </div>
+          {item.entrupy_certificate_url && (
+            <a href={item.entrupy_certificate_url} target="_blank" rel="noreferrer" style={{ display:'flex', alignItems:'center', justifyContent:'space-between', gap:'12px', border:'1px solid #e8d5b7', padding:'13px 14px', marginBottom:'1.5rem', color:'#6c542f', textDecoration:'none', fontFamily:'Helvetica Neue, Arial, sans-serif', fontSize:'0.75rem' }}>
+              <span>Certificat d’authenticité Entrupy</span><span>Voir le certificat ↗</span>
+            </a>
+          )}
 
           {/* Description */}
           {item.description && (
