@@ -101,3 +101,16 @@
 }
 .site-header > div:first-child { background: rgba(35, 30, 23, .58) !important; }
 .site-header > div:nth-child(2) { background: rgba(255, 253, 248, .28) !important; }
+
+.mobile-glass-menu {
+  background: rgba(255, 253, 248, .38) !important;
+  border-top-color: rgba(255, 255, 255, .45) !important;
+  backdrop-filter: blur(30px) saturate(155%) !important;
+  -webkit-backdrop-filter: blur(30px) saturate(155%) !important;
+  box-shadow: 0 22px 48px rgba(30, 22, 14, .16), inset 0 1px 0 rgba(255,255,255,.7) !important;
+}
+.mobile-glass-menu form,
+.mobile-glass-menu button:not(.btn-gold):not(.btn-outline) {
+  background-color: rgba(255, 253, 248, .28) !important;
+}
+.mobile-glass-menu input { background: transparent !important; }
