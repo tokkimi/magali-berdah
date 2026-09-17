@@ -10,3 +10,4 @@ createRoot(document.getElementById('root')!).render(
 )
 
 import './premium.css'
+import './polish.css'

@@ -62,8 +62,8 @@ export default function ItemCard({ item }: { item: Item }) {
   const isEnding = countdown && countdown !== 'Terminée' && !countdown.includes('j');
 
   return (
-    <div style={{ textDecoration: 'none', color: 'inherit', display: 'flex', height: '100%' }}>
-      <div style={{
+    <div className="bag-card-wrap" style={{ textDecoration: 'none', color: 'inherit', display: 'flex', height: '100%' }}>
+      <div className="bag-card" style={{
         borderRadius: '12px',
         overflow: 'hidden',
         backgroundColor: '#fff',
@@ -140,7 +140,7 @@ export default function ItemCard({ item }: { item: Item }) {
 
         </Link>
         {/* Infos */}
-        <div style={{ padding: '10px 10px 12px', display: 'flex', flexDirection: 'column', minHeight: '100px' }}>
+        <div className="bag-card-info" style={{ padding: '10px 10px 12px', display: 'flex', flexDirection: 'column', minHeight: '100px' }}>
           {/* Marque + catégorie */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '4px', marginBottom: '3px', overflow: 'hidden', flexShrink: 0 }}>
             <p style={{
