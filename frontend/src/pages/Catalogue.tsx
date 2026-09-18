@@ -32,9 +32,14 @@ export default function Catalogue() {
   }, []);
 
   useEffect(() => {
-    setLoading(true);
+    let active = true;
+    const fallback = filterStaticItems({ type, category, brand, search, limit, offset: (page - 1) * limit, sort });
+    setItems(fallback.items);
+    setTotal(fallback.total);
+    setLoading(false);
     getSharedItems({ type, category })
       .then(shared => {
+        if (!active) return;
         const fallback = filterStaticItems({ type, category, brand, search, limit: 1000, offset: 0, sort });
         let combined = [...new Map([...fallback.items, ...shared].map(item => [item.id, item])).values()].filter(item => item.status === 'active');
         if (brand) combined = combined.filter(i => i.brand?.toLowerCase().includes(brand.toLowerCase()));
@@ -44,12 +49,8 @@ export default function Catalogue() {
         setTotal(combined.length);
         setItems(combined.slice((page - 1) * limit, page * limit));
       })
-      .catch(() => {
-        const fallback = filterStaticItems({ type, category, brand, search, limit, offset: (page - 1) * limit, sort });
-        setItems(fallback.items);
-        setTotal(fallback.total);
-      })
-      .finally(() => setLoading(false));
+      .catch(() => {});
+    return () => { active = false; };
   }, [type, category, brand, search, sort, page]);
 
   const setParam = (k: string, v: string) => {

@@ -10,7 +10,7 @@ export async function getSharedItems(filters: { type?: string; category?: string
     query = prefix ? query.like('category_id', `${prefix}%`) : query.eq('category_id', filters.category);
   }
   if (filters.limit) query = query.limit(filters.limit);
-  const { data, error } = await query;
+  const { data, error } = await query.abortSignal(AbortSignal.timeout(4000));
   if (error) throw error;
   return (data || []).map(item => ({ ...item, __shared: true }));
 }
