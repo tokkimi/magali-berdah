@@ -6,7 +6,8 @@ import { supabase } from '../lib/supabase';
 interface Props { mode: 'login' | 'register'; onClose: () => void; onSwitchMode: (m: 'login' | 'register') => void; }
 
 export default function AuthModal({ mode, onClose, onSwitchMode }: Props) {
-  const { login } = useStore();
+  const { login, lang } = useStore();
+  const en=lang==='en';
   const [form, setForm] = useState({ email: '', password: '', name: '' });
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -37,13 +38,13 @@ export default function AuthModal({ mode, onClose, onSwitchMode }: Props) {
   return <div className="modal-backdrop" onClick={e => e.target === e.currentTarget && onClose()}>
     <div style={{ background: 'white', width: 'calc(100% - 24px)', maxWidth: 440, padding: 'clamp(1.5rem,6vw,2.5rem)', position: 'relative', maxHeight: '90vh', overflowY: 'auto', borderRadius: 16 }}>
       <button aria-label="Fermer" onClick={onClose} style={{ position: 'absolute', top: 14, right: 14, background: 'none', border: 0, cursor: 'pointer' }}><X size={22} /></button>
-      <h2 style={{ textAlign: 'center', font: '400 24px Georgia, serif', marginBottom: 24 }}>{mode === 'login' ? 'CONNEXION' : 'INSCRIPTION'}</h2>
+      <h2 style={{ textAlign: 'center', font: '400 24px Georgia, serif', marginBottom: 24 }}>{mode === 'login' ? (en?'SIGN IN':'CONNEXION') : (en?'CREATE ACCOUNT':'INSCRIPTION')}</h2>
       {error && <p style={{ background: '#fff0f0', color: '#b91c1c', padding: 12, marginBottom: 14 }}>{error}</p>}
       {success && <p style={{ background: '#eef9f0', color: '#26723a', padding: 12, marginBottom: 14 }}>{success}</p>}
       <form onSubmit={handleSubmit}>
         {mode === 'register' && <label style={labelStyle}>Nom complet<input value={form.name} onChange={e => setForm(v => ({ ...v, name: e.target.value }))} required style={inputStyle} autoComplete="name" /></label>}
         <label style={labelStyle}>E-mail<input type="email" value={form.email} onChange={e => setForm(v => ({ ...v, email: e.target.value }))} required style={inputStyle} autoComplete="email" /></label>
-        <label style={labelStyle}>Mot de passe<input type="password" value={form.password} onChange={e => setForm(v => ({ ...v, password: e.target.value }))} required minLength={10} style={inputStyle} autoComplete={mode === 'login' ? 'current-password' : 'new-password'} /></label>
+        <label style={labelStyle}>{en?'Password':'Mot de passe'}<input type="password" value={form.password} onChange={e => setForm(v => ({ ...v, password: e.target.value }))} required minLength={mode==='register'?10:undefined} style={inputStyle} autoComplete={mode === 'login' ? 'current-password' : 'new-password'} /></label>
         <button type="submit" disabled={loading} className="btn-gold" style={{ width: '100%', minHeight: 46 }}>{loading ? 'Chargement…' : mode === 'login' ? 'SE CONNECTER' : 'CRÉER MON COMPTE'}</button>
       </form>
       <p style={{ textAlign: 'center', marginTop: 20, color: '#777', fontSize: 13 }}>{mode === 'login' ? 'Pas encore de compte ? ' : 'Déjà un compte ? '}<button onClick={() => onSwitchMode(mode === 'login' ? 'register' : 'login')} style={{ border: 0, background: 'none', color: '#b8935a', cursor: 'pointer' }}>{mode === 'login' ? 'S’inscrire' : 'Se connecter'}</button></p>

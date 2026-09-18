@@ -1,6 +1,7 @@
+import ItemAction from './ItemAction';
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Heart, Clock, X, ArrowUpRight } from 'lucide-react';
+import { Heart, Clock } from 'lucide-react';
 import { useStore } from '../lib/store';
 import { api, imgUrl } from '../lib/api';
 
@@ -61,7 +62,7 @@ export default function ItemCard({ item }: { item: Item }) {
   const isAuction = Boolean(item.auction_enabled);
   const isEnding = countdown && countdown !== 'Terminée' && !countdown.includes('j');
   const [action, setAction] = useState<'buy' | 'bid' | null>(null);
-  const [sent, setSent] = useState(false);
+
 
   return (
     <div className="bag-card-wrap" style={{ textDecoration: 'none', color: 'inherit', display: 'flex', height: '100%' }}>
@@ -87,6 +88,7 @@ export default function ItemCard({ item }: { item: Item }) {
         <div style={{ position: 'relative', height: '200px', overflow: 'hidden', backgroundColor: '#f8f4ef', flexShrink: 0 }}>
           <img
             src={imgUrl(item.photos?.[0])}
+            loading="lazy" decoding="async"
             alt={item.title}
             style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.4s ease' }}
             onError={e => { (e.currentTarget as HTMLImageElement).src = `data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><rect fill='%23f5f0eb' width='200' height='200'/><text x='50%25' y='50%25' font-family='Georgia' font-size='12' fill='%239e8e7e' text-anchor='middle' dominant-baseline='middle'>Photo</text></svg>`; }}
@@ -218,9 +220,9 @@ export default function ItemCard({ item }: { item: Item }) {
             )}
           </div>
         </div>
-        <div className="card-actions">{item.fixed_price && item.fixed_price > 0 ? <button type="button" onClick={() => { setAction('buy'); setSent(false); }}>Acheter · {item.fixed_price.toLocaleString('fr-FR')} €</button> : null}{isAuction && countdown!=='Terminée' && <button type="button" onClick={() => { setAction('bid'); setSent(false); }}>Enchérir →</button>}</div>
+        <div className="card-actions">{item.fixed_price && item.fixed_price > 0 ? <button type="button" onClick={() => { setAction('buy'); }}>Acheter · {item.fixed_price.toLocaleString('fr-FR')} €</button> : null}{isAuction && countdown!=='Terminée' && <button type="button" onClick={() => { setAction('bid'); }}>Enchérir →</button>}</div>
       </div>
-      {action && <div className="item-action-overlay" role="dialog" aria-modal="true"><div className="item-action-sheet"><button className="item-action-close" onClick={() => setAction(null)} aria-label="Fermer"><X size={17}/></button><p className="eyebrow">{action === 'buy' ? 'ACHAT IMMÉDIAT' : 'ENCHÈRE EN COURS'}</p><h2>{item.title}</h2><p className="item-action-price">{price.toLocaleString('fr-FR')} €</p>{sent ? <p className="item-action-success">{action === 'buy' ? 'Votre demande d’achat est enregistrée. Le reçu sera envoyé par email.' : 'Votre offre est enregistrée. Vous recevrez une confirmation par email.'}</p> : <form onSubmit={e => { e.preventDefault(); setSent(true); }}><label>Email de confirmation<input type="email" required placeholder="vous@exemple.com" /></label>{action === 'bid' && <label>Votre offre<input type="number" min={price + 1} required placeholder={`Minimum ${price + 1} €`} /></label>}<button className="item-action-submit" type="submit">{action === 'buy' ? 'Confirmer l’achat' : 'Placer mon enchère'} <ArrowUpRight size={15}/></button></form>}</div></div>}
+      {action && <ItemAction item={item} initial={action} onClose={() => setAction(null)}/>}
     </div>
   );
 }

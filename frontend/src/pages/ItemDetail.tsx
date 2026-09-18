@@ -115,47 +115,15 @@ export default function ItemDetail() {
   }, [id, isShared, isStatic, navigate]);
 
   const confirmBid = async (amount: number) => {
-    setShowBidAuth(false);
-    // record pre-authorization
+    setShowBidAuth(false);setBidError('');
+    if(!user){setBidError('Connectez-vous pour enchérir.');return;}
     try {
-      const auths = JSON.parse(localStorage.getItem('mb_bid_authorizations') || '[]');
-      auths.push({ item_id: id, user_email: user!.email, amount, authorized_at: new Date().toISOString(), status: 'authorized' });
-      localStorage.setItem('mb_bid_authorizations', JSON.stringify(auths));
-    } catch {}
-
-    if (isSharedItem || isShared) {
-      try {
-        await placeSharedBid(id!, amount);
-        setBidSuccess(true);
-        setBidAmount('');
-        const [freshItem, freshBids] = await Promise.all([getSharedItem(id!), getSharedBids(id!)]);
-        setItem(freshItem); setBids(freshBids);
-      } catch (error: unknown) {
-        setBidError(error instanceof Error ? error.message : 'Impossible de placer cette offre.');
-      }
-      return;
-    }
-
-    try {
-      const bidsStore = JSON.parse(localStorage.getItem('mb_bids') || '[]');
-      const newBid = {
-        id: `bid-${Date.now()}`,
-        item_id: id, item_title: item.title,
-        user_id: user!.id, user_email: user!.email,
-        amount, created_at: new Date().toISOString(),
-        is_winning: true,
-      };
-      const updated = bidsStore.map((b: any) => b.item_id === id ? { ...b, is_winning: false } : b);
-      updated.push(newBid);
-      localStorage.setItem('mb_bids', JSON.stringify(updated));
-      setItem((prev: any) => ({ ...prev, current_bid: amount }));
-      setBidSuccess(true);
-      setBidAmount('');
-    } catch {}
-
-    if (!isStatic) {
-      try { await api.post(`/items/${id}/bid`, { amount }); } catch {}
-    }
+      const result=await placeSharedBid(id!,amount);
+      if(!result)throw new Error('Cette offre n’a pas été confirmée.');
+      setBidSuccess(true);setBidAmount('');
+      const [freshItem,freshBids]=await Promise.all([getSharedItem(id!),getSharedBids(id!)]);
+      if(freshItem)setItem(freshItem);setBids(freshBids);
+    } catch(error){setBidError(error instanceof Error?error.message:'Impossible de placer cette offre.');}
   };
 
   const handleBid = async () => {
@@ -178,71 +146,8 @@ export default function ItemDetail() {
   })();
 
   // walletAmount: how much of the wallet to use (0 = card only, full price = wallet only, in between = split)
-  const handleBuyNow = async (walletAmount = 0) => {
-    if (!user) { alert('Connectez-vous pour acheter.'); return; }
-    const price = item.fixed_price;
-    const usedWallet = Math.min(walletAmount, userWallet.available, price);
-    const cardAmount = price - usedWallet;
-    setBuying(true);
-    try {
-      const orders = JSON.parse(localStorage.getItem('mb_orders') || '[]');
-      const order = {
-        id: `order-${Date.now()}`,
-        item_id: id, item_title: item.title,
-        buyer_id: user.id, buyer_email: user.email, buyer_name: user.name,
-        buyer_address: user.address || '', buyer_city: user.city || '',
-        amount: price,
-        wallet_amount: usedWallet,
-        card_amount: cardAmount,
-        payment_status: 'paid',
-        payment_via_wallet: usedWallet > 0,
-        shipping_status: 'pending',
-        tracking_number: null,
-        seller_email: item.seller_email || null,
-        seller_payout: item.seller_payout || null,
-        buyer_confirmed: false,
-        wallet_credited: false,
-        created_at: new Date().toISOString(),
-      };
-      orders.push(order);
-      localStorage.setItem('mb_orders', JSON.stringify(orders));
-
-      // Deduct wallet portion from buyer's wallet
-      if (usedWallet > 0) {
-        const allWallets = JSON.parse(localStorage.getItem('mb_wallet') || '{}');
-        const w = allWallets[user.email] || { pending: 0, available: 0, transactions: [] };
-        w.available = Math.max(0, (w.available || 0) - usedWallet);
-        w.transactions = [...(w.transactions || []), {
-          id: `tx-${Date.now()}`, item_title: item.title,
-          amount: usedWallet, type: 'purchase', status: 'used', date: new Date().toISOString(),
-        }];
-        allWallets[user.email] = w;
-        localStorage.setItem('mb_wallet', JSON.stringify(allWallets));
-      }
-
-      // Credit seller pending wallet immediately on sale
-      if (item.seller_email && item.seller_payout) {
-        const wallet = JSON.parse(localStorage.getItem('mb_wallet') || '{}');
-        if (!wallet[item.seller_email]) wallet[item.seller_email] = { pending: 0, available: 0, transactions: [] };
-        wallet[item.seller_email].pending += item.seller_payout;
-        wallet[item.seller_email].transactions.push({
-          id: `tx-${Date.now()}`,
-          order_id: order.id,
-          item_title: item.title,
-          amount: item.seller_payout,
-          type: 'credit',
-          status: 'pending',
-          date: new Date().toISOString(),
-        });
-        localStorage.setItem('mb_wallet', JSON.stringify(wallet));
-      }
-
-      setOrderConfirm(order);
-      if (!isStatic) {
-        try { await api.post('/orders', { item_id: id }); } catch {}
-      }
-    } catch { alert('Erreur lors de la commande'); }
-    finally { setBuying(false); }
+  const handleBuyNow = async (_walletAmount = 0) => {
+    navigate('/achat/'+encodeURIComponent(id!));
   };
 
   const toggleFav = async (e: React.MouseEvent) => {

@@ -22,6 +22,13 @@ export async function getSharedItem(id: string) {
 }
 
 export async function placeSharedBid(itemId: string, amount: number) {
+  if (!Number.isFinite(amount) || amount <= 0 || !Number.isInteger(amount)) throw new Error('Montant invalide.');
+  const { data: auth, error: authError } = await supabase.auth.getUser();
+  if (authError || !auth.user) throw new Error('Connectez-vous pour enchérir.');
+  if (!auth.user.email_confirmed_at) throw new Error('Confirmez votre adresse e-mail avant d’enchérir.');
+  const item = await getSharedItem(itemId);
+  if (!item || item.status !== 'active' || !item.auction_enabled || !item.auction_end_time || new Date(item.auction_end_time).getTime() <= Date.now()) throw new Error('Cette enchère n’est pas disponible.');
+  if (amount < Number(item.current_bid || item.auction_start_price || 0) + 1) throw new Error('Une offre supérieure est nécessaire.');
   const { data, error } = await supabase.rpc('place_auction_bid', { p_item_id: itemId, p_amount: amount });
   if (error) throw error;
   return data?.[0];

@@ -1,6 +1,7 @@
 import BrandLoading from './components/BrandLoading';
 import MyAuctionsBubble from './components/MyAuctionsBubble';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import AuthModal from './components/AuthModal';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { useStore } from './lib/store';
 
@@ -42,9 +43,14 @@ import AdminItemForm from './pages/admin/AdminItemForm';
 import AdminSettings from './pages/admin/AdminSettings';
 
 function PrivateRoute({ children, role }: { children: React.ReactNode; role?: string }) {
-  const { user, token } = useStore();
-  if (!token || !user) return <Navigate to="/" replace />;
-  if (role && user?.role !== role) return <Navigate to="/" replace />;
+  const { user, token, fetchMe } = useStore();
+  const [checking,setChecking]=useState(true);
+  const [loginOpen,setLoginOpen]=useState(false);
+  const [authMode,setAuthMode]=useState<'login'|'register'>('login');
+  useEffect(()=>{let active=true;void fetchMe().finally(()=>{if(active)setChecking(false)});return()=>{active=false}},[fetchMe]);
+  if(checking)return <p style={{padding:40}}>Vérification de votre session…</p>;
+  if (!token || !user) return <main style={{maxWidth:480,margin:'60px auto',padding:24,textAlign:'center'}}><h1>Connexion requise</h1><p style={{margin:'20px 0'}}>Connectez-vous avec le compte autorisé pour accéder à cet espace.</p><button className="btn-gold" onClick={()=>setLoginOpen(true)}>Se connecter</button>{loginOpen&&<AuthModal mode={authMode} onSwitchMode={setAuthMode} onClose={()=>setLoginOpen(false)}/>}</main>;
+  if (role && user?.role !== role) return <main style={{padding:40}}><h1>Accès réservé</h1><p>Ce compte ne possède pas les droits administrateur. Les droits doivent être attribués par le propriétaire du service d’authentification.</p></main>;
   return <>{children}</>;
 }
 

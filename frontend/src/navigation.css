@@ -1,0 +1,79 @@
+/* Navigation owns its surface; no pale background is stacked beneath the glass. */
+header.site-header[data-theme="smoke"] {
+  position: fixed !important; inset: 0 0 auto !important; z-index: 400 !important;
+  background: rgba(12,13,15,.78) !important; color: #f8f4eb;
+  border: 0 !important; border-bottom: 1px solid rgba(219,191,139,.2) !important;
+  box-shadow: 0 8px 28px #0002 !important;
+  backdrop-filter: blur(22px) saturate(120%); -webkit-backdrop-filter: blur(22px) saturate(120%);
+}
+header.site-header[data-theme="smoke"].over-hero {position:absolute !important; inset:0 0 auto !important;}
+header.site-header[data-theme="smoke"].is-hidden {visibility:hidden;opacity:0;transform:translateY(-100%);pointer-events:none;}
+header.site-header[data-theme="smoke"].is-visible {visibility:visible;opacity:1;transform:translateY(0);transition:opacity .2s,transform .2s;}
+header.site-header[data-theme="smoke"] > .header-main {
+  display:flex !important; min-height:88px; padding:8px 24px; gap:20px;
+  background:transparent !important; backdrop-filter:none !important; -webkit-backdrop-filter:none !important;
+}
+header.site-header[data-theme="smoke"] a,
+header.site-header[data-theme="smoke"] button,
+header.site-header[data-theme="smoke"] input,
+header.site-header[data-theme="smoke"] svg {color:#f8f4eb !important;}
+header.site-header[data-theme="smoke"] input {background:transparent !important;min-width:0;}
+header.site-header[data-theme="smoke"] input::placeholder {color:#c1bcb2;opacity:1;}
+header.site-header[data-theme="smoke"] button {cursor:pointer;}
+header.site-header[data-theme="smoke"] .header-icon-button,
+header.site-header[data-theme="smoke"] .header-icon-button:hover {background:rgba(255,255,255,.07) !important;}
+header.site-header[data-theme="smoke"] .btn-gold {background:#cfb67d !important;color:#171717 !important;border-radius:8px;}
+header.site-header[data-theme="smoke"] form {background:#ffffff08 !important;border-color:#ffffff30 !important;border-radius:8px;}
+header.site-header[data-theme="smoke"] a[href="/vente-exclusive"] {color:#dec58f !important;}
+header.site-header[data-theme="smoke"] .mobile-glass-menu,
+header.site-header[data-theme="smoke"] .glass-dropdown {
+  background:rgba(12,13,15,.93) !important;color:#f8f4eb !important;
+  border:1px solid #cfb67d55 !important;border-radius:18px !important;
+  box-shadow:0 18px 52px #0006,inset 0 1px 0 #ffffff12 !important;
+  backdrop-filter:blur(26px) !important;-webkit-backdrop-filter:blur(26px) !important;
+}
+header.site-header[data-theme="smoke"] .mobile-glass-menu {
+  position:absolute !important;top:calc(100% + 8px) !important;right:16px !important;left:auto !important;
+  width:min(340px,calc(100vw - 32px)) !important;max-height:calc(100dvh - 112px) !important;
+  padding:18px !important;overflow:auto;overscroll-behavior:contain;
+}
+header.site-header[data-theme="smoke"] .mobile-glass-menu a {border-color:#ffffff20 !important;}
+header.site-header[data-theme="smoke"] .mobile-glass-menu button:not(.btn-gold) {background:#ffffff08 !important;border-color:#ffffff30 !important;}
+header.site-header[data-theme="smoke"] .mobile-glass-menu form {display:flex;}
+header.site-header[data-theme="smoke"] .glass-dropdown {margin-top:0 !important;}
+header.site-header[data-theme="smoke"] :focus-visible {outline:2px solid #dec58f;outline-offset:4px;}
+.bag-hero {height:680px;max-height:none;min-height:540px;}
+.bag-hero .campaign-copy {padding-top:150px;}
+.premium-bottom {background:rgba(12,13,15,.9) !important;}
+.item-action-sheet {max-height:calc(100dvh - 40px);overflow:auto;outline:none;}
+.item-action-overlay {z-index:1500;}
+.modal-backdrop {z-index:1600 !important;}
+.action-product {display:flex;gap:14px;align-items:center;margin:8px 12px 20px 0;}
+.action-product img {width:70px;height:85px;object-fit:cover;border-radius:10px;}
+.action-product h2 {font-size:20px;}
+.action-product .eyebrow {margin:0;color:#83612e;}
+.action-tabs {display:flex;gap:8px;margin-bottom:20px;}
+.action-tabs button {flex:1;border:1px solid #c9bda7;border-radius:8px;padding:10px;background:transparent;font:12px Arial;cursor:pointer;}
+.action-tabs button[aria-pressed=true] {background:#222;color:white;}
+.action-consent,.payment-options label {display:flex !important;align-items:flex-start;gap:10px;line-height:1.5 !important;}
+.action-consent input,.payment-options input {width:auto !important;margin:2px 0 0 !important;accent-color:#987738;}
+.payment-options {border:1px solid #d8cdbd;border-radius:12px;padding:12px;margin-top:18px;}
+.payment-options legend {font:12px Arial;padding:0 6px;}
+.action-note {font:11px/1.5 Arial;color:#675c4c;margin-top:12px;}
+.action-error {font:13px/1.5 Arial;color:#9e231d;margin-top:14px;}
+.item-action-submit:disabled {opacity:.55;cursor:not-allowed;}
+.entrupy-logo {display:block;width:148px;height:auto;margin:16px auto 0;}
+.bag-discovery {justify-content:center;}
+@media(min-width:1100px){header.site-header[data-theme="smoke"] .md\:hidden,header.site-header[data-theme="smoke"] .mobile-glass-menu {display:none !important;}}
+@media(max-width:1099px){
+  header.site-header[data-theme="smoke"] .hidden {display:none !important;}
+  header.site-header[data-theme="smoke"] .md\:hidden {display:inline-flex !important;}
+  header.site-header[data-theme="smoke"] > .header-main {min-height:88px;padding:6px 16px;}
+  header.site-header[data-theme="smoke"] .header-main img {width:76px;height:76px;}
+}
+@media(max-width:700px){
+  .bag-hero {height:auto;min-height:550px;max-height:none;}
+  .bag-hero .campaign-copy {padding:130px 22px 85px;}
+  .bag-hero .campaign-copy h1 {font-size:clamp(32px,8.5vw,46px);}
+  .bag-discovery {justify-content:flex-start;}
+}

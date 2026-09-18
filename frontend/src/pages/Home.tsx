@@ -2,7 +2,7 @@ import BagHero from '../components/BagHero';
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ChevronRight, ShoppingBag, Gavel, Shield, Truck, Radio, Lock, Star, Clock } from 'lucide-react';
-import { useT } from '../lib/store';
+import { useT, useStore } from '../lib/store';
 import ItemCard from '../components/ItemCard';
 import LiveRail from '../components/LiveRail';
 import { filterStaticItems } from '../lib/staticItems';
@@ -284,6 +284,7 @@ function HScrollSection({ title, label, link, items, loading, seeAll, seeMore }:
 }
 
 export default function Home() {
+  const en=useStore(s=>s.lang)==='en';
   const [items, setItems] = useState<any[]>(() => filterStaticItems({ category: 'bags', limit: 20 }).items);
   const [loading, setLoading] = useState(true);
   useEffect(() => { let active = true; getSharedItems({category:'bags'}).then(shared => { if(active) setItems([...new Map([...filterStaticItems({category:'bags',limit:100}).items,...shared].map(i=>[i.id,i])).values()].filter(i=>i.status==='active')); }).catch(()=>{}).finally(()=>{if(active)setLoading(false)}); return ()=>{active=false}; }, []);
@@ -292,10 +293,10 @@ export default function Home() {
   return <div style={{background:'#faf8f4'}}>
     <BagHero />
     <ExclusiveSection />
-    <section id="auction-items" className="premium-section"><div className="premium-section-heading"><div><p className="eyebrow">À VOUS DE JOUER</p><h2>Les sacs aux enchères</h2></div><Link to="/catalogue?type=auction">Tout voir →</Link></div><div className="premium-products">{auctions.slice(0,4).map(item=><ItemCard key={item.id} item={item}/>)}</div>{!auctions.length&&<p className="bag-empty">{loading?'Chargement de la sélection…':'Les prochaines enchères arrivent bientôt.'}</p>}</section>
-    <div className="entrupy-strip"><strong>Nos pièces de luxe sont vérifiées et contrôlées avec Entrupy.</strong><p>Retrouvez le certificat disponible sur la fiche de votre sac.</p></div>
-    <section id="direct-items" className="premium-section"><div className="premium-section-heading"><div><p className="eyebrow">SANS ATTENDRE</p><h2>Le coup de cœur n’attend pas.</h2></div><Link to="/catalogue?type=fixed">Tout voir →</Link></div><div className="premium-products">{direct.slice(0,4).map(item=><ItemCard key={item.id} item={item}/>)}</div>{!direct.length&&<p className="bag-empty">{loading?'Chargement de la sélection…':'La prochaine sélection sera bientôt disponible.'}</p>}</section>
+    <section id="auction-items" className="premium-section"><div className="premium-section-heading"><div><p className="eyebrow">{en?"MAKE YOUR MOVE":"À VOUS DE JOUER"}</p><h2>{en?"Bags at auction":"Les sacs aux enchères"}</h2></div><Link to="/catalogue?type=auction">{en?"View all →":"Tout voir →"}</Link></div><div className="premium-products">{auctions.slice(0,4).map(item=><ItemCard key={item.id} item={item}/>)}</div>{!auctions.length&&<p className="bag-empty">{loading?'Chargement de la sélection…':'Les prochaines enchères arrivent bientôt.'}</p>}</section>
+    <div className="entrupy-strip"><strong>{en?"Our luxury pieces are checked and authenticated with Entrupy.":"Nos pièces de luxe sont vérifiées et contrôlées avec Entrupy."}</strong><p>{en?"Find the available certificate on your bag’s product page.":"Retrouvez le certificat disponible sur la fiche de votre sac."}</p><a href="https://www.entrupy.com/" target="_blank" rel="noopener noreferrer"><img className="entrupy-logo" src="/entrupy-official.png" width="150" height="44" alt="Entrupy" loading="lazy"/></a></div>
+    <section id="direct-items" className="premium-section"><div className="premium-section-heading"><div><p className="eyebrow">{en?"NO NEED TO WAIT":"SANS ATTENDRE"}</p><h2>{en?"Love it? Make it yours.":"Le coup de cœur n’attend pas."}</h2></div><Link to="/catalogue?type=fixed">{en?"View all →":"Tout voir →"}</Link></div><div className="premium-products">{direct.slice(0,4).map(item=><ItemCard key={item.id} item={item}/>)}</div>{!direct.length&&<p className="bag-empty">{loading?'Chargement de la sélection…':'La prochaine sélection sera bientôt disponible.'}</p>}</section>
     <LivesHScroll />
-    <div className="entrupy-strip"><strong>Un sac. Deux façons de le faire vôtre.</strong><p>Achetez au prix affiché, ou placez votre offre aux enchères.</p><Link to="/comment-acheter">Le guide d’achat</Link></div>
+    <div className="entrupy-strip"><strong>{en?"One bag. Two ways to make it yours.":"Un sac. Deux façons de le faire vôtre."}</strong><p>{en?"Buy at the listed price, or place a bid at auction.":"Achetez au prix affiché, ou placez votre offre aux enchères."}</p><Link to="/comment-acheter">{en?"Your buying guide":"Le guide d’achat"}</Link></div>
   </div>;
 }

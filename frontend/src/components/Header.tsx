@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Search, User, Heart, Bell, ChevronDown, Menu, X, Radio, Download, Smartphone } from 'lucide-react';
 import { useStore, useT } from '../lib/store';
 import { api } from '../lib/api';
@@ -28,6 +28,13 @@ const NAV_ITEMS = [
 ];
 
 export default function Header() {
+  const location = useLocation();
+  const [scrolled, setScrolled] = useState(false);
+  useEffect(() => {
+    const update = () => setScrolled(window.scrollY > 72);
+    update(); window.addEventListener('scroll', update, { passive: true });
+    return () => window.removeEventListener('scroll', update);
+  }, [location.pathname]);
   const t = useT();
   const { user, lang, setLang, logout } = useStore();
   const navigate = useNavigate();
@@ -94,9 +101,9 @@ export default function Header() {
 
   return (
     <>
-      <header style={{ borderBottom: '1px solid #e8d5b7', backgroundColor: 'white' }} className="site-header sticky top-0 z-50">
+      <header data-theme="smoke" inert={!scrolled} aria-hidden={!scrolled} className={`site-header ${scrolled ? 'is-visible' : 'is-hidden'}`}>
         {/* Main header */}
-        <div className="flex items-center justify-between px-6 py-4">
+        <div className="header-main flex items-center justify-between px-6 py-4">
           {/* Logo */}
           <Link to="/" style={{ textDecoration: 'none', marginLeft: '0.5rem' }}>
             <img src='/mb-logo.png' alt='Magali Berdah' width='82' height='82' style={{ objectFit: 'contain', display: 'block' }} />
