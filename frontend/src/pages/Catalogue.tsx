@@ -74,8 +74,8 @@ export default function Catalogue() {
   return (
     <div style={{ background: '#fff', minHeight: '100vh' }}>
       {/* Page header — centré YSL */}
-      <div style={{ textAlign: 'center', padding: '2.5rem 1rem 1.5rem' }}>
-        <h1 style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: 'clamp(1rem, 5vw, 1.4rem)', fontWeight: 700, letterSpacing: '0.22em', color: '#1a1a1a', textTransform: 'uppercase', marginBottom: '0.4rem' }}>
+      <div style={{ textAlign: 'center', padding: '2rem 1rem 1rem' }}>
+        <h1 style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.75rem', fontWeight: 700, letterSpacing: '0.22em', color: '#1a1a1a', textTransform: 'uppercase', marginBottom: '0.4rem' }}>
           {pageTitle}
         </h1>
         <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.65rem', letterSpacing: '0.12em', color: '#999' }}>
@@ -84,16 +84,16 @@ export default function Catalogue() {
       </div>
 
       {/* Filtres en ligne */}
-      <div style={{ display: 'flex', justifyContent: 'center', gap: '0', borderTop: '1px solid #e8e8e8', borderBottom: '1px solid #e8e8e8', marginBottom: '2rem' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0', marginBottom: '2rem' }}>
         {['', 'fixed', 'auction'].map(v => (
           <button key={v} onClick={() => setParam('type', v)}
-            style={{ padding: '12px 20px', background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.6rem', letterSpacing: '0.18em', textTransform: 'uppercase', color: type === v ? '#1a1a1a' : '#999', fontWeight: type === v ? 700 : 400, borderBottom: type === v ? '2px solid #1a1a1a' : '2px solid transparent' }}>
+            style={{ padding: '8px 14px', background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.58rem', letterSpacing: '0.14em', textTransform: 'uppercase', color: type === v ? '#1a1a1a' : '#bbb', fontWeight: type === v ? 600 : 400 }}>
             {v === '' ? 'TOUT' : v === 'fixed' ? 'VENTE' : 'ENCHÈRES'}
           </button>
         ))}
         <div style={{ flex: 1 }} />
         <select value={sort} onChange={e => setParam('sort', e.target.value)}
-          style={{ border: 'none', borderLeft: '1px solid #e8e8e8', padding: '12px 16px', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.6rem', letterSpacing: '0.1em', color: '#666', backgroundColor: 'white', cursor: 'pointer', textTransform: 'uppercase' }}>
+          style={{ border: 'none', padding: '8px 12px', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.58rem', letterSpacing: '0.1em', color: '#999', backgroundColor: 'white', cursor: 'pointer', textTransform: 'uppercase' }}>
           <option value="created_at">RÉCENTS</option>
           <option value="price_asc">PRIX ↑</option>
           <option value="price_desc">PRIX ↓</option>
