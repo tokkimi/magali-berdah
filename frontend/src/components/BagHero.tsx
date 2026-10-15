@@ -17,13 +17,7 @@ export default function BagHero() {
   return <>
     <section className="bag-hero" aria-roledescription="carrousel" aria-label="Sélection de sacs">
       {slides.map((s, i) => <img key={s.image} className={`campaign-photo ${i === index ? 'shown' : ''}`} src={s.image} alt="" />)}
-      <div className="campaign-shade" />
-      <div className="campaign-copy">
-        <p className="eyebrow">{en?(index===0?'THE MAGALI EDIT':'THE AUCTIONS'):slide.label}</p>
-        <h1>{en?(index===0?'Your next\nfavourite bag.':'A rare find.\nYour next chapter.'):slide.title}</h1>
-        <p>{en?'Pre-loved luxury bags.':'Des sacs de seconde main.'}<br />{en?'Timeless desire.':'Des envies de toujours.'}</p>
-        <Link className="premium-cta" to={slide.link}>{en?(index===0?'Find my bag':'Browse auctions'):slide.cta} <ArrowUpRight size={17} /></Link>
-      </div>
+      <div className="campaign-shade" style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.3) 0%, transparent 40%)' }} />
       <div className="campaign-controls">{slides.map((_, i) => <button key={i} aria-label={`Afficher la sélection ${i + 1}`} aria-pressed={i === index} className={i === index ? 'selected' : ''} onClick={() => setIndex(i)} />)}<button className="pause-slide" onClick={() => setPaused(p => !p)} aria-label={paused ? 'Animer le diaporama' : 'Mettre en pause'}>{paused ? <Play size={13} /> : <Pause size={13} />}</button></div>
       <button onClick={() => go('direct-items')} style={{ position: 'absolute', bottom: '24px', left: '50%', transform: 'translateX(-50%)', background: 'none', border: 'none', cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px', color: '#fff' }}>
         <span style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.55rem', letterSpacing: '0.2em', textTransform: 'uppercase' }}>{en ? 'DISCOVER' : 'DÉCOUVRIR'}</span>
