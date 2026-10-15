@@ -84,17 +84,16 @@ export default function Header() {
     <>
       <style>{`
         .ysl-header {
-          position: fixed; top: 0; left: 0; right: 0; z-index: 500;
+          position: sticky; top: 0; left: 0; right: 0; z-index: 500;
           background: #fff;
-          border-bottom: 1px solid ${scrolled ? '#e0e0e0' : 'transparent'};
-          transition: border-color 0.3s;
+          border-bottom: 1px solid #e8e8e8;
         }
         .ysl-header-inner {
           display: grid;
           grid-template-columns: 1fr auto 1fr;
           align-items: center;
-          height: 60px;
-          padding: 0 20px;
+          height: 52px;
+          padding: 0 16px;
         }
         .ysl-left { display: flex; align-items: center; gap: 20px; }
         .ysl-center { display: flex; justify-content: center; }
@@ -153,8 +152,7 @@ export default function Header() {
           font-size: 0.9rem; color: #1a1a1a;
           background: transparent;
         }
-        /* push content below fixed header */
-        .header-spacer { height: 60px; }
+        .ysl-search-bar { top: 52px; }
       `}</style>
 
       <header className="ysl-header">

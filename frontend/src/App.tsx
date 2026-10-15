@@ -59,7 +59,6 @@ function Layout({ children }: { children: React.ReactNode }) {
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       <Header />
-      <div className="header-spacer" />
       <main style={{ flex: 1 }}>{children}</main>
       <Footer />
       <BottomNav />
