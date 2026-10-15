@@ -93,7 +93,7 @@ export default function Catalogue() {
         ))}
         <div style={{ flex: 1 }} />
         <select value={sort} onChange={e => setParam('sort', e.target.value)}
-          style={{ border: 'none', padding: '8px 12px', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.58rem', letterSpacing: '0.1em', color: '#999', backgroundColor: 'white', cursor: 'pointer', textTransform: 'uppercase' }}>
+          style={{ border: 'none', padding: '8px 12px', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.58rem', letterSpacing: '0.1em', color: '#999', backgroundColor: 'white', cursor: 'pointer', textTransform: 'uppercase', WebkitAppearance: 'none', appearance: 'none' }}>
           <option value="created_at">RÉCENTS</option>
           <option value="price_asc">PRIX ↑</option>
           <option value="price_desc">PRIX ↓</option>
