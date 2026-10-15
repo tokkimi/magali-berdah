@@ -42,7 +42,7 @@ export default function ProHome() {
   return (
     <div>
       <div style={{ marginBottom: '2rem' }}>
-        <h1 style={{ fontFamily: 'Georgia, serif', fontSize: '1.8rem', fontWeight: 400, color: '#1a1a1a', marginBottom: '0.25rem' }}>Tableau de bord</h1>
+        <h1 style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '1.8rem', fontWeight: 400, color: '#1a1a1a', marginBottom: '0.25rem' }}>Tableau de bord</h1>
         <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.8rem', color: '#9e8e7e' }}>
           Bienvenue, {user?.name} · {currentShop?.shop_name || 'Votre boutique'}
         </p>
@@ -64,7 +64,7 @@ export default function ProHome() {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
               <div>
                 <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.65rem', letterSpacing: '0.1em', color: '#9e8e7e', marginBottom: '0.5rem' }}>{c.label.toUpperCase()}</p>
-                <p style={{ fontFamily: 'Georgia, serif', fontSize: '2rem', color: c.color }}>{c.value}</p>
+                <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '2rem', color: c.color }}>{c.value}</p>
                 {c.sub && <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.7rem', color: '#9e8e7e', marginTop: '4px' }}>{c.sub}</p>}
                 {c.total !== undefined && <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.7rem', color: '#9e8e7e', marginTop: '4px' }}>sur {c.total} total</p>}
               </div>
@@ -76,7 +76,7 @@ export default function ProHome() {
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1.5rem' }}>
         <div style={{ backgroundColor: 'white', padding: '1.5rem', border: '1px solid #e8d5b7' }}>
-          <h3 style={{ fontFamily: 'Georgia, serif', fontSize: '1rem', fontWeight: 400, marginBottom: '1rem', color: '#1a1a1a' }}>Actions rapides</h3>
+          <h3 style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '1rem', fontWeight: 400, marginBottom: '1rem', color: '#1a1a1a' }}>Actions rapides</h3>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
             <Link to="/boutique/articles/nouveau" className="btn-gold" style={{ textDecoration: 'none', textAlign: 'center', fontSize: '0.75rem' }}>+ Ajouter un article</Link>
             <Link to="/boutique/articles" className="btn-outline" style={{ textDecoration: 'none', textAlign: 'center', fontSize: '0.75rem' }}>Gérer mes articles</Link>
@@ -84,7 +84,7 @@ export default function ProHome() {
           </div>
         </div>
         <div style={{ backgroundColor: 'white', padding: '1.5rem', border: '1px solid #e8d5b7' }}>
-          <h3 style={{ fontFamily: 'Georgia, serif', fontSize: '1rem', fontWeight: 400, marginBottom: '1rem', color: '#1a1a1a' }}>Abonnement</h3>
+          <h3 style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '1rem', fontWeight: 400, marginBottom: '1rem', color: '#1a1a1a' }}>Abonnement</h3>
           <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.8rem', color: '#1a1a1a', marginBottom: '4px' }}>
             {currentShop?.subscription_active ? '★ Premium actif' : 'Plan gratuit'}
           </p>

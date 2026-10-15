@@ -78,7 +78,7 @@ function formatCountdown(seconds: number) {
 function CountdownBlock({ value, label }: { value: string; label: string }) {
   return (
     <div style={{ textAlign: 'center' }}>
-      <div style={{ fontFamily: 'Georgia, serif', fontSize: 'clamp(2.5rem, 8vw, 5rem)', color: '#c9a96e', lineHeight: 1, fontWeight: 400 }}>{value}</div>
+      <div style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: 'clamp(2.5rem, 8vw, 5rem)', color: '#c9a96e', lineHeight: 1, fontWeight: 400 }}>{value}</div>
       <div style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.55rem', letterSpacing: '0.25em', color: 'rgba(255,255,255,0.5)', marginTop: '8px' }}>{label}</div>
     </div>
   );
@@ -117,7 +117,7 @@ export default function VenteExclusive() {
         <style>{`
           @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
           @keyframes goldPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
-          .cd-sep { font-family: Georgia, serif; font-size: clamp(2rem, 7vw, 4rem); color: rgba(201,169,110,0.4); line-height: 1; }
+          .cd-sep { font-family: Helvetica Neue, Arial, sans-serif; font-size: clamp(2rem, 7vw, 4rem); color: rgba(201,169,110,0.4); line-height: 1; }
         `}</style>
 
         {/* Lock icon */}
@@ -128,7 +128,7 @@ export default function VenteExclusive() {
         <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.6rem', letterSpacing: '0.4em', color: '#c9a96e', marginBottom: '1rem', animation: 'fadeInUp 0.6s ease' }}>
           VENTE EXCLUSIVE · ACCÈS LIMITÉ
         </p>
-        <h1 style={{ fontFamily: 'Georgia, serif', fontSize: 'clamp(1.6rem, 5vw, 3rem)', color: 'white', fontWeight: 400, lineHeight: 1.25, marginBottom: '0.75rem', maxWidth: '600px', animation: 'fadeInUp 0.8s ease' }}>
+        <h1 style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: 'clamp(1.6rem, 5vw, 3rem)', color: 'white', fontWeight: 400, lineHeight: 1.25, marginBottom: '0.75rem', maxWidth: '600px', animation: 'fadeInUp 0.8s ease' }}>
           La sélection du jour ouvre dans…
         </h1>
         <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.82rem', color: 'rgba(255,255,255,0.45)', marginBottom: '3rem', animation: 'fadeInUp 1s ease' }}>
@@ -194,7 +194,7 @@ export default function VenteExclusive() {
           <span style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.58rem', letterSpacing: '0.25em', color: '#c9a96e' }}>VENTE EXCLUSIVE · AUJOURD'HUI SEULEMENT</span>
           <Star size={12} color="#c9a96e" fill="#c9a96e" />
         </div>
-        <h1 style={{ fontFamily: 'Georgia, serif', fontSize: 'clamp(1.6rem, 5vw, 2.8rem)', color: 'white', fontWeight: 400, marginBottom: '0.75rem' }}>
+        <h1 style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: 'clamp(1.6rem, 5vw, 2.8rem)', color: 'white', fontWeight: 400, marginBottom: '0.75rem' }}>
           Sélection du jour
         </h1>
         <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.8rem', color: 'rgba(255,255,255,0.5)', marginBottom: '1.5rem' }}>
@@ -209,7 +209,7 @@ export default function VenteExclusive() {
         {exclusiveItems.length === 0 ? (
           <div style={{ textAlign: 'center', padding: '4rem 1rem', color: '#9e8e7e' }}>
             <Gavel size={40} color="#e8d5b7" style={{ margin: '0 auto 1rem' }} />
-            <p style={{ fontFamily: 'Georgia, serif', fontSize: '1.1rem', color: '#1a1a1a', marginBottom: '0.5rem' }}>Sélection en cours de préparation</p>
+            <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '1.1rem', color: '#1a1a1a', marginBottom: '0.5rem' }}>Sélection en cours de préparation</p>
             <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.8rem' }}>Revenez dans quelques instants.</p>
           </div>
         ) : (
@@ -247,7 +247,7 @@ function CloseCountdown({ closeTime }: { closeTime: string }) {
   const s = secs % 60;
 
   return (
-    <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontFamily: 'Georgia, serif', fontSize: 'clamp(1rem, 3vw, 1.5rem)', color: '#c9a96e' }}>
+    <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: 'clamp(1rem, 3vw, 1.5rem)', color: '#c9a96e' }}>
       <Gavel size={16} color="#c9a96e" />
       Ferme dans {h > 0 ? `${h}h ` : ''}{String(m).padStart(2, '0')}m {String(s).padStart(2, '0')}s
     </div>

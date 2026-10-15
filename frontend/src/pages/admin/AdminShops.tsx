@@ -16,7 +16,7 @@ export default function AdminShops() {
 
   return (
     <div>
-      <h1 style={{ fontFamily: 'Georgia, serif', fontSize: '1.8rem', fontWeight: 400, color: '#1a1a1a', marginBottom: '1.5rem' }}>Boutiques ({shops.length})</h1>
+      <h1 style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '1.8rem', fontWeight: 400, color: '#1a1a1a', marginBottom: '1.5rem' }}>Boutiques ({shops.length})</h1>
 
       <div style={{ backgroundColor: 'white', border: '1px solid #e8d5b7', overflow: 'auto' }}>
         <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: '800px' }}>
@@ -31,7 +31,7 @@ export default function AdminShops() {
             {shops.map(s => (
               <tr key={s.id} style={{ borderBottom: '1px solid #f0ece6' }}>
                 <td style={{ padding: '10px 14px' }}>
-                  <p style={{ fontFamily: 'Georgia, serif', fontSize: '0.9rem', color: '#1a1a1a' }}>{s.shop_name}</p>
+                  <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.9rem', color: '#1a1a1a' }}>{s.shop_name}</p>
                   {s.subscription_active ? <span style={{ fontSize: '0.65rem', color: '#c9a96e' }}>★ Premium</span> : null}
                 </td>
                 <td style={{ padding: '10px 14px' }}>
@@ -40,7 +40,7 @@ export default function AdminShops() {
                 </td>
                 <td style={{ padding: '10px 14px', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.75rem', color: '#666' }}>{s.siret || '-'}</td>
                 <td style={{ padding: '10px 14px', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.85rem', color: '#1a1a1a' }}>{s.item_count}</td>
-                <td style={{ padding: '10px 14px', fontFamily: 'Georgia, serif', fontSize: '0.85rem' }}>
+                <td style={{ padding: '10px 14px', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.85rem' }}>
                   {(s.total_sales || 0).toLocaleString('fr-FR')} €
                 </td>
                 <td style={{ padding: '10px 14px', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.85rem', color: '#c9a96e', fontWeight: 600 }}>

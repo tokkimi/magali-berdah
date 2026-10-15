@@ -13,7 +13,7 @@ export default function Favorites() {
     return (
       <div style={{ minHeight: '60vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '1rem', padding: '2rem' }}>
         <Heart size={48} color="#e8d5b7" />
-        <h1 style={{ fontFamily: 'Georgia, serif', fontSize: '1.5rem', fontWeight: 400, color: '#1a1a1a' }}>Vos favoris</h1>
+        <h1 style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '1.5rem', fontWeight: 400, color: '#1a1a1a' }}>Vos favoris</h1>
         <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.85rem', color: '#9e8e7e', textAlign: 'center' }}>
           Connectez-vous pour retrouver vos pièces favorites
         </p>
@@ -27,7 +27,7 @@ export default function Favorites() {
       <div style={{ marginBottom: '1.5rem' }}>
         <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.55rem', letterSpacing: '0.35em', color: '#c9a96e', marginBottom: '4px' }}>MON COMPTE</p>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <h1 style={{ fontFamily: 'Georgia, serif', fontSize: '1.4rem', fontWeight: 400, color: '#1a1a1a', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <h1 style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '1.4rem', fontWeight: 400, color: '#1a1a1a', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             <Heart size={20} color="#c9a96e" fill="#c9a96e" />
             Mes favoris
           </h1>
@@ -44,7 +44,7 @@ export default function Favorites() {
           <div style={{ width: '70px', height: '70px', backgroundColor: '#f8f4ef', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <Heart size={28} color="#e8d5b7" />
           </div>
-          <h2 style={{ fontFamily: 'Georgia, serif', fontSize: '1.1rem', fontWeight: 400, color: '#1a1a1a' }}>
+          <h2 style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '1.1rem', fontWeight: 400, color: '#1a1a1a' }}>
             Aucun favori pour l'instant
           </h2>
           <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.82rem', color: '#9e8e7e', maxWidth: '280px' }}>

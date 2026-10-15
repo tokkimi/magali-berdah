@@ -10,7 +10,7 @@ export default function ProPage() {
       {/* Hero */}
       <div style={{ backgroundColor: '#1a1a1a', padding: '6rem 2rem', textAlign: 'center' }}>
         <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.65rem', letterSpacing: '0.4em', color: '#c9a96e', marginBottom: '1rem' }}>VENDRE SUR MAGALI BERDAH</p>
-        <h1 style={{ fontFamily: 'Georgia, serif', fontSize: 'clamp(2rem, 4vw, 3rem)', color: 'white', fontWeight: 400, marginBottom: '1.5rem' }}>
+        <h1 style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: 'clamp(2rem, 4vw, 3rem)', color: 'white', fontWeight: 400, marginBottom: '1.5rem' }}>
           Soumettez vos pièces de luxe<br />à notre sélection
         </h1>
         <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '1rem', color: '#9e8e7e', maxWidth: '500px', margin: '0 auto 2.5rem', lineHeight: '1.7' }}>
@@ -28,7 +28,7 @@ export default function ProPage() {
       {/* How it works */}
       <div style={{ padding: '5rem 2rem', maxWidth: '900px', margin: '0 auto', textAlign: 'center' }}>
         <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.65rem', letterSpacing: '0.4em', color: '#c9a96e', marginBottom: '0.75rem' }}>COMMENT ÇA MARCHE</p>
-        <h2 style={{ fontFamily: 'Georgia, serif', fontSize: '1.8rem', fontWeight: 400, color: '#1a1a1a', marginBottom: '3rem' }}>En 3 étapes simples</h2>
+        <h2 style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '1.8rem', fontWeight: 400, color: '#1a1a1a', marginBottom: '3rem' }}>En 3 étapes simples</h2>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '2rem' }}>
           {[
             { step: '1', icon: Send, title: 'Soumettez votre article', text: 'Photos, description, certificats d\'authenticité — remplissez le formulaire en quelques minutes.' },
@@ -39,7 +39,7 @@ export default function ProPage() {
               <div style={{ width: '60px', height: '60px', background: 'linear-gradient(135deg, #c9a96e, #a8834a)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.5rem' }}>
                 <Icon size={24} color="white" />
               </div>
-              <h3 style={{ fontFamily: 'Georgia, serif', fontSize: '1.1rem', fontWeight: 400, marginBottom: '0.75rem', color: '#1a1a1a' }}>{title}</h3>
+              <h3 style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '1.1rem', fontWeight: 400, marginBottom: '0.75rem', color: '#1a1a1a' }}>{title}</h3>
               <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.85rem', color: '#9e8e7e', lineHeight: '1.7' }}>{text}</p>
             </div>
           ))}

@@ -21,7 +21,7 @@ export default function Footer() {
     <footer style={{ backgroundColor: '#1a1a1a', color: '#f8f4ef', marginTop: 0 }}>
       {/* Newsletter */}
       <div style={{ borderBottom: '1px solid #333', padding: '3rem 2rem', textAlign: 'center' }}>
-        <p style={{ fontFamily: 'Georgia, serif', fontSize: '1.2rem', letterSpacing: '0.1em', marginBottom: '0.5rem' }}>
+        <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '1.2rem', letterSpacing: '0.1em', marginBottom: '0.5rem' }}>
           {t('newsletter').toUpperCase()}
         </p>
         <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.8rem', color: '#9e8e7e', marginBottom: '1.5rem', letterSpacing: '0.05em' }}>
@@ -44,7 +44,7 @@ export default function Footer() {
       {/* Links */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '2rem', padding: '3rem 4rem' }}>
         <div>
-          <p style={{ fontFamily: 'Georgia, serif', fontSize: '1rem', letterSpacing: '0.3em', marginBottom: '1rem', color: '#c9a96e' }}>MAGALI BERDAH</p>
+          <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '1rem', letterSpacing: '0.3em', marginBottom: '1rem', color: '#c9a96e' }}>MAGALI BERDAH</p>
           <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.75rem', color: '#666', lineHeight: '1.8' }}>
             {t('footerDesc')}
           </p>

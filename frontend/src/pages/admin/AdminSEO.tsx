@@ -21,7 +21,7 @@ export default function AdminSEO() {
 
   return (
     <div style={{ maxWidth: '700px' }}>
-      <h1 style={{ fontFamily: 'Georgia, serif', fontSize: '1.8rem', fontWeight: 400, color: '#1a1a1a', marginBottom: '2rem' }}>Référencement (SEO)</h1>
+      <h1 style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '1.8rem', fontWeight: 400, color: '#1a1a1a', marginBottom: '2rem' }}>Référencement (SEO)</h1>
 
       <div style={{ backgroundColor: 'white', border: '1px solid #e8d5b7', padding: '2rem', display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
         {[

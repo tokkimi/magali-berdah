@@ -30,7 +30,7 @@ export default function Lives() {
         <p style={{ color: '#e11d48', font: '700 .62rem Helvetica Neue, Arial', letterSpacing: '.22em' }}>
           WHATNOT · EN DIRECT
         </p>
-        <h1 style={{ font: '400 2.2rem Georgia, serif', margin: '.4rem 0 2rem' }}>
+        <h1 style={{ font: '400 2.2rem Helvetica Neue, Arial, sans-serif', margin: '.4rem 0 2rem' }}>
           Les lives en cours
         </h1>
 
@@ -44,7 +44,7 @@ export default function Lives() {
         ) : (
           <div style={{ textAlign: 'center', padding: '5rem 1rem', color: '#9e8e7e' }}>
             <Radio size={42} style={{ margin: '0 auto 1rem' }} />
-            <p style={{ font: '1rem Georgia, serif' }}>Aucun live en cours pour le moment.</p>
+            <p style={{ font: '1rem Helvetica Neue, Arial, sans-serif' }}>Aucun live en cours pour le moment.</p>
           </div>
         )}
       </div>

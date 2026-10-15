@@ -57,7 +57,7 @@ function ArticlePickerModal({ exclusiveIds, onAdd, onClose }: { exclusiveIds: st
       <div style={{ width: '100%', maxHeight: '85vh', backgroundColor: '#0f0f0f', borderRadius: '16px 16px 0 0', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
         {/* Header */}
         <div style={{ padding: '1rem 1.25rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
-          <p style={{ fontFamily: 'Georgia, serif', fontSize: '1rem', color: 'white', fontWeight: 400 }}>Ajouter à la sélection</p>
+          <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '1rem', color: 'white', fontWeight: 400 }}>Ajouter à la sélection</p>
           <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'rgba(255,255,255,0.5)', padding: '4px' }}><X size={20} /></button>
         </div>
         {/* Search */}
@@ -277,7 +277,7 @@ export default function AdminDashboard() {
   return (
     <div>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem', flexWrap: 'wrap', gap: '0.5rem' }}>
-        <h1 style={{ fontFamily: 'Georgia, serif', fontSize: '1.8rem', fontWeight: 400, color: '#1a1a1a' }}>Tableau de bord</h1>
+        <h1 style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '1.8rem', fontWeight: 400, color: '#1a1a1a' }}>Tableau de bord</h1>
         {loading && <span style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.72rem', color: '#c9a96e' }}>Chargement...</span>}
       </div>
 
@@ -291,7 +291,7 @@ export default function AdminDashboard() {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
               <div>
                 <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.6rem', letterSpacing: '0.1em', color: '#9e8e7e', marginBottom: '0.5rem' }}>{c.label.toUpperCase()}</p>
-                <p style={{ fontFamily: 'Georgia, serif', fontSize: '1.8rem', color: c.color }}>{c.value}</p>
+                <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '1.8rem', color: c.color }}>{c.value}</p>
                 {c.sub && <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.7rem', color: '#9e8e7e', marginTop: '2px' }}>{c.sub}</p>}
               </div>
               <c.icon size={20} color={c.color} style={{ opacity: 0.5 }} />
@@ -303,7 +303,7 @@ export default function AdminDashboard() {
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem' }}>
         {/* Top items */}
         <div style={{ backgroundColor: 'white', border: '1px solid #e8d5b7', padding: '1.5rem', borderRadius: '8px' }}>
-          <h2 style={{ fontFamily: 'Georgia, serif', fontSize: '1rem', fontWeight: 400, marginBottom: '1rem', color: '#1a1a1a' }}>Articles les plus vus</h2>
+          <h2 style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '1rem', fontWeight: 400, marginBottom: '1rem', color: '#1a1a1a' }}>Articles les plus vus</h2>
           {(stats.topItems || []).slice(0, 8).map((item: any) => (
             <div key={item.id} style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', borderBottom: '1px solid #f0ece6' }}>
               <div style={{ minWidth: 0, flex: 1, marginRight: '8px' }}>
@@ -320,7 +320,7 @@ export default function AdminDashboard() {
 
         {/* Recent orders */}
         <div style={{ backgroundColor: 'white', border: '1px solid #e8d5b7', padding: '1.5rem', borderRadius: '8px' }}>
-          <h2 style={{ fontFamily: 'Georgia, serif', fontSize: '1rem', fontWeight: 400, marginBottom: '1rem', color: '#1a1a1a' }}>Dernières commandes</h2>
+          <h2 style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '1rem', fontWeight: 400, marginBottom: '1rem', color: '#1a1a1a' }}>Dernières commandes</h2>
           {(stats.recentOrders || []).length === 0 ? (
             <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.78rem', color: '#9e8e7e', textAlign: 'center', padding: '1.5rem 0' }}>Aucune commande</p>
           ) : (stats.recentOrders || []).slice(0, 8).map((o: any) => (
@@ -330,7 +330,7 @@ export default function AdminDashboard() {
                 <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.65rem', color: '#9e8e7e' }}>{o.buyer_name}</p>
               </div>
               <div style={{ textAlign: 'right' }}>
-                <p style={{ fontFamily: 'Georgia, serif', fontSize: '0.85rem', color: '#1a1a1a' }}>{o.amount?.toLocaleString('fr-FR')} €</p>
+                <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.85rem', color: '#1a1a1a' }}>{o.amount?.toLocaleString('fr-FR')} €</p>
                 <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.65rem', color: o.payment_status === 'paid' ? '#2e7d32' : '#ff9800' }}>
                   {payLabels[o.payment_status] || o.payment_status}
                 </p>
@@ -341,7 +341,7 @@ export default function AdminDashboard() {
 
         {/* Visitor chart */}
         <div style={{ backgroundColor: 'white', border: '1px solid #e8d5b7', padding: '1.5rem', borderRadius: '8px', gridColumn: 'span 2' }}>
-          <h2 style={{ fontFamily: 'Georgia, serif', fontSize: '1rem', fontWeight: 400, marginBottom: '1rem', color: '#1a1a1a' }}>Visiteurs — 30 derniers jours</h2>
+          <h2 style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '1rem', fontWeight: 400, marginBottom: '1rem', color: '#1a1a1a' }}>Visiteurs — 30 derniers jours</h2>
           <div style={{ display: 'flex', alignItems: 'flex-end', gap: '4px', height: '100px' }}>
             {(stats.dailyVisitors || []).slice(-30).map((d: any, i: number) => {
               const max = Math.max(...(stats.dailyVisitors || []).map((x: any) => x.count), 1);

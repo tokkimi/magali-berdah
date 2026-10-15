@@ -38,7 +38,7 @@ export default function AdminNewsletter() {
 
   return (
     <div>
-      <h1 style={{ fontFamily: 'Georgia, serif', fontSize: '1.8rem', fontWeight: 400, color: '#1a1a1a', marginBottom: '2rem' }}>Newsletter</h1>
+      <h1 style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '1.8rem', fontWeight: 400, color: '#1a1a1a', marginBottom: '2rem' }}>Newsletter</h1>
 
       <div style={{ display: 'flex', gap: '1rem', marginBottom: '2rem', borderBottom: '1px solid #e8d5b7' }}>
         {[{ id: 'campaigns', label: `Campagnes (${campaigns.length})` }, { id: 'subscribers', label: `Abonnés (${subscribers.filter(s => s.active).length})` }, { id: 'create', label: '+ Nouvelle campagne' }].map(t => (
@@ -56,7 +56,7 @@ export default function AdminNewsletter() {
           ) : campaigns.map(c => (
             <div key={c.id} style={{ backgroundColor: 'white', border: '1px solid #e8d5b7', padding: '1.25rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div>
-                <p style={{ fontFamily: 'Georgia, serif', fontSize: '1rem', color: '#1a1a1a', marginBottom: '4px' }}>{c.subject}</p>
+                <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '1rem', color: '#1a1a1a', marginBottom: '4px' }}>{c.subject}</p>
                 <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.7rem', color: '#9e8e7e' }}>
                   Créée le {new Date(c.created_at).toLocaleDateString('fr-FR')} ·
                   {c.status === 'sent' ? ` Envoyée à ${c.sent_count} abonnés le ${new Date(c.sent_at).toLocaleDateString('fr-FR')}` : ' Brouillon'}
@@ -104,7 +104,7 @@ export default function AdminNewsletter() {
 
       {tab === 'create' && (
         <div style={{ backgroundColor: 'white', border: '1px solid #e8d5b7', padding: '2rem', maxWidth: '700px' }}>
-          <h2 style={{ fontFamily: 'Georgia, serif', fontSize: '1.3rem', fontWeight: 400, marginBottom: '1.5rem', color: '#1a1a1a' }}>Nouvelle campagne</h2>
+          <h2 style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '1.3rem', fontWeight: 400, marginBottom: '1.5rem', color: '#1a1a1a' }}>Nouvelle campagne</h2>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
             <div>
               <label style={lbl}>OBJET DE L'EMAIL</label>

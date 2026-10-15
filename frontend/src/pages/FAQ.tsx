@@ -109,7 +109,7 @@ export default function FAQ() {
   return (
     <div style={{ maxWidth: '720px', margin: '0 auto', padding: '2.5rem 1.25rem 6rem' }}>
       <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.6rem', letterSpacing: '0.35em', color: '#c9a96e', marginBottom: '0.5rem' }}>AIDE</p>
-      <h1 style={{ fontFamily: 'Georgia, serif', fontSize: 'clamp(1.6rem, 4vw, 2.2rem)', fontWeight: 400, color: '#1a1a1a', marginBottom: '0.5rem' }}>
+      <h1 style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: 'clamp(1.6rem, 4vw, 2.2rem)', fontWeight: 400, color: '#1a1a1a', marginBottom: '0.5rem' }}>
         Questions fréquentes
       </h1>
       <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.85rem', color: '#9e8e7e', marginBottom: '2.5rem', lineHeight: 1.7 }}>
@@ -128,7 +128,7 @@ export default function FAQ() {
       ))}
 
       <div style={{ backgroundColor: '#1a1a1a', borderRadius: '12px', padding: '1.5rem', textAlign: 'center', marginTop: '2rem' }}>
-        <p style={{ fontFamily: 'Georgia, serif', fontSize: '1rem', color: 'white', marginBottom: '0.5rem' }}>Vous n'avez pas trouvé votre réponse ?</p>
+        <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '1rem', color: 'white', marginBottom: '0.5rem' }}>Vous n'avez pas trouvé votre réponse ?</p>
         <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.75rem', color: '#9e8e7e', marginBottom: '1rem' }}>
           Écrivez-nous à <a href="mailto:contact@magaliberdah.com" style={{ color: '#c9a96e' }}>contact@magaliberdah.com</a>
         </p>

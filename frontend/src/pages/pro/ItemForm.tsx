@@ -193,7 +193,7 @@ export default function ItemForm() {
         @media (max-width: 700px) { .item-form-grid { grid-template-columns: 1fr !important; } }
       `}</style>
 
-      <h1 style={{ fontFamily: 'Georgia, serif', fontSize: '1.6rem', fontWeight: 400, color: '#1a1a1a', marginBottom: '1.5rem' }}>
+      <h1 style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '1.6rem', fontWeight: 400, color: '#1a1a1a', marginBottom: '1.5rem' }}>
         {isEdit ? "Modifier l'article" : 'Nouvel article'}
       </h1>
 

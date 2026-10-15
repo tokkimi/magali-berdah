@@ -97,7 +97,7 @@ export default function AdminOrders() {
               <X size={18} />
             </button>
             <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.6rem', letterSpacing: '0.2em', color: '#c9a96e', marginBottom: '0.5rem' }}>SAISIR LE NUMÉRO DE SUIVI</p>
-            <h2 style={{ fontFamily: 'Georgia, serif', fontSize: '1.1rem', fontWeight: 400, color: '#1a1a1a', marginBottom: '0.25rem' }}>{trackModal.item_title}</h2>
+            <h2 style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '1.1rem', fontWeight: 400, color: '#1a1a1a', marginBottom: '0.25rem' }}>{trackModal.item_title}</h2>
             <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.75rem', color: '#9e8e7e', marginBottom: '1.5rem' }}>
               {trackModal.buyer_name} · {trackModal.buyer_email}
             </p>
@@ -148,7 +148,7 @@ export default function AdminOrders() {
 
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
         <div>
-          <h1 style={{ fontFamily: 'Georgia, serif', fontSize: '1.8rem', fontWeight: 400, color: '#1a1a1a' }}>Commandes ({filtered.length})</h1>
+          <h1 style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '1.8rem', fontWeight: 400, color: '#1a1a1a' }}>Commandes ({filtered.length})</h1>
           {toShipCount > 0 && (
             <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.75rem', color: '#ff9800', marginTop: '4px' }}>
               ● {toShipCount} commande{toShipCount > 1 ? 's' : ''} payée{toShipCount > 1 ? 's' : ''} en attente d'expédition
@@ -177,7 +177,7 @@ export default function AdminOrders() {
               <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', alignItems: 'flex-start' }}>
                 {/* Info article + acheteur */}
                 <div style={{ flex: 1, minWidth: '200px' }}>
-                  <p style={{ fontFamily: 'Georgia, serif', fontSize: '0.95rem', color: '#1a1a1a', marginBottom: '3px' }}>{o.item_title}</p>
+                  <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.95rem', color: '#1a1a1a', marginBottom: '3px' }}>{o.item_title}</p>
                   <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.72rem', color: '#9e8e7e' }}>
                     {o.buyer_name} · <a href={`mailto:${o.buyer_email}`} style={{ color: '#c9a96e', textDecoration: 'none' }}>{o.buyer_email}</a>
                   </p>
@@ -193,7 +193,7 @@ export default function AdminOrders() {
 
                 {/* Prix + statuts */}
                 <div style={{ textAlign: 'right', flexShrink: 0 }}>
-                  <p style={{ fontFamily: 'Georgia, serif', fontSize: '1.1rem', color: '#1a1a1a', marginBottom: '6px' }}>
+                  <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '1.1rem', color: '#1a1a1a', marginBottom: '6px' }}>
                     {(o.amount || 0).toLocaleString('fr-FR')} €
                   </p>
                   <select value={o.payment_status} onChange={e => setPayment(o.id, e.target.value)}

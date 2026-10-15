@@ -217,7 +217,7 @@ export default function AdminItemForm() {
         .admin-item-form .form-actions button{min-height:50px}
       }`}</style>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '2rem' }}>
-        <h1 style={{ fontFamily: 'Georgia, serif', fontSize: '1.8rem', fontWeight: 400, color: '#1a1a1a' }}>{isEdit ? 'Modifier l’article' : 'Ajouter un article'}</h1>
+        <h1 style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '1.8rem', fontWeight: 400, color: '#1a1a1a' }}>{isEdit ? 'Modifier l’article' : 'Ajouter un article'}</h1>
         <button onClick={() => navigate('/admin/articles')} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#9e8e7e' }}>
           <X size={22} />
         </button>

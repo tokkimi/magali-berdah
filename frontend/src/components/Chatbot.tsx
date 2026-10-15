@@ -106,7 +106,7 @@ export default function Chatbot() {
         <div style={{ position: 'fixed', bottom: '110px', right: '1rem', width: 'min(340px, calc(100vw - 2rem))', backgroundColor: 'white', boxShadow: '0 8px 40px rgba(0,0,0,0.2)', zIndex: 250, display: 'flex', flexDirection: 'column', maxHeight: '480px', borderRadius: '12px', overflow: 'hidden' }}>
           <div style={{ backgroundColor: '#1a1a1a', padding: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div>
-              <p style={{ color: '#c9a96e', fontFamily: 'Georgia, serif', fontSize: '0.9rem', letterSpacing: '0.05em' }}>ASSISTANCE MODE & LUXE</p>
+              <p style={{ color: '#c9a96e', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.9rem', letterSpacing: '0.05em' }}>ASSISTANCE MODE & LUXE</p>
               <p style={{ color: '#666', fontSize: '0.7rem', fontFamily: 'Helvetica Neue, Arial, sans-serif' }}>Réponse immédiate</p>
             </div>
             <button onClick={() => setOpen(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#666' }}><X size={18} /></button>

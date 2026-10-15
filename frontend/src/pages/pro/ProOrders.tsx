@@ -39,22 +39,22 @@ export default function ProOrders() {
     <div style={{ display: 'flex', gap: '1.5rem', height: 'calc(100vh - 200px)' }}>
       {/* Orders list */}
       <div style={{ flex: 1, overflow: 'auto' }}>
-        <h1 style={{ fontFamily: 'Georgia, serif', fontSize: '1.8rem', fontWeight: 400, color: '#1a1a1a', marginBottom: '1.5rem' }}>Commandes</h1>
+        <h1 style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '1.8rem', fontWeight: 400, color: '#1a1a1a', marginBottom: '1.5rem' }}>Commandes</h1>
 
         {orders.length === 0 ? (
           <div style={{ textAlign: 'center', padding: '4rem', backgroundColor: 'white', border: '1px solid #e8d5b7' }}>
-            <p style={{ fontFamily: 'Georgia, serif', color: '#9e8e7e' }}>Aucune commande pour le moment</p>
+            <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', color: '#9e8e7e' }}>Aucune commande pour le moment</p>
           </div>
         ) : orders.map(o => (
           <div key={o.id} style={{ backgroundColor: 'white', border: `1px solid ${selected?.id === o.id ? '#c9a96e' : '#e8d5b7'}`, padding: '1.25rem', marginBottom: '0.75rem', cursor: 'pointer' }} onClick={() => openChat(o)}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.75rem' }}>
               <div>
-                <p style={{ fontFamily: 'Georgia, serif', fontSize: '1rem', color: '#1a1a1a', marginBottom: '2px' }}>{o.item_title}</p>
+                <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '1rem', color: '#1a1a1a', marginBottom: '2px' }}>{o.item_title}</p>
                 <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.75rem', color: '#9e8e7e' }}>
                   Client: {o.buyer_name} · {o.buyer_email}
                 </p>
               </div>
-              <p style={{ fontFamily: 'Georgia, serif', fontSize: '1.1rem', color: '#1a1a1a' }}>{o.amount?.toLocaleString('fr-FR')} €</p>
+              <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '1.1rem', color: '#1a1a1a' }}>{o.amount?.toLocaleString('fr-FR')} €</p>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div style={{ display: 'flex', gap: '1rem' }}>
@@ -85,7 +85,7 @@ export default function ProOrders() {
       {selected && (
         <div style={{ width: '340px', flexShrink: 0, backgroundColor: 'white', border: '1px solid #e8d5b7', display: 'flex', flexDirection: 'column' }}>
           <div style={{ padding: '1rem', borderBottom: '1px solid #e8d5b7', backgroundColor: '#1a1a1a' }}>
-            <p style={{ fontFamily: 'Georgia, serif', fontSize: '0.9rem', color: 'white', marginBottom: '2px' }}>{selected.item_title}</p>
+            <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.9rem', color: 'white', marginBottom: '2px' }}>{selected.item_title}</p>
             <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.7rem', color: '#c9a96e' }}>{selected.buyer_name}</p>
           </div>
           <div style={{ flex: 1, overflowY: 'auto', padding: '1rem', display: 'flex', flexDirection: 'column', gap: '0.75rem', minHeight: '200px' }}>

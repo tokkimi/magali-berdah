@@ -79,7 +79,7 @@ export default function MesSoumissions() {
     <div style={{ maxWidth: '700px', margin: '0 auto', padding: '2rem 1rem 8rem' }}>
       <div style={{ marginBottom: '2rem' }}>
         <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.55rem', letterSpacing: '0.35em', color: '#c9a96e', marginBottom: '4px' }}>MON COMPTE</p>
-        <h1 style={{ fontFamily: 'Georgia, serif', fontSize: '1.5rem', fontWeight: 400, color: '#1a1a1a' }}>Mes soumissions</h1>
+        <h1 style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '1.5rem', fontWeight: 400, color: '#1a1a1a' }}>Mes soumissions</h1>
         <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.78rem', color: '#9e8e7e', marginTop: '4px' }}>
           Suivez l'état de vos demandes de mise en vente
         </p>
@@ -119,7 +119,7 @@ export default function MesSoumissions() {
                 {/* Main info */}
                 <div style={{ padding: '1rem 1.25rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <div>
-                    <p style={{ fontFamily: 'Georgia, serif', fontSize: '1rem', color: '#1a1a1a', marginBottom: '3px' }}>{sub.brand}</p>
+                    <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '1rem', color: '#1a1a1a', marginBottom: '3px' }}>{sub.brand}</p>
                     <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.72rem', color: '#9e8e7e' }}>
                       {sub.category} · {sub.photoCount} photo{sub.photoCount > 1 ? 's' : ''}
                       {sub.isVintage ? ' · Vintage' : ''}
@@ -147,7 +147,7 @@ export default function MesSoumissions() {
                           <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.6rem', letterSpacing: '0.15em', color: '#2e7d32', marginBottom: '0.75rem' }}>
                             ADRESSE D'ENVOI
                           </p>
-                          <p style={{ fontFamily: 'Georgia, serif', fontSize: '0.95rem', color: '#1a1a1a', lineHeight: 1.7, whiteSpace: 'pre-line' }}>
+                          <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.95rem', color: '#1a1a1a', lineHeight: 1.7, whiteSpace: 'pre-line' }}>
                             {SHIPPING_ADDRESS}
                           </p>
                         </div>

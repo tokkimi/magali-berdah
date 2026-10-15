@@ -38,7 +38,7 @@ export default function AuthModal({ mode, onClose, onSwitchMode }: Props) {
   return <div className="modal-backdrop" onClick={e => e.target === e.currentTarget && onClose()}>
     <div style={{ background: 'white', width: 'calc(100% - 24px)', maxWidth: 440, padding: 'clamp(1.5rem,6vw,2.5rem)', position: 'relative', maxHeight: '90vh', overflowY: 'auto', borderRadius: 16 }}>
       <button aria-label="Fermer" onClick={onClose} style={{ position: 'absolute', top: 14, right: 14, background: 'none', border: 0, cursor: 'pointer' }}><X size={22} /></button>
-      <h2 style={{ textAlign: 'center', font: '400 24px Georgia, serif', marginBottom: 24 }}>{mode === 'login' ? (en?'SIGN IN':'CONNEXION') : (en?'CREATE ACCOUNT':'INSCRIPTION')}</h2>
+      <h2 style={{ textAlign: 'center', font: '400 24px Helvetica Neue, Arial, sans-serif', marginBottom: 24 }}>{mode === 'login' ? (en?'SIGN IN':'CONNEXION') : (en?'CREATE ACCOUNT':'INSCRIPTION')}</h2>
       {error && <p style={{ background: '#fff0f0', color: '#b91c1c', padding: 12, marginBottom: 14 }}>{error}</p>}
       {success && <p style={{ background: '#eef9f0', color: '#26723a', padding: 12, marginBottom: 14 }}>{success}</p>}
       <form onSubmit={handleSubmit}>

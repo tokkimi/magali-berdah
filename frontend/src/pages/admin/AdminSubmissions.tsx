@@ -59,7 +59,7 @@ export default function AdminSubmissions() {
         <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 300, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
           <div style={{ backgroundColor: 'white', maxWidth: '560px', width: '100%', padding: '2rem', position: 'relative' }}>
             <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.6rem', letterSpacing: '0.2em', color: '#c9a96e', marginBottom: '0.5rem' }}>EMAIL DE VALIDATION</p>
-            <h2 style={{ fontFamily: 'Georgia, serif', fontSize: '1.2rem', fontWeight: 400, color: '#1a1a1a', marginBottom: '1.5rem' }}>
+            <h2 style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '1.2rem', fontWeight: 400, color: '#1a1a1a', marginBottom: '1.5rem' }}>
               Envoyer les instructions à {emailModal.name}
             </h2>
             <div style={{ backgroundColor: '#f8f4ef', padding: '1.25rem', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.82rem', color: '#1a1a1a', lineHeight: 1.7, marginBottom: '1.5rem', whiteSpace: 'pre-wrap' }}>
@@ -93,7 +93,7 @@ L'équipe Magali Berdah`}
 
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
         <div>
-          <h1 style={{ fontFamily: 'Georgia, serif', fontSize: '1.8rem', fontWeight: 400, color: '#1a1a1a' }}>
+          <h1 style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '1.8rem', fontWeight: 400, color: '#1a1a1a' }}>
             Demandes de dépôt
             {pendingCount > 0 && (
               <span style={{ marginLeft: '10px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '24px', height: '24px', borderRadius: '50%', backgroundColor: '#c9a96e', color: 'white', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.65rem', fontWeight: 700, verticalAlign: 'middle' }}>
@@ -128,7 +128,7 @@ L'équipe Magali Berdah`}
               <div style={{ padding: '1rem 1.25rem', display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
-                    <p style={{ fontFamily: 'Georgia, serif', fontSize: '1rem', color: '#1a1a1a', fontWeight: 400 }}>
+                    <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '1rem', color: '#1a1a1a', fontWeight: 400 }}>
                       {sub.brand}
                     </p>
                     {sub.isVintage && (

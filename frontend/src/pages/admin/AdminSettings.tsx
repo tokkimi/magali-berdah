@@ -106,7 +106,7 @@ export default function AdminSettings() {
     <div style={{ maxWidth: 800 }}>
       <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '0.5rem', gap: '1rem' }}>
         <div>
-          <h1 style={{ fontFamily: 'Georgia, serif', fontSize: '1.8rem', fontWeight: 400, color: '#1a1a1a', marginBottom: '0.25rem' }}>Vente Exclusive</h1>
+          <h1 style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '1.8rem', fontWeight: 400, color: '#1a1a1a', marginBottom: '0.25rem' }}>Vente Exclusive</h1>
           <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.82rem', color: '#9e8e7e' }}>
             Programmez la sélection du jour et les horaires. Tout se base sur l'heure de Paris.
           </p>

@@ -79,7 +79,7 @@ export default function SoumettreArticle() {
           <CheckCircle size={32} color="white" />
         </div>
         <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.6rem', letterSpacing: '0.3em', color: '#c9a96e', marginBottom: '0.5rem' }}>DEMANDE ENVOYÉE</p>
-        <h1 style={{ fontFamily: 'Georgia, serif', fontSize: '1.8rem', fontWeight: 400, color: '#1a1a1a', marginBottom: '1rem' }}>Merci pour votre soumission</h1>
+        <h1 style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '1.8rem', fontWeight: 400, color: '#1a1a1a', marginBottom: '1rem' }}>Merci pour votre soumission</h1>
         <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.88rem', color: '#9e8e7e', lineHeight: 1.7, marginBottom: '2rem' }}>
           Magali Berdah va examiner votre article. Si votre pièce est sélectionnée, vous recevrez un email avec l'adresse à laquelle envoyer votre article pour authentification et mise en vente.
         </p>
@@ -94,7 +94,7 @@ export default function SoumettreArticle() {
   return (
     <div style={{ maxWidth: '700px', margin: '0 auto', padding: '2rem 1.5rem 6rem' }}>
       <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.55rem', letterSpacing: '0.35em', color: '#c9a96e', marginBottom: '4px' }}>VENDRE SUR MAGALI BERDAH</p>
-      <h1 style={{ fontFamily: 'Georgia, serif', fontSize: '1.8rem', fontWeight: 400, color: '#1a1a1a', marginBottom: '0.5rem' }}>Soumettre un article</h1>
+      <h1 style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '1.8rem', fontWeight: 400, color: '#1a1a1a', marginBottom: '0.5rem' }}>Soumettre un article</h1>
       <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.85rem', color: '#9e8e7e', marginBottom: '2rem', lineHeight: 1.6 }}>
         Envoyez-nous les photos et informations de votre pièce. Si elle est sélectionnée, nous vous contacterons pour organiser l'envoi.
       </p>

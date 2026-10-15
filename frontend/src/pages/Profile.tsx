@@ -363,11 +363,11 @@ export default function Profile() {
             <img src={form.avatar} alt={user.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }}
               onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }} />
           ) : (
-            <span style={{ fontFamily: 'Georgia, serif', fontSize: '1.5rem', color: '#c9a96e' }}>{user.name[0]?.toUpperCase()}</span>
+            <span style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '1.5rem', color: '#c9a96e' }}>{user.name[0]?.toUpperCase()}</span>
           )}
         </div>
         <div style={{ flex: 1 }}>
-          <h1 style={{ fontFamily: 'Georgia, serif', fontSize: '1.3rem', fontWeight: 400, color: '#1a1a1a' }}>{user.name}</h1>
+          <h1 style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '1.3rem', fontWeight: 400, color: '#1a1a1a' }}>{user.name}</h1>
           <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.78rem', color: '#9e8e7e' }}>{user.email}</p>
           {user.verified && <span style={{ color: '#2e7d32', fontSize: '0.72rem', fontFamily: 'Helvetica Neue, Arial, sans-serif' }}>✓ Compte vérifié</span>}
         </div>
@@ -375,7 +375,7 @@ export default function Profile() {
         <button onClick={() => setTab('wallet')}
           style={{ background: totalBalance > 0 ? 'linear-gradient(135deg, #c9a96e, #a8834a)' : '#f8f4ef', border: totalBalance > 0 ? 'none' : '1px solid #e8d5b7', padding: '10px 16px', cursor: 'pointer', textAlign: 'right', flexShrink: 0 }}>
           <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.55rem', letterSpacing: '0.15em', color: totalBalance > 0 ? 'rgba(255,255,255,0.8)' : '#9e8e7e', marginBottom: '2px' }}>MA CAGNOTTE</p>
-          <p style={{ fontFamily: 'Georgia, serif', fontSize: '1.2rem', color: totalBalance > 0 ? 'white' : '#1a1a1a', lineHeight: 1 }}>
+          <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '1.2rem', color: totalBalance > 0 ? 'white' : '#1a1a1a', lineHeight: 1 }}>
             {totalBalance.toLocaleString('fr-FR')} €
           </p>
           {wallet.available > 0 && (
@@ -417,7 +417,7 @@ export default function Profile() {
                       {form.avatar ? (
                         <img src={form.avatar} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }} />
                       ) : (
-                        <span style={{ fontFamily: 'Georgia, serif', fontSize: '1.8rem', color: '#c9a96e' }}>{user.name[0]?.toUpperCase()}</span>
+                        <span style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '1.8rem', color: '#c9a96e' }}>{user.name[0]?.toUpperCase()}</span>
                       )}
                     </div>
                     <button onClick={() => fileInputRef.current?.click()} disabled={avatarUploading}
@@ -683,7 +683,7 @@ export default function Profile() {
           {/* ── MES ACHATS ── */}
           {tab === 'orders' && (
             <div>
-              <h2 style={{ fontFamily: 'Georgia, serif', fontSize: '1.2rem', fontWeight: 400, marginBottom: '1.25rem', color: '#1a1a1a' }}>Mes achats</h2>
+              <h2 style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '1.2rem', fontWeight: 400, marginBottom: '1.25rem', color: '#1a1a1a' }}>Mes achats</h2>
               {orders.length === 0 ? (
                 <div style={{ textAlign: 'center', padding: '3rem 1rem', color: '#9e8e7e' }}>
                   <Package size={40} color="#e8d5b7" style={{ margin: '0 auto 1rem' }} />
@@ -709,12 +709,12 @@ export default function Profile() {
 
                   <div style={{ padding: '1rem 1.25rem', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '0.75rem' }}>
                     <div>
-                      <p style={{ fontFamily: 'Georgia, serif', fontSize: '0.95rem', color: '#1a1a1a', marginBottom: '4px' }}>{o.item_title}</p>
+                      <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.95rem', color: '#1a1a1a', marginBottom: '4px' }}>{o.item_title}</p>
                       <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.7rem', color: '#9e8e7e' }}>
                         {new Date(o.created_at).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}
                       </p>
                     </div>
-                    <p style={{ fontFamily: 'Georgia, serif', fontSize: '1rem', color: '#1a1a1a' }}>
+                    <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '1rem', color: '#1a1a1a' }}>
                       {(o.amount || 0).toLocaleString('fr-FR')} €
                     </p>
                   </div>
@@ -778,12 +778,12 @@ export default function Profile() {
               {auctionWins.map(win => (
                 <div key={win.id} style={{ border: '2px solid #c9a96e', background: '#fff8e6', padding: '1.25rem', marginBottom: '1rem' }}>
                   <p style={{ color: '#2e7d32', fontWeight: 700, marginBottom: 6 }}>FÉLICITATIONS, VOUS AVEZ GAGNÉ L’ENCHÈRE !</p>
-                  <p style={{ fontFamily: 'Georgia, serif', fontSize: '1.05rem' }}>{win.auction_items?.title}</p>
+                  <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '1.05rem' }}>{win.auction_items?.title}</p>
                   <p style={{ marginTop: 6 }}>Montant gagnant : <strong>{Number(win.winning_amount).toLocaleString('fr-FR')} €</strong></p>
                   <p style={{ marginTop: 6, color: '#9e8e7e', fontSize: '.78rem' }}>Paiement : {win.payment_status === 'paid' ? 'payé' : 'en attente de paiement sécurisé'}</p>
                 </div>
               ))}
-              <h2 style={{ fontFamily: 'Georgia, serif', fontSize: '1.2rem', fontWeight: 400, marginBottom: '1.25rem', color: '#1a1a1a' }}>Mes enchères</h2>
+              <h2 style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '1.2rem', fontWeight: 400, marginBottom: '1.25rem', color: '#1a1a1a' }}>Mes enchères</h2>
               {(() => {
                 try {
                   const bids: any[] = JSON.parse(localStorage.getItem('mb_bids') || '[]')
@@ -797,7 +797,7 @@ export default function Profile() {
                   return bids.map(b => (
                     <div key={b.id} style={{ border: '1px solid #e8d5b7', padding: '1rem 1.25rem', marginBottom: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.75rem' }}>
                       <div>
-                        <p style={{ fontFamily: 'Georgia, serif', fontSize: '0.95rem', color: '#1a1a1a', marginBottom: '4px' }}>{b.item_title}</p>
+                        <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.95rem', color: '#1a1a1a', marginBottom: '4px' }}>{b.item_title}</p>
                         <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.7rem', color: '#9e8e7e' }}>
                           Votre enchère : <strong style={{ color: '#c9a96e' }}>{(b.amount || 0).toLocaleString('fr-FR')} €</strong>
                         </p>
@@ -815,20 +815,20 @@ export default function Profile() {
           {/* ── CAGNOTTE ── */}
           {tab === 'wallet' && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-              <h2 style={{ fontFamily: 'Georgia, serif', fontSize: '1.2rem', fontWeight: 400, color: '#1a1a1a' }}>Ma cagnotte</h2>
+              <h2 style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '1.2rem', fontWeight: 400, color: '#1a1a1a' }}>Ma cagnotte</h2>
 
               {/* Solde */}
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                 <div style={{ backgroundColor: wallet.available > 0 ? '#fff8e6' : 'white', border: `2px solid ${wallet.available > 0 ? '#c9a96e' : '#e8d5b7'}`, padding: '1.5rem', textAlign: 'center' }}>
                   <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.6rem', letterSpacing: '0.15em', color: '#9e8e7e', marginBottom: '8px' }}>DISPONIBLE</p>
-                  <p style={{ fontFamily: 'Georgia, serif', fontSize: '2rem', color: wallet.available > 0 ? '#c9a96e' : '#1a1a1a' }}>
+                  <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '2rem', color: wallet.available > 0 ? '#c9a96e' : '#1a1a1a' }}>
                     {(wallet.available || 0).toLocaleString('fr-FR')} €
                   </p>
                   {wallet.available > 0 && <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.65rem', color: '#a8834a', marginTop: '4px' }}>✓ Achat & virement possibles</p>}
                 </div>
                 <div style={{ backgroundColor: 'white', border: '1px solid #e8d5b7', padding: '1.5rem', textAlign: 'center' }}>
                   <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.6rem', letterSpacing: '0.15em', color: '#9e8e7e', marginBottom: '8px' }}>EN ATTENTE</p>
-                  <p style={{ fontFamily: 'Georgia, serif', fontSize: '2rem', color: '#9e8e7e' }}>{(wallet.pending || 0).toLocaleString('fr-FR')} €</p>
+                  <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '2rem', color: '#9e8e7e' }}>{(wallet.pending || 0).toLocaleString('fr-FR')} €</p>
                   {wallet.pending > 0 && <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.65rem', color: '#9e8e7e', marginTop: '4px' }}>En attente réception acheteur</p>}
                 </div>
               </div>
@@ -904,7 +904,7 @@ export default function Profile() {
                           </span>
                         </p>
                       </div>
-                      <p style={{ fontFamily: 'Georgia, serif', fontSize: '1rem', color: tx.type === 'transfer' ? '#cc0000' : '#2e7d32', flexShrink: 0, marginLeft: '1rem' }}>
+                      <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '1rem', color: tx.type === 'transfer' ? '#cc0000' : '#2e7d32', flexShrink: 0, marginLeft: '1rem' }}>
                         {tx.type === 'transfer' ? '-' : '+'}{tx.amount.toLocaleString('fr-FR')} €
                       </p>
                     </div>
@@ -917,7 +917,7 @@ export default function Profile() {
           {/* ── MES ARTICLES (si vendeur) ── */}
           {tab === 'my-items' && (
             <div>
-              <h2 style={{ fontFamily: 'Georgia, serif', fontSize: '1.2rem', fontWeight: 400, marginBottom: '0.5rem', color: '#1a1a1a' }}>Mes articles en vente</h2>
+              <h2 style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '1.2rem', fontWeight: 400, marginBottom: '0.5rem', color: '#1a1a1a' }}>Mes articles en vente</h2>
               <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.75rem', color: '#9e8e7e', marginBottom: '1.5rem' }}>
                 Articles mis en vente par Magali Berdah à partir de vos pièces
               </p>
@@ -945,18 +945,18 @@ export default function Profile() {
                         )}
                         <div style={{ flex: 1 }}>
                           <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.6rem', letterSpacing: '0.2em', color: '#c9a96e', marginBottom: '3px' }}>{item.brand?.toUpperCase()}</p>
-                          <p style={{ fontFamily: 'Georgia, serif', fontSize: '1rem', color: '#1a1a1a', marginBottom: '6px' }}>{item.title}</p>
+                          <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '1rem', color: '#1a1a1a', marginBottom: '6px' }}>{item.title}</p>
                           <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap' }}>
                             <div>
                               <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.6rem', color: '#9e8e7e', letterSpacing: '0.1em' }}>{isAuction ? (auctionEnded ? 'PRIX FINAL' : 'OFFRE EN COURS') : 'PRIX'}</p>
-                              <p style={{ fontFamily: 'Georgia, serif', fontSize: '1.1rem', color: '#1a1a1a' }}>
+                              <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '1.1rem', color: '#1a1a1a' }}>
                                 {isAuction ? (item.current_bid || item.auction_start_price || 0).toLocaleString('fr-FR') : (item.fixed_price || 0).toLocaleString('fr-FR')} €
                               </p>
                             </div>
                             {item.seller_payout && (
                               <div>
                                 <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.6rem', color: '#9e8e7e', letterSpacing: '0.1em' }}>VOTRE CAGNOTTE</p>
-                                <p style={{ fontFamily: 'Georgia, serif', fontSize: '1.1rem', color: '#c9a96e' }}>{item.seller_payout.toLocaleString('fr-FR')} €</p>
+                                <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '1.1rem', color: '#c9a96e' }}>{item.seller_payout.toLocaleString('fr-FR')} €</p>
                               </div>
                             )}
                           </div>
@@ -976,7 +976,7 @@ export default function Profile() {
           {tab === 'submissions' && (
             <div>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
-                <h2 style={{ fontFamily: 'Georgia, serif', fontSize: '1.2rem', fontWeight: 400, color: '#1a1a1a' }}>Mes soumissions</h2>
+                <h2 style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '1.2rem', fontWeight: 400, color: '#1a1a1a' }}>Mes soumissions</h2>
                 <Link to="/mes-soumissions" style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.72rem', color: '#c9a96e', textDecoration: 'none' }}>Voir tout →</Link>
               </div>
               {(() => {
@@ -993,7 +993,7 @@ export default function Profile() {
                   return mine.map((s: any) => (
                     <div key={s.id} style={{ border: '1px solid #e8d5b7', padding: '1rem 1.25rem', marginBottom: '10px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                       <div>
-                        <p style={{ fontFamily: 'Georgia, serif', fontSize: '0.9rem', color: '#1a1a1a', marginBottom: '3px' }}>{s.brand}</p>
+                        <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.9rem', color: '#1a1a1a', marginBottom: '3px' }}>{s.brand}</p>
                         <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.7rem', color: '#9e8e7e' }}>{s.category}</p>
                       </div>
                       <div style={{ textAlign: 'right' }}>
@@ -1012,7 +1012,7 @@ export default function Profile() {
           {/* ── FAVORIS ── */}
           {tab === 'favorites' && (
             <div>
-              <h2 style={{ fontFamily: 'Georgia, serif', fontSize: '1.2rem', fontWeight: 400, marginBottom: '1.25rem', color: '#1a1a1a' }}>Mes favoris</h2>
+              <h2 style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '1.2rem', fontWeight: 400, marginBottom: '1.25rem', color: '#1a1a1a' }}>Mes favoris</h2>
               {favItems.length === 0 ? (
                 <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.85rem', color: '#9e8e7e', textAlign: 'center', padding: '2rem' }}>Aucun favori</p>
               ) : (

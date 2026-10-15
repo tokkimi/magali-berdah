@@ -38,7 +38,7 @@ export default function ProShopProfile() {
 
   return (
     <div style={{ maxWidth: '700px' }}>
-      <h1 style={{ fontFamily: 'Georgia, serif', fontSize: '1.8rem', fontWeight: 400, color: '#1a1a1a', marginBottom: '2rem' }}>Paramètres de ma boutique</h1>
+      <h1 style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '1.8rem', fontWeight: 400, color: '#1a1a1a', marginBottom: '2rem' }}>Paramètres de ma boutique</h1>
 
       {/* Avatar */}
       <div style={{ backgroundColor: 'white', border: '1px solid #e8d5b7', padding: '1.5rem', marginBottom: '1.5rem' }}>
@@ -48,7 +48,7 @@ export default function ProShopProfile() {
             {avatarPreview ? (
               <img src={avatarPreview} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
             ) : (
-              <span style={{ fontFamily: 'Georgia, serif', fontSize: '2rem', color: '#c9a96e' }}>
+              <span style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '2rem', color: '#c9a96e' }}>
                 {form.shop_name[0]?.toUpperCase() || user?.name[0]?.toUpperCase()}
               </span>
             )}

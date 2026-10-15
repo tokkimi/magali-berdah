@@ -84,7 +84,7 @@ export default function AdminUsers() {
     <div className="admin-users-page" style={{ display: 'flex', gap: '1.5rem', flexDirection: 'column' }}>
       <style>{`@media(max-width:800px){.admin-users-columns{display:block!important}.admin-user-detail{width:100%!important;position:static!important;margin-top:16px}.admin-users-page table{min-width:720px}.admin-users-page input,.admin-users-page select{max-width:100%;min-height:42px}}`}</style>
       <section style={{ background: 'white', border: '1px solid #e8d5b7', padding: '1.25rem' }}>
-        <h2 style={{ fontFamily: 'Georgia, serif', fontSize: '1.2rem', fontWeight: 400, marginBottom: '.5rem' }}>Demandes ambassadeurs Live</h2>
+        <h2 style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '1.2rem', fontWeight: 400, marginBottom: '.5rem' }}>Demandes ambassadeurs Live</h2>
         <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '.72rem', color: '#777', marginBottom: '1rem' }}>Validez ou refusez les utilisateurs qui souhaitent diffuser sur la page Live.</p>
         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: '1rem' }}>
           <input type="password" value={liveAdminCode} onChange={e => setLiveAdminCode(e.target.value)} placeholder="Code administrateur Live" style={{ border: '1px solid #e8d5b7', padding: '8px 10px', minWidth: 240 }} />
@@ -103,7 +103,7 @@ export default function AdminUsers() {
         ))}
       </section>
       {selected && <section style={{ background: 'white', border: '1px solid #e8d5b7', padding: '1.25rem' }}>
-        <h2 style={{ fontFamily: 'Georgia, serif', fontSize: '1.2rem', fontWeight: 400, marginBottom: 6 }}>Autoriser directement {selected.name}</h2>
+        <h2 style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '1.2rem', fontWeight: 400, marginBottom: 6 }}>Autoriser directement {selected.name}</h2>
         <p style={{ color: '#777', fontSize: 12, marginBottom: 12 }}>Sélectionnez un utilisateur dans la liste, puis liez son compte Whatnot sans attendre une demande.</p>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(210px,1fr))', gap: 8 }}>
           <input value={directLive.handle} onChange={e => setDirectLive(v => ({ ...v, handle: e.target.value }))} placeholder="@pseudo Whatnot" style={{ border: '1px solid #e8d5b7', padding: 10 }} />
@@ -116,7 +116,7 @@ export default function AdminUsers() {
       <div className="admin-users-columns" style={{ display: 'flex', gap: '1.5rem' }}>
       <div style={{ flex: 1 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
-          <h1 style={{ fontFamily: 'Georgia, serif', fontSize: '1.8rem', fontWeight: 400, color: '#1a1a1a' }}>Utilisateurs ({filtered.length})</h1>
+          <h1 style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '1.8rem', fontWeight: 400, color: '#1a1a1a' }}>Utilisateurs ({filtered.length})</h1>
           <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
             <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Rechercher..."
               style={{ border: '1px solid #e8d5b7', padding: '6px 12px', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.8rem', width: '200px' }} />
@@ -188,7 +188,7 @@ export default function AdminUsers() {
       {/* Detail panel */}
       {selected && userDetail && (
         <div className="admin-user-detail" style={{ width: '320px', flexShrink: 0, backgroundColor: 'white', border: '1px solid #e8d5b7', padding: '1.5rem', height: 'fit-content', position: 'sticky', top: '2rem' }}>
-          <h3 style={{ fontFamily: 'Georgia, serif', fontSize: '1.1rem', fontWeight: 400, marginBottom: '1rem', color: '#1a1a1a' }}>Détails</h3>
+          <h3 style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '1.1rem', fontWeight: 400, marginBottom: '1rem', color: '#1a1a1a' }}>Détails</h3>
           <div style={{ marginBottom: '1rem', paddingBottom: '1rem', borderBottom: '1px solid #f0ece6' }}>
             {[
               { k: 'Nom', v: userDetail.user?.name },
@@ -207,7 +207,7 @@ export default function AdminUsers() {
           {false && userDetail.shop && (
             <div style={{ marginBottom: '1rem', paddingBottom: '1rem', borderBottom: '1px solid #f0ece6' }}>
               <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.65rem', letterSpacing: '0.1em', color: '#9e8e7e', marginBottom: '8px' }}>BOUTIQUE</p>
-              <p style={{ fontFamily: 'Georgia, serif', fontSize: '0.9rem', color: '#c9a96e', marginBottom: '4px' }}>{userDetail.shop.shop_name}</p>
+              <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.9rem', color: '#c9a96e', marginBottom: '4px' }}>{userDetail.shop.shop_name}</p>
               <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.75rem', color: '#1a1a1a' }}>Commission: {userDetail.shop.commission_rate}% · {userDetail.shop.subscription_active ? '★ Premium' : 'Gratuit'}</p>
               <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.75rem', color: '#1a1a1a' }}>Solde: {(userDetail.shop.wallet_balance || 0).toLocaleString('fr-FR')} €</p>
             </div>
@@ -218,7 +218,7 @@ export default function AdminUsers() {
             {userDetail.orders?.slice(0, 5).map((o: any) => (
               <div key={o.id} style={{ display: 'flex', justifyContent: 'space-between', padding: '4px 0', borderBottom: '1px solid #f8f4ef' }}>
                 <span style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.72rem', color: '#1a1a1a' }}>{o.item_title?.slice(0, 20)}...</span>
-                <span style={{ fontFamily: 'Georgia, serif', fontSize: '0.75rem', color: o.payment_status === 'paid' ? '#2e7d32' : '#ff9800' }}>{o.amount?.toLocaleString('fr-FR')} €</span>
+                <span style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.75rem', color: o.payment_status === 'paid' ? '#2e7d32' : '#ff9800' }}>{o.amount?.toLocaleString('fr-FR')} €</span>
               </div>
             ))}
           </div>

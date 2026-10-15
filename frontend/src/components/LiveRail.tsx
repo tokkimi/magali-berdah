@@ -17,7 +17,7 @@ export default function LiveRail() {
   return (
     <section style={{ padding: '1.5rem 0', background: '#1a1a1a' }}>
       <div style={{ padding: '0 1rem 1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'end' }}>
-        <div><p style={{ color: '#e11d48', font: '700 .58rem Helvetica Neue, Arial', letterSpacing: '.2em' }}>EN DIRECT</p><h2 style={{ color: 'white', font: '400 1.25rem Georgia, serif' }}>Lives Whatnot</h2></div>
+        <div><p style={{ color: '#e11d48', font: '700 .58rem Helvetica Neue, Arial', letterSpacing: '.2em' }}>EN DIRECT</p><h2 style={{ color: 'white', font: '400 1.25rem Helvetica Neue, Arial, sans-serif' }}>Lives Whatnot</h2></div>
         <Link to="/lives" style={{ color: '#c9a96e', textDecoration: 'none', display: 'flex', alignItems: 'center', font: '.7rem Helvetica Neue, Arial' }}>Tout voir <ChevronRight size={14} /></Link>
       </div>
       <div style={{ overflowX: 'auto', padding: '0 1rem', scrollbarWidth: 'none' }}>

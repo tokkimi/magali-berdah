@@ -50,7 +50,7 @@ export default function ProItems() {
   return (
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
-        <h1 style={{ fontFamily: 'Georgia, serif', fontSize: '1.8rem', fontWeight: 400, color: '#1a1a1a' }}>
+        <h1 style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '1.8rem', fontWeight: 400, color: '#1a1a1a' }}>
           Mes articles <span style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '1rem', color: '#9e8e7e', fontWeight: 400 }}>({visible.length})</span>
         </h1>
         <Link to="/boutique/articles/nouveau" className="btn-gold" style={{ textDecoration: 'none', fontSize: '0.75rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
@@ -60,7 +60,7 @@ export default function ProItems() {
 
       {visible.length === 0 ? (
         <div style={{ textAlign: 'center', padding: '4rem 2rem', backgroundColor: 'white', border: '1px solid #e8d5b7' }}>
-          <p style={{ fontFamily: 'Georgia, serif', fontSize: '1.2rem', color: '#9e8e7e', marginBottom: '1.5rem' }}>Aucun article pour le moment</p>
+          <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '1.2rem', color: '#9e8e7e', marginBottom: '1.5rem' }}>Aucun article pour le moment</p>
           <Link to="/boutique/articles/nouveau" className="btn-gold" style={{ textDecoration: 'none' }}>Ajouter mon premier article</Link>
         </div>
       ) : (
@@ -87,12 +87,12 @@ export default function ProItems() {
                         </div>
                       )}
                       <div style={{ minWidth: 0 }}>
-                        <p style={{ fontFamily: 'Georgia, serif', fontSize: '0.88rem', color: '#1a1a1a', marginBottom: '2px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '180px' }}>{item.title}</p>
+                        <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.88rem', color: '#1a1a1a', marginBottom: '2px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '180px' }}>{item.title}</p>
                         <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.7rem', color: '#c9a96e' }}>{item.brand}</p>
                       </div>
                     </div>
                   </td>
-                  <td style={{ padding: '10px 14px', fontFamily: 'Georgia, serif', fontSize: '0.88rem' }}>
+                  <td style={{ padding: '10px 14px', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.88rem' }}>
                     {item.fixed_price ? `${Number(item.fixed_price).toLocaleString('fr-FR')} €` : item.auction_start_price ? `${Number(item.auction_start_price).toLocaleString('fr-FR')} €` : '-'}
                   </td>
                   <td style={{ padding: '10px 14px' }}>

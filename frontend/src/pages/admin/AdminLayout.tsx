@@ -54,7 +54,7 @@ export default function AdminLayout() {
       <aside className="admin-sidebar" style={{ width: '240px', backgroundColor: '#0f0f0f', flexShrink: 0 }}>
         <div className="admin-sidebar-title" style={{ padding: '1.5rem', borderBottom: '1px solid #222' }}>
           <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.6rem', letterSpacing: '0.3em', color: '#c9a96e', marginBottom: '4px' }}>ADMINISTRATION</p>
-          <p style={{ fontFamily: 'Georgia, serif', fontSize: '1rem', color: 'white' }}>Magali Berdah</p>
+          <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '1rem', color: 'white' }}>Magali Berdah</p>
         </div>
         <nav className="admin-nav" style={{ padding: '0.75rem 0' }}>
           {nav.map(({ to, label, icon: Icon, exact, badge }) => (

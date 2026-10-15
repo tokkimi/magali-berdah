@@ -34,7 +34,7 @@ export default function ProLayout() {
       <div style={{ padding: '1.5rem', borderBottom: '1px solid #333', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <div>
           <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.6rem', letterSpacing: '0.2em', color: '#c9a96e', marginBottom: '4px' }}>ESPACE BOUTIQUE</p>
-          <p style={{ fontFamily: 'Georgia, serif', fontSize: '0.95rem', color: 'white' }}>{shop?.shop_name || user.name}</p>
+          <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.95rem', color: 'white' }}>{shop?.shop_name || user.name}</p>
           {shop?.subscription_active ? (
             <span style={{ fontSize: '0.65rem', color: '#c9a96e', fontFamily: 'Helvetica Neue, Arial, sans-serif' }}>★ Premium</span>
           ) : (
@@ -81,7 +81,7 @@ export default function ProLayout() {
       <div className="pro-mobile-topbar">
         <div>
           <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.55rem', letterSpacing: '0.15em', color: '#c9a96e' }}>ESPACE BOUTIQUE</p>
-          <p style={{ fontFamily: 'Georgia, serif', fontSize: '0.9rem', color: 'white' }}>{shop?.shop_name || user.name}</p>
+          <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.9rem', color: 'white' }}>{shop?.shop_name || user.name}</p>
         </div>
         <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
           <Link to="/soumettre" className="btn-gold" style={{ fontSize: '0.6rem', padding: '6px 12px', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '4px' }}>

@@ -169,7 +169,7 @@ function Section({ title, content }: { title: string; content: string }) {
       <button
         onClick={() => setOpen(o => !o)}
         style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1.1rem 0', background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left', gap: '1rem' }}>
-        <h2 style={{ fontFamily: 'Georgia, serif', fontSize: 'clamp(0.95rem, 2.5vw, 1.1rem)', fontWeight: 400, color: '#1a1a1a', margin: 0 }}>{title}</h2>
+        <h2 style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: 'clamp(0.95rem, 2.5vw, 1.1rem)', fontWeight: 400, color: '#1a1a1a', margin: 0 }}>{title}</h2>
         {open ? <ChevronUp size={18} color="#9e8e7e" style={{ flexShrink: 0 }} /> : <ChevronDown size={18} color="#9e8e7e" style={{ flexShrink: 0 }} />}
       </button>
       {open && (
@@ -188,7 +188,7 @@ export default function CGV() {
   return (
     <div style={{ maxWidth: 860, margin: '0 auto', padding: 'clamp(2rem, 6vw, 4rem) 1rem clamp(4rem, 8vw, 7rem)' }}>
       <p style={{ color: '#c9a96e', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.6rem', letterSpacing: '0.25em', fontWeight: 700 }}>INFORMATIONS CONTRACTUELLES</p>
-      <h1 style={{ fontFamily: 'Georgia, serif', fontSize: 'clamp(1.8rem, 5vw, 2.6rem)', fontWeight: 400, margin: '.5rem 0 0.5rem', color: '#1a1a1a' }}>Conditions Générales de Vente</h1>
+      <h1 style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: 'clamp(1.8rem, 5vw, 2.6rem)', fontWeight: 400, margin: '.5rem 0 0.5rem', color: '#1a1a1a' }}>Conditions Générales de Vente</h1>
       <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.78rem', color: '#9e8e7e', marginBottom: '0.5rem' }}>Dernière mise à jour : {LAST_UPDATE}</p>
       <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.78rem', color: '#9e8e7e', marginBottom: '2rem' }}>
         Conformes aux exigences de la <strong>DGCCRF</strong>, du <strong>Code de la consommation</strong> (L.111-1, L.221-1 et suivants) et du <strong>RGPD</strong>.

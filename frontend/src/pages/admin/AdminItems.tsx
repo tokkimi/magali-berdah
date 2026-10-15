@@ -104,7 +104,7 @@ export default function AdminItems() {
               <X size={18} />
             </button>
             <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.6rem', letterSpacing: '0.2em', color: '#c9a96e', marginBottom: '0.5rem' }}>CERTIFICATION D'AUTHENTICITÉ</p>
-            <h2 style={{ fontFamily: 'Georgia, serif', fontSize: '1.2rem', fontWeight: 400, color: '#1a1a1a', marginBottom: '0.25rem' }}>{certModal.title}</h2>
+            <h2 style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '1.2rem', fontWeight: 400, color: '#1a1a1a', marginBottom: '0.25rem' }}>{certModal.title}</h2>
             <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.75rem', color: '#9e8e7e', marginBottom: '1.5rem' }}>{certModal.brand} · {certModal.shop_name}</p>
 
             {/* Photos article */}
@@ -159,7 +159,7 @@ export default function AdminItems() {
       )}
 
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
-        <h1 style={{ fontFamily: 'Georgia, serif', fontSize: '1.8rem', fontWeight: 400, color: '#1a1a1a' }}>Articles ({filtered.length})</h1>
+        <h1 style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '1.8rem', fontWeight: 400, color: '#1a1a1a' }}>Articles ({filtered.length})</h1>
         <div className="admin-items-toolbar" style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', alignItems: 'center' }}>
           <button onClick={() => navigate('/admin/articles/nouveau')} className="btn-gold"
             style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.75rem' }}>
@@ -211,7 +211,7 @@ export default function AdminItems() {
                   </div>
                 </td>
                 <td style={{ padding: '10px 12px', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.75rem', color: '#666' }}>{item.shop_name}</td>
-                <td style={{ padding: '10px 12px', fontFamily: 'Georgia, serif', fontSize: '0.85rem' }}>
+                <td style={{ padding: '10px 12px', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.85rem' }}>
                   {item.fixed_price ? `${item.fixed_price.toLocaleString('fr-FR')} €` : item.auction_start_price ? `${item.auction_start_price.toLocaleString('fr-FR')} €` : '-'}
                 </td>
                 <td style={{ padding: '10px 12px' }}>

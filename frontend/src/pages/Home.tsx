@@ -89,7 +89,7 @@ function ExclusiveSection() {
               <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.52rem', letterSpacing: '0.28em', color: '#c9a96e' }}>VENTE EXCLUSIVE · AUJOURD'HUI SEULEMENT</p>
               <Star size={11} color="#c9a96e" fill="#c9a96e" />
             </div>
-            <h2 style={{ fontFamily: 'Georgia, serif', fontSize: '1.25rem', fontWeight: 400, color: 'white' }}>Sélection du jour</h2>
+            <h2 style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '1.25rem', fontWeight: 400, color: 'white' }}>Sélection du jour</h2>
           </div>
           <Link to="/vente-exclusive" style={{ display: 'flex', alignItems: 'center', gap: '3px', textDecoration: 'none', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.62rem', color: '#c9a96e' }}>
             Tout voir <ChevronRight size={12} />
@@ -134,7 +134,7 @@ function ExclusiveSection() {
         <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.52rem', letterSpacing: '0.3em', color: '#c9a96e', marginBottom: '0.5rem', animation: 'fadeInUp 0.5s ease' }}>
           VENTE EXCLUSIVE · ACCÈS LIMITÉ
         </p>
-        <h2 style={{ fontFamily: 'Georgia, serif', fontSize: 'clamp(1.2rem, 4vw, 1.8rem)', color: 'white', fontWeight: 400, lineHeight: 1.3, marginBottom: '0.5rem', animation: 'fadeInUp 0.7s ease' }}>
+        <h2 style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: 'clamp(1.2rem, 4vw, 1.8rem)', color: 'white', fontWeight: 400, lineHeight: 1.3, marginBottom: '0.5rem', animation: 'fadeInUp 0.7s ease' }}>
           La sélection ouvre {dateLabel.toLowerCase()}
         </h2>
         <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.75rem', color: 'rgba(255,255,255,0.38)', marginBottom: '1.25rem', animation: 'fadeInUp 0.9s ease' }}>
@@ -144,9 +144,9 @@ function ExclusiveSection() {
         <div style={{ display: 'flex', alignItems: 'center', gap: 'clamp(8px, 3vw, 20px)', marginBottom: '1.5rem', animation: 'fadeInUp 1.1s ease' }}>
           {[{ v: hh, l: 'HEURES' }, { v: mm, l: 'MIN' }, { v: ss, l: 'SEC' }].map(({ v, l }, i) => (
             <>
-              {i > 0 && <span key={`sep${i}`} style={{ fontFamily: 'Georgia, serif', fontSize: 'clamp(1.5rem, 5vw, 2.5rem)', color: 'rgba(201,169,110,0.35)', lineHeight: 1 }}>:</span>}
+              {i > 0 && <span key={`sep${i}`} style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: 'clamp(1.5rem, 5vw, 2.5rem)', color: 'rgba(201,169,110,0.35)', lineHeight: 1 }}>:</span>}
               <div key={l} style={{ textAlign: 'center' }}>
-                <div style={{ fontFamily: 'Georgia, serif', fontSize: 'clamp(2rem, 7vw, 3.5rem)', color: '#c9a96e', lineHeight: 1, fontWeight: 400 }}>{v}</div>
+                <div style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: 'clamp(2rem, 7vw, 3.5rem)', color: '#c9a96e', lineHeight: 1, fontWeight: 400 }}>{v}</div>
                 <div style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.45rem', letterSpacing: '0.2em', color: 'rgba(255,255,255,0.4)', marginTop: '5px' }}>{l}</div>
               </div>
             </>
@@ -190,7 +190,7 @@ function LivesHScroll() {
       <div style={{ padding: '0.75rem 1rem 0.5rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <span style={{ width: '7px', height: '7px', borderRadius: '50%', backgroundColor: '#e53935', display: 'inline-block', animation: 'pulse 1.5s infinite' }} />
-          <p style={{ fontFamily: 'Georgia, serif', fontSize: '1rem', fontWeight: 400, color: '#1a1a1a' }}>En direct maintenant</p>
+          <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '1rem', fontWeight: 400, color: '#1a1a1a' }}>En direct maintenant</p>
         </div>
         <Link to="/lives" style={{ display: 'flex', alignItems: 'center', gap: '3px', textDecoration: 'none', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.65rem', color: '#9e8e7e' }}>
           Voir tout <ChevronRight size={12} />
@@ -247,7 +247,7 @@ function HScrollSection({ title, label, link, items, loading, seeAll, seeMore }:
       <div style={{ padding: '1.5rem 1rem 0.75rem', display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between' }}>
         <div>
           <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.55rem', letterSpacing: '0.3em', color: '#c9a96e', marginBottom: '2px' }}>{label}</p>
-          <h2 style={{ fontFamily: 'Georgia, serif', fontSize: '1.15rem', fontWeight: 400, color: '#1a1a1a' }}>{title}</h2>
+          <h2 style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '1.15rem', fontWeight: 400, color: '#1a1a1a' }}>{title}</h2>
         </div>
         <Link to={link} style={{ display: 'flex', alignItems: 'center', gap: '3px', textDecoration: 'none', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.65rem', color: '#9e8e7e' }}>
           {seeAll} <ChevronRight size={12} />

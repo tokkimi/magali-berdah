@@ -24,7 +24,7 @@ export default function ProSubscription() {
   return (
     <div style={{ maxWidth: '800px', padding: '0 0 4rem' }}>
       <style>{`@media(max-width:640px){.sub-grid{grid-template-columns:1fr !important;}}`}</style>
-      <h1 style={{ fontFamily: 'Georgia, serif', fontSize: '1.5rem', fontWeight: 400, color: '#1a1a1a', marginBottom: '0.5rem' }}>Abonnement</h1>
+      <h1 style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '1.5rem', fontWeight: 400, color: '#1a1a1a', marginBottom: '0.5rem' }}>Abonnement</h1>
       <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.82rem', color: '#9e8e7e', marginBottom: '2rem' }}>
         Statut actuel : {shop?.subscription_active ? <span style={{ color: '#c9a96e', fontWeight: 600 }}>★ Premium actif</span> : 'Plan gratuit'}
       </p>
@@ -33,7 +33,7 @@ export default function ProSubscription() {
         {/* Free */}
         <div style={{ border: '1px solid #e8d5b7', padding: '1.5rem', backgroundColor: 'white', borderRadius: '8px' }}>
           <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.65rem', letterSpacing: '0.2em', color: '#9e8e7e', marginBottom: '0.5rem' }}>PLAN GRATUIT</p>
-          <p style={{ fontFamily: 'Georgia, serif', fontSize: '2.5rem', color: '#1a1a1a', marginBottom: '0.25rem' }}>0 €</p>
+          <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '2.5rem', color: '#1a1a1a', marginBottom: '0.25rem' }}>0 €</p>
           <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.75rem', color: '#9e8e7e', marginBottom: '2rem' }}>Sans engagement</p>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginBottom: '2rem' }}>
             {[
@@ -59,7 +59,7 @@ export default function ProSubscription() {
             RECOMMANDÉ
           </div>
           <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.65rem', letterSpacing: '0.2em', color: '#c9a96e', marginBottom: '0.5rem' }}>PLAN PREMIUM</p>
-          <p style={{ fontFamily: 'Georgia, serif', fontSize: '2.5rem', color: '#1a1a1a', marginBottom: '0.25rem' }}>129 €</p>
+          <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '2.5rem', color: '#1a1a1a', marginBottom: '0.25rem' }}>129 €</p>
           <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.75rem', color: '#9e8e7e', marginBottom: '2rem' }}>par mois · sans engagement</p>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginBottom: '2rem' }}>
             {[

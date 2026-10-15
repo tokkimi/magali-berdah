@@ -25,7 +25,7 @@ function Countdown({ endTime }: { endTime: string }) {
     const id = setInterval(update, 1000);
     return () => clearInterval(id);
   }, [endTime]);
-  return <span style={{ color: '#c9a96e', fontFamily: 'Georgia, serif', fontSize: '1.8rem' }}>{time}</span>;
+  return <span style={{ color: '#c9a96e', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '1.8rem' }}>{time}</span>;
 }
 
 export default function ItemDetail() {
@@ -195,7 +195,7 @@ export default function ItemDetail() {
             <div style={{ width: '52px', height: '52px', borderRadius: '50%', background: 'linear-gradient(135deg, #c9a96e, #a8834a)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.25rem' }}>
               <Shield size={24} color="white" />
             </div>
-            <h3 style={{ fontFamily: 'Georgia, serif', fontSize: '1.3rem', fontWeight: 400, textAlign: 'center', marginBottom: '0.75rem' }}>Confirmation d'enchère</h3>
+            <h3 style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '1.3rem', fontWeight: 400, textAlign: 'center', marginBottom: '0.75rem' }}>Confirmation d'enchère</h3>
             <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.82rem', color: '#555', textAlign: 'center', lineHeight: 1.6, marginBottom: '1.25rem' }}>
               Votre carte bancaire sera <strong>pré-autorisée</strong> pour&nbsp;
               <strong style={{ color: '#1a1a1a' }}>{pendingBidAmount.toLocaleString('fr-FR')} €</strong>.
@@ -227,8 +227,8 @@ export default function ItemDetail() {
               <CheckCircle size={28} color="white" />
             </div>
             <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.6rem', letterSpacing: '0.3em', color: '#c9a96e', marginBottom: '0.5rem' }}>COMMANDE CONFIRMÉE</p>
-            <h2 style={{ fontFamily: 'Georgia, serif', fontSize: '1.4rem', fontWeight: 400, color: '#1a1a1a', marginBottom: '0.5rem' }}>{orderConfirm.item_title}</h2>
-            <p style={{ fontFamily: 'Georgia, serif', fontSize: '1.6rem', color: '#1a1a1a', marginBottom: '1.5rem' }}>{(orderConfirm.amount || 0).toLocaleString('fr-FR')} €</p>
+            <h2 style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '1.4rem', fontWeight: 400, color: '#1a1a1a', marginBottom: '0.5rem' }}>{orderConfirm.item_title}</h2>
+            <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '1.6rem', color: '#1a1a1a', marginBottom: '1.5rem' }}>{(orderConfirm.amount || 0).toLocaleString('fr-FR')} €</p>
             <div style={{ backgroundColor: '#f8f4ef', padding: '1rem', marginBottom: '1.5rem', textAlign: 'left' }}>
               {orderConfirm.wallet_amount > 0 && (
                 <div style={{ marginBottom: '8px', display: 'flex', justifyContent: 'space-between', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.78rem' }}>
@@ -320,7 +320,7 @@ export default function ItemDetail() {
           <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.65rem', letterSpacing: '0.3em', color: '#c9a96e', marginBottom: '6px' }}>
             {item.brand?.toUpperCase()}
           </p>
-          <h1 style={{ fontFamily: 'Georgia, serif', fontSize: '1.5rem', fontWeight: 400, color: '#1a1a1a', marginBottom: '0.5rem', lineHeight: '1.25' }}>
+          <h1 style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '1.5rem', fontWeight: 400, color: '#1a1a1a', marginBottom: '0.5rem', lineHeight: '1.25' }}>
             {item.title}
             {(certifiedIds.has(item.id) || item.certified) ? (
               <span title="Certifié Authentique par Magali Berdah" style={{
@@ -347,7 +347,7 @@ export default function ItemDetail() {
                     <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.6rem', color: '#9e8e7e', letterSpacing: '0.15em', marginBottom: '4px' }}>
                       {item.current_bid ? 'OFFRE ACTUELLE' : 'MISE DE DÉPART'}
                     </p>
-                    <p style={{ fontFamily: 'Georgia, serif', fontSize: '2rem', color: '#1a1a1a' }}>
+                    <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '2rem', color: '#1a1a1a' }}>
                       {(item.current_bid || item.auction_start_price || 0).toLocaleString('fr-FR')} €
                     </p>
                     <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.7rem', color: '#9e8e7e', marginTop: '2px' }}>
@@ -378,7 +378,7 @@ export default function ItemDetail() {
               </>
             ) : item.fixed_price ? (
               <>
-                <p style={{ fontFamily: 'Georgia, serif', fontSize: '2.2rem', color: '#1a1a1a', marginBottom: '1rem' }}>
+                <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '2.2rem', color: '#1a1a1a', marginBottom: '1rem' }}>
                   {item.fixed_price.toLocaleString('fr-FR')} €
                 </p>
                 <Link to={`/achat/${item.id}`} className="btn-gold" style={{ display:'block', textAlign:'center', textDecoration:'none', width:'100%', fontSize:'0.85rem', padding:'1rem', letterSpacing:'0.1em', marginBottom:'0.75rem' }}>ACHETER SANS COMPTE</Link>
@@ -429,7 +429,7 @@ export default function ItemDetail() {
                                         }}
                                         style={{ width: '100%', padding: '6px 24px 6px 8px', border: '1px solid #c9a96e', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.88rem', color: '#a8834a', backgroundColor: 'white', boxSizing: 'border-box' }}
                                       />
-                                      <span style={{ position: 'absolute', right: '8px', top: '50%', transform: 'translateY(-50%)', fontFamily: 'Georgia, serif', fontSize: '0.8rem', color: '#a8834a' }}>€</span>
+                                      <span style={{ position: 'absolute', right: '8px', top: '50%', transform: 'translateY(-50%)', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.8rem', color: '#a8834a' }}>€</span>
                                     </div>
                                   </div>
 
@@ -447,7 +447,7 @@ export default function ItemDetail() {
                                         <span style={{ color: '#1a1a1a', fontWeight: 700 }}>{cardPart.toLocaleString('fr-FR')} €</span>
                                       </div>
                                     )}
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: 'Georgia, serif', fontSize: '0.9rem', borderTop: '1px solid #e8d5b7', paddingTop: '6px', marginTop: '4px' }}>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.9rem', borderTop: '1px solid #e8d5b7', paddingTop: '6px', marginTop: '4px' }}>
                                       <span>Total</span>
                                       <span>{price.toLocaleString('fr-FR')} €</span>
                                     </div>
@@ -506,7 +506,7 @@ export default function ItemDetail() {
           {item.description && (
             <div style={{ marginBottom: '1.5rem' }}>
               <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.6rem', letterSpacing: '0.15em', color: '#9e8e7e', marginBottom: '8px' }}>DESCRIPTION</p>
-              <p style={{ fontFamily: 'Georgia, serif', fontSize: '0.88rem', color: '#1a1a1a', lineHeight: '1.75' }}>{item.description}</p>
+              <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.88rem', color: '#1a1a1a', lineHeight: '1.75' }}>{item.description}</p>
             </div>
           )}
 
@@ -534,7 +534,7 @@ export default function ItemDetail() {
                   {item.shop_avatar ? (
                     <img src={imgUrl(item.shop_avatar)} alt={item.shop_name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                   ) : (
-                    <span style={{ fontFamily: 'Georgia, serif', fontSize: '1.1rem', color: '#c9a96e' }}>{item.shop_name[0]}</span>
+                    <span style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '1.1rem', color: '#c9a96e' }}>{item.shop_name[0]}</span>
                   )}
                 </div>
                 <div style={{ flex: 1 }}>
@@ -550,7 +550,7 @@ export default function ItemDetail() {
       {/* Historique enchères */}
       {bids.length > 0 && (
         <div style={{ marginTop: '3rem', borderTop: '1px solid #e8d5b7', paddingTop: '2rem' }}>
-          <h2 style={{ fontFamily: 'Georgia, serif', fontSize: '1.2rem', fontWeight: 400, marginBottom: '1.25rem' }}>Historique des enchères</h2>
+          <h2 style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '1.2rem', fontWeight: 400, marginBottom: '1.25rem' }}>Historique des enchères</h2>
           <div style={{ maxWidth: '480px' }}>
             {bids.map((bid, i) => (
               <div key={bid.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.75rem 0', borderBottom: '1px solid #f0ece6' }}>
@@ -559,7 +559,7 @@ export default function ItemDetail() {
                   <span style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.8rem', color: '#1a1a1a' }}>{bid.bidder_name}</span>
                 </div>
                 <div style={{ textAlign: 'right' }}>
-                  <p style={{ fontFamily: 'Georgia, serif', fontSize: '0.9rem', color: '#1a1a1a' }}>{bid.amount.toLocaleString('fr-FR')} €</p>
+                  <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.9rem', color: '#1a1a1a' }}>{bid.amount.toLocaleString('fr-FR')} €</p>
                   <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.65rem', color: '#9e8e7e' }}>
                     {new Date(bid.created_at).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })}
                   </p>

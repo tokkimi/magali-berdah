@@ -44,7 +44,7 @@ export default function HowToBuy() {
   return (
     <div style={{ maxWidth: '760px', margin: '0 auto', padding: '2.5rem 1.25rem 6rem' }}>
       <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.6rem', letterSpacing: '0.35em', color: '#c9a96e', marginBottom: '0.5rem' }}>GUIDE</p>
-      <h1 style={{ fontFamily: 'Georgia, serif', fontSize: 'clamp(1.6rem, 4vw, 2.2rem)', fontWeight: 400, color: '#1a1a1a', marginBottom: '0.5rem' }}>Comment acheter</h1>
+      <h1 style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: 'clamp(1.6rem, 4vw, 2.2rem)', fontWeight: 400, color: '#1a1a1a', marginBottom: '0.5rem' }}>Comment acheter</h1>
       <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.85rem', color: '#9e8e7e', marginBottom: '3rem', lineHeight: 1.7 }}>
         Tout ce qu'il faut savoir pour acheter ou enchérir sur Magali Berdah en toute confiance.
       </p>
@@ -58,7 +58,7 @@ export default function HowToBuy() {
                 <div style={{ width: '44px', height: '44px', backgroundColor: '#f8f4ef', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   <Icon size={20} color="#c9a96e" />
                 </div>
-                <span style={{ fontFamily: 'Georgia, serif', fontSize: '0.7rem', color: '#e8d5b7' }}>{step.num}</span>
+                <span style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.7rem', color: '#e8d5b7' }}>{step.num}</span>
               </div>
               <div>
                 <h2 style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.85rem', fontWeight: 700, letterSpacing: '0.05em', color: '#1a1a1a', marginBottom: '0.5rem' }}>
@@ -74,7 +74,7 @@ export default function HowToBuy() {
       </div>
 
       <div style={{ backgroundColor: '#f8f4ef', borderRadius: '12px', padding: '1.5rem', textAlign: 'center', marginTop: '1rem' }}>
-        <p style={{ fontFamily: 'Georgia, serif', fontSize: '1rem', color: '#1a1a1a', marginBottom: '1rem' }}>
+        <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '1rem', color: '#1a1a1a', marginBottom: '1rem' }}>
           Prêt(e) à découvrir nos pièces ?
         </p>
         <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center', flexWrap: 'wrap' }}>
