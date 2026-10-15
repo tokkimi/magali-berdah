@@ -69,7 +69,7 @@ export default function Catalogue() {
     category && { key: 'category', label: (lang === 'en' ? categories.find(c => c.id === category)?.name_en : categories.find(c => c.id === category)?.name_fr) || category, val: category },
   ].filter(Boolean) as { key: string; label: string; val: string }[];
 
-  const pageTitle = type === 'auction' ? 'ENCHÈRES' : type === 'fixed' ? 'VENTE DIRECTE' : search ? `"${search}"` : 'CATALOGUE';
+  const pageTitle = type === 'auction' ? 'ENCHÈRES' : type === 'fixed' ? 'VENTE DIRECTE' : search ? `"${search}"` : 'LA GALERIE';
 
   return (
     <div style={{ background: '#fff', minHeight: '100vh' }}>
