@@ -23,7 +23,7 @@ export default function Header() {
   const location = useLocation();
   const [scrolled, setScrolled] = useState(false);
   useEffect(() => {
-    const update = () => setScrolled(window.scrollY > 20);
+    const update = () => setScrolled(window.scrollY > window.innerHeight * 0.8);
     update(); window.addEventListener('scroll', update, { passive: true });
     return () => window.removeEventListener('scroll', update);
   }, [location.pathname]);
@@ -32,6 +32,9 @@ export default function Header() {
   const { user, lang, setLang, logout } = useStore();
   const navigate = useNavigate();
   const isHome = location.pathname === '/';
+  const heroPassed = isHome && scrolled;
+  const headerBg = isHome && !heroPassed ? 'transparent' : isHome && heroPassed ? 'rgba(15,15,15,0.95)' : '#fff';
+  const headerBorder = isHome && !heroPassed ? 'none' : isHome && heroPassed ? 'none' : 'none';
   const iconColor = isHome ? '#fff' : '#1a1a1a';
   const [showAuth, setShowAuth] = useState(false);
   const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
@@ -157,7 +160,7 @@ export default function Header() {
         .ysl-search-bar { top: 52px; }
       `}</style>
 
-      <header className="ysl-header">
+      <header className="ysl-header" style={{ background: headerBg, transition: 'background 0.3s' }}>
         <div className="ysl-header-inner">
           {/* Left: hamburger */}
           <div className="ysl-left">
