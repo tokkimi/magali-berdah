@@ -34,6 +34,7 @@ export default function Header() {
   const [showAuth, setShowAuth] = useState(false);
   const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [galerieOpen, setGalerieOpen] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
   const [search, setSearch] = useState('');
   const [liveCount, setLiveCount] = useState(getLiveCount());
@@ -219,7 +220,26 @@ export default function Header() {
           </div>
 
           <nav className="ysl-menu-nav">
-            {MENU_LINKS.map(item => (
+            {MENU_LINKS.map(item => item.label === 'LA GALERIE' ? (
+              <div key={item.to} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                <button
+                  className="ysl-menu-link"
+                  style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}
+                  onClick={() => setGalerieOpen(o => !o)}>
+                  LA GALERIE
+                  <svg width="10" height="6" viewBox="0 0 10 6" fill="none" style={{ transition: 'transform 0.2s', transform: galerieOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}>
+                    <path d="M1 1l4 4 4-4" stroke="#1a1a1a" strokeWidth="1.2"/>
+                  </svg>
+                </button>
+                {galerieOpen && (
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px', marginTop: '4px' }}>
+                    <Link to="/catalogue" className="ysl-menu-link" style={{ fontSize: '0.72rem', fontWeight: 400, letterSpacing: '0.12em', color: '#666' }} onClick={() => setMobileOpen(false)}>TOUT</Link>
+                    <Link to="/catalogue?type=auction" className="ysl-menu-link" style={{ fontSize: '0.72rem', fontWeight: 400, letterSpacing: '0.12em', color: '#666' }} onClick={() => setMobileOpen(false)}>ENCHÈRES</Link>
+                    <Link to="/catalogue?type=fixed" className="ysl-menu-link" style={{ fontSize: '0.72rem', fontWeight: 400, letterSpacing: '0.12em', color: '#666' }} onClick={() => setMobileOpen(false)}>VENTE</Link>
+                  </div>
+                )}
+              </div>
+            ) : (
               <Link key={item.to} to={item.to}
                 className={`ysl-menu-link${item.gold ? ' gold' : ''}${item.live ? ' live-link' : ''}`}
                 onClick={() => setMobileOpen(false)}>
