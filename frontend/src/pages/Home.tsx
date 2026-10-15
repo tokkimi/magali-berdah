@@ -100,19 +100,14 @@ function ExclusiveSection() {
           <Clock size={12} color="rgba(255,255,255,0.4)" />
           <span style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.7rem', color: 'rgba(255,255,255,0.4)' }}>Ferme à {settings.close_time}</span>
         </div>
-        {/* Scroll */}
-        <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch', scrollbarWidth: 'none', padding: '0 1rem 1.5rem' }}>
-          <style>{`.hscroll-excl::-webkit-scrollbar{display:none} .hscroll-excl-card{flex-shrink:0;width:158px;display:flex;flex-direction:column} @media(max-width:479px){.hscroll-excl-card{width:calc(100vw - 2rem)}}`}</style>
-          <div className="hscroll-excl" style={{ display: 'flex', gap: '10px', width: 'max-content', alignItems: 'stretch' }}>
+        {/* Editorial grid */}
+        <div style={{ padding: '0 1rem 1.5rem' }}>
+          <div className="home-editorial-grid">
             {exclusiveItems.length === 0
               ? [1,2,3].map(i => <SkeletonCard key={i} />)
-              : exclusiveItems.map((item: any) => (
-                <div key={item.id} className="hscroll-excl-card">
-                  <ItemCard item={item} />
-                </div>
-              ))
+              : exclusiveItems.map((item: any) => <ItemCard key={item.id} item={item} />)
             }
-            <Link to="/vente-exclusive" style={{ flexShrink: 0, width: '110px', borderRadius: '12px', border: '1.5px solid rgba(201,169,110,0.3)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '6px', textDecoration: 'none', backgroundColor: 'rgba(201,169,110,0.06)' }}>
+            <Link to="/vente-exclusive" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '6px', textDecoration: 'none', backgroundColor: 'rgba(201,169,110,0.06)', border: '1.5px solid rgba(201,169,110,0.3)', aspectRatio: '3/4' }}>
               <ChevronRight size={22} color="#c9a96e" />
               <span style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.58rem', color: '#c9a96e', letterSpacing: '0.08em', textAlign: 'center' }}>VOIR TOUT</span>
             </Link>
@@ -123,6 +118,7 @@ function ExclusiveSection() {
   }
 
   // CLOSED — bloc suspense
+
   return (
     <Link to="/vente-exclusive" style={{ display: 'block', textDecoration: 'none', backgroundColor: '#0f0f0f' }}>
       <style>{`@keyframes goldPulse{0%,100%{opacity:1}50%{opacity:0.45}} @keyframes fadeInUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}`}</style>
@@ -254,27 +250,14 @@ function HScrollSection({ title, label, link, items, loading, seeAll, seeMore }:
         </Link>
       </div>
 
-      {/* Horizontal scroll */}
-      <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch', scrollbarWidth: 'none', msOverflowStyle: 'none', padding: '0 1rem 1.25rem' }}>
-        <style>{`.hscroll::-webkit-scrollbar{display:none} .hscroll-card{flex-shrink:0;width:158px;display:flex;flex-direction:column} @media(max-width:479px){.hscroll-card{width:calc(100vw - 2rem)}}`}</style>
-        <div className="hscroll" style={{ display: 'flex', gap: '10px', width: 'max-content', alignItems: 'stretch' }}>
+      {/* Editorial grid */}
+      <div style={{ padding: '0 1rem 1.25rem' }}>
+        <style>{`.home-editorial-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.home-editorial-grid>*:nth-child(4n+1){grid-column:1/-1}`}</style>
+        <div className="home-editorial-grid">
           {loading
             ? [1,2,3,4].map(i => <SkeletonCard key={i} />)
-            : items.map(item => (
-                <div key={item.id} className="hscroll-card">
-                  <ItemCard item={item} />
-                </div>
-              ))
+            : items.map(item => <ItemCard key={item.id} item={item} />)
           }
-          {!loading && items.length > 0 && (
-            <div
-              onClick={() => navigate(link)}
-              style={{ flexShrink: 0, width: '120px', borderRadius: '12px', border: '1.5px solid #e8d5b7', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '6px', cursor: 'pointer', backgroundColor: '#faf7f4' }}
-            >
-              <ChevronRight size={22} color="#c9a96e" />
-              <span style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.6rem', color: '#9e8e7e', letterSpacing: '0.08em' }}>{seeMore}</span>
-            </div>
-          )}
         </div>
       </div>
 
