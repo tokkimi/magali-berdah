@@ -125,7 +125,7 @@ export default function ItemCard({ item }: { item: Item }) {
         )}
 
         {/* Certifié */}
-        {(certifiedIds.has(item.id) || (item as any).certified) && (
+        {Boolean((item as any).certified) && (
           <div style={{ position: 'absolute', bottom: '12px', left: '0', background: '#000', color: '#c9a96e', padding: '3px 10px', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.45rem', letterSpacing: '0.2em' }}>
             CERTIFIÉ
           </div>
