@@ -82,6 +82,7 @@ export default function Footer() {
             { label: t('privacy'), to: '/confidentialite' },
             { label: t('contact'), to: '/contact' },
             { label: t('aboutUs'), to: '/a-propos' },
+            { label: 'Application mobile', to: '/application' },
           ].map(l => (
             <Link key={l.to} to={l.to} style={footLinkStyle}>{l.label}</Link>
           ))}
