@@ -84,8 +84,8 @@ export default function Header() {
     <>
       <style>{`
         .ysl-header {
-          position: sticky; top: 0; left: 0; right: 0; z-index: 500;
-          background: #fff;
+          position: fixed; top: 0; left: 0; right: 0; z-index: 500;
+          background: transparent;
           border-bottom: none;
         }
         .ysl-header-inner {
@@ -101,7 +101,7 @@ export default function Header() {
         .ysl-icon-btn {
           background: none; border: none; cursor: pointer; padding: 6px;
           display: flex; align-items: center; justify-content: center;
-          color: #1a1a1a; line-height: 1;
+          color: #fff; line-height: 1;
           font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
         }
         .ysl-menu-overlay {
@@ -122,10 +122,10 @@ export default function Header() {
         }
         .ysl-menu-link {
           font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-          font-size: clamp(1.15rem, 4.5vw, 1.7rem);
-          font-weight: 700; letter-spacing: 0.01em; text-transform: uppercase;
+          font-size: clamp(0.85rem, 3.5vw, 1.4rem);
+          font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
           color: #1a1a1a; text-decoration: none;
-          padding: 6px 0;
+          padding: 5px 0;
           transition: opacity 0.15s;
         }
         .ysl-menu-link:hover { opacity: 0.45; }
@@ -162,9 +162,9 @@ export default function Header() {
           <div className="ysl-left">
             <button className="ysl-icon-btn" aria-label="Menu" onClick={() => setMobileOpen(true)}>
               <svg width="22" height="14" viewBox="0 0 22 14" fill="none">
-                <line x1="0" y1="1" x2="22" y2="1" stroke="#1a1a1a" strokeWidth="1.5"/>
-                <line x1="0" y1="7" x2="22" y2="7" stroke="#1a1a1a" strokeWidth="1.5"/>
-                <line x1="0" y1="13" x2="22" y2="13" stroke="#1a1a1a" strokeWidth="1.5"/>
+                <line x1="0" y1="1" x2="22" y2="1" stroke="#fff" strokeWidth="1.5"/>
+                <line x1="0" y1="7" x2="22" y2="7" stroke="#fff" strokeWidth="1.5"/>
+                <line x1="0" y1="13" x2="22" y2="13" stroke="#fff" strokeWidth="1.5"/>
               </svg>
             </button>
           </div>
