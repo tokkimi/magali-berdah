@@ -33,7 +33,7 @@ const SECTIONS = [
 function AccordionSection({ label, links }: { label: string; links: { label: string; to: string }[] }) {
   const [open, setOpen] = useState(false);
   return (
-    <div style={{ borderBottom: '1px solid #2a2a2a' }}>
+    <div>
       <button
         onClick={() => setOpen(o => !o)}
         style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 0', background: 'none', border: 'none', cursor: 'pointer', color: '#c9a96e', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.6rem', letterSpacing: '0.2em' }}>
@@ -103,8 +103,12 @@ export default function Footer() {
       </div>
 
       {/* Accordion sections */}
-      <div style={{ padding: '0.5rem 1.25rem' }}>
-        {SECTIONS.map(s => <AccordionSection key={s.label} label={s.label} links={s.links} />)}
+      <div style={{ padding: '0.5rem 1.25rem', display: 'flex', gap: '0', borderTop: '1px solid #2a2a2a', borderBottom: '1px solid #2a2a2a' }}>
+        {SECTIONS.map((s, i) => (
+          <div key={s.label} style={{ flex: 1, borderLeft: i > 0 ? '1px solid #2a2a2a' : 'none', paddingLeft: i > 0 ? '12px' : '0' }}>
+            <AccordionSection label={s.label} links={s.links} />
+          </div>
+        ))}
       </div>
 
       <div style={{ borderTop: '1px solid #2a2a2a', padding: '1.25rem', textAlign: 'center' }}>
