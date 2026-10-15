@@ -92,8 +92,8 @@ export default function Header() {
           display: grid;
           grid-template-columns: 1fr auto 1fr;
           align-items: center;
-          height: 52px;
-          padding: 0 16px;
+          height: 44px;
+          padding: 0 14px;
         }
         .ysl-left { display: flex; align-items: center; gap: 20px; }
         .ysl-center { display: flex; justify-content: center; }
@@ -172,7 +172,7 @@ export default function Header() {
           {/* Center: logo */}
           <div className="ysl-center">
             <Link to="/" style={{ textDecoration: 'none' }}>
-              <img src="/mb-logo.png" alt="Magali Berdah" height="46" width="46" style={{ objectFit: 'contain', display: 'block' }} />
+              <img src="/mb-logo.png" alt="Magali Berdah" height="34" width="34" style={{ objectFit: 'contain', display: 'block' }} />
             </Link>
           </div>
 
