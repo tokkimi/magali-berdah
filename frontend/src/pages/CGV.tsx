@@ -186,7 +186,7 @@ function Section({ title, content }: { title: string; content: string }) {
 
 export default function CGV() {
   return (
-    <div style={{ maxWidth: 860, margin: '0 auto', padding: 'clamp(2rem, 6vw, 4rem) 1rem clamp(4rem, 8vw, 7rem)' }}>
+    <div style={{ maxWidth: 860, margin: '0 auto', paddingTop: 'calc(44px + 1.5rem)', padding: '0 1rem clamp(4rem, 8vw, 7rem)' }}>
       <p style={{ color: '#c9a96e', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.6rem', letterSpacing: '0.25em', fontWeight: 700 }}>INFORMATIONS CONTRACTUELLES</p>
       <h1 style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: 'clamp(1.8rem, 5vw, 2.6rem)', fontWeight: 400, margin: '.5rem 0 0.5rem', color: '#1a1a1a' }}>Conditions Générales de Vente</h1>
       <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.78rem', color: '#9e8e7e', marginBottom: '0.5rem' }}>Dernière mise à jour : {LAST_UPDATE}</p>

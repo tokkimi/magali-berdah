@@ -107,7 +107,7 @@ function FaqItem({ q, a }: { q: string; a: string }) {
 
 export default function FAQ() {
   return (
-    <div style={{ maxWidth: '720px', margin: '0 auto', padding: '2.5rem 1.25rem 6rem' }}>
+    <div style={{ maxWidth: '720px', margin: '0 auto', padding: 'calc(44px + 1.5rem) 1.25rem 6rem' }}>
       <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.6rem', letterSpacing: '0.35em', color: '#c9a96e', marginBottom: '0.5rem' }}>AIDE</p>
       <h1 style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: 'clamp(1.6rem, 4vw, 2.2rem)', fontWeight: 400, color: '#1a1a1a', marginBottom: '0.5rem' }}>
         Questions fréquentes

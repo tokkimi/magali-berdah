@@ -23,7 +23,7 @@ export default function Favorites() {
   }
 
   return (
-    <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '2rem 1rem 6rem' }}>
+    <div style={{ maxWidth: '1200px', margin: '0 auto', padding: 'calc(44px + 1.5rem) 1rem 6rem' }}>
       <div style={{ marginBottom: '1.5rem' }}>
         <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.55rem', letterSpacing: '0.35em', color: '#c9a96e', marginBottom: '4px' }}>MON COMPTE</p>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>

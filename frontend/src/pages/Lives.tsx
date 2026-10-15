@@ -25,7 +25,7 @@ export default function Lives() {
   }, [refresh]);
 
   return (
-    <div style={{ background: '#faf7f4', minHeight: '70vh', padding: '3rem 1rem 7rem' }}>
+    <div style={{ background: '#faf7f4', minHeight: '70vh', padding: 'calc(44px + 1.5rem) 1rem 7rem' }}>
       <div style={{ maxWidth: 1180, margin: '0 auto' }}>
         <p style={{ color: '#e11d48', font: '700 .62rem Helvetica Neue, Arial', letterSpacing: '.22em' }}>
           WHATNOT · EN DIRECT

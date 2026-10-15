@@ -76,7 +76,7 @@ export default function MesSoumissions() {
   }
 
   return (
-    <div style={{ maxWidth: '700px', margin: '0 auto', padding: '2rem 1rem 8rem' }}>
+    <div style={{ maxWidth: '700px', margin: '0 auto', padding: 'calc(44px + 1.5rem) 1rem 8rem' }}>
       <div style={{ marginBottom: '2rem' }}>
         <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.55rem', letterSpacing: '0.35em', color: '#c9a96e', marginBottom: '4px' }}>MON COMPTE</p>
         <h1 style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '1.5rem', fontWeight: 400, color: '#1a1a1a' }}>Mes soumissions</h1>

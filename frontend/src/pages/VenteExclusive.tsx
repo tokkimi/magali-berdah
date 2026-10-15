@@ -113,7 +113,7 @@ export default function VenteExclusive() {
 
   if (!open) {
     return (
-      <div style={{ backgroundColor: '#0f0f0f', minHeight: '80vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '3rem 1rem 6rem', textAlign: 'center' }}>
+      <div style={{ backgroundColor: '#0f0f0f', minHeight: '80vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 'calc(44px + 1.5rem) 1rem 6rem', textAlign: 'center' }}>
         <style>{`
           @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
           @keyframes goldPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }

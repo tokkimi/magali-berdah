@@ -92,7 +92,7 @@ export default function SoumettreArticle() {
   }
 
   return (
-    <div style={{ maxWidth: '700px', margin: '0 auto', padding: '2rem 1.5rem 6rem' }}>
+    <div style={{ maxWidth: '700px', margin: '0 auto', padding: 'calc(44px + 1.5rem) 1.5rem 6rem' }}>
       <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.55rem', letterSpacing: '0.35em', color: '#c9a96e', marginBottom: '4px' }}>VENDRE SUR MAGALI BERDAH</p>
       <h1 style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '1.8rem', fontWeight: 400, color: '#1a1a1a', marginBottom: '0.5rem' }}>Soumettre un article</h1>
       <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.85rem', color: '#666666', marginBottom: '2rem', lineHeight: 1.6 }}>

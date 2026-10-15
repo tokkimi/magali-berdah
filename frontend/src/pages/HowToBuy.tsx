@@ -42,7 +42,7 @@ const steps = [
 
 export default function HowToBuy() {
   return (
-    <div style={{ maxWidth: '760px', margin: '0 auto', padding: '2.5rem 1.25rem 6rem' }}>
+    <div style={{ maxWidth: '760px', margin: '0 auto', padding: 'calc(44px + 1.5rem) 1.25rem 6rem' }}>
       <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.6rem', letterSpacing: '0.35em', color: '#c9a96e', marginBottom: '0.5rem' }}>GUIDE</p>
       <h1 style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: 'clamp(1.6rem, 4vw, 2.2rem)', fontWeight: 400, color: '#1a1a1a', marginBottom: '0.5rem' }}>Comment acheter</h1>
       <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.85rem', color: '#9e8e7e', marginBottom: '3rem', lineHeight: 1.7 }}>

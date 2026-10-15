@@ -343,7 +343,7 @@ export default function Profile() {
   if (!user) return null;
 
   return (
-    <div style={{ maxWidth: '1000px', margin: '0 auto', padding: '1.5rem 1rem 5rem' }}>
+    <div style={{ maxWidth: '1000px', margin: '0 auto', padding: 'calc(44px + 1.5rem) 1rem 5rem' }}>
       <style>{`
         .profile-tabs { display: flex; flex-direction: column; gap: 0; width: 190px; flex-shrink: 0; }
         .profile-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
