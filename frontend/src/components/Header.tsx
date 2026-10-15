@@ -86,7 +86,7 @@ export default function Header() {
         .ysl-header {
           position: sticky; top: 0; left: 0; right: 0; z-index: 500;
           background: #fff;
-          border-bottom: 1px solid #e8e8e8;
+          border-bottom: none;
         }
         .ysl-header-inner {
           display: grid;
