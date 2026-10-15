@@ -102,6 +102,7 @@ export default function Header() {
           background: none; border: none; cursor: pointer; padding: 6px;
           display: flex; align-items: center; justify-content: center;
           color: #1a1a1a; line-height: 1;
+          font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
         }
         .ysl-menu-overlay {
           position: fixed; inset: 0; z-index: 600;
@@ -120,25 +121,25 @@ export default function Header() {
           gap: 6px; padding: 2rem 1rem;
         }
         .ysl-menu-link {
-          font-family: 'Georgia', serif;
-          font-size: clamp(1.3rem, 5vw, 2rem);
-          font-weight: 400; letter-spacing: 0.06em;
+          font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+          font-size: clamp(1.15rem, 4.5vw, 1.7rem);
+          font-weight: 700; letter-spacing: 0.01em; text-transform: uppercase;
           color: #1a1a1a; text-decoration: none;
-          padding: 8px 0;
+          padding: 6px 0;
           transition: opacity 0.15s;
         }
-        .ysl-menu-link:hover { opacity: 0.5; }
+        .ysl-menu-link:hover { opacity: 0.45; }
         .ysl-menu-link.gold { color: #c9a96e; }
         .ysl-menu-link.live-link { color: #e53935; }
         .ysl-menu-footer {
-          padding: 1.5rem 2rem 2rem;
-          border-top: 1px solid #e0e0e0;
-          display: flex; flex-wrap: wrap; gap: 12px; justify-content: center;
+          padding: 1.5rem 2rem 2.5rem;
+          border-top: 1px solid #ddd;
+          display: flex; flex-wrap: wrap; gap: 10px 20px; justify-content: center;
         }
         .ysl-menu-footer a, .ysl-menu-footer button {
-          font-family: 'Helvetica Neue', Arial, sans-serif;
-          font-size: 0.72rem; letter-spacing: 0.1em;
-          color: #666; text-decoration: none; background: none; border: none; cursor: pointer;
+          font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+          font-size: 0.65rem; letter-spacing: 0.14em; text-transform: uppercase;
+          color: #555; text-decoration: none; background: none; border: none; cursor: pointer; font-weight: 400;
         }
         .ysl-search-bar {
           position: fixed; top: 60px; left: 0; right: 0; z-index: 490;
