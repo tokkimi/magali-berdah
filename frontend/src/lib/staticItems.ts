@@ -90,8 +90,12 @@ function loadAdminItems(): any[] {
   try { return JSON.parse(localStorage.getItem('mb_admin_items') || '[]'); } catch { return []; }
 }
 
+const ALLOWED_PREFIXES = ['bags-', 'acc-'];
+
 export function getAllItems(): any[] {
-  return [...loadAdminItems(), ...STATIC_ITEMS].filter(item => item.category_id?.startsWith('bags-'));
+  return [...loadAdminItems(), ...STATIC_ITEMS].filter(item =>
+    ALLOWED_PREFIXES.some(p => item.category_id?.startsWith(p))
+  );
 }
 
 export function filterStaticItems(q: {

@@ -12,7 +12,9 @@ export async function getSharedItems(filters: { type?: string; category?: string
   if (filters.limit) query = query.limit(filters.limit);
   const { data, error } = await query.abortSignal(AbortSignal.timeout(4000));
   if (error) throw error;
-  return (data || []).map(item => ({ ...item, __shared: true }));
+  return (data || [])
+    .filter(item => item.category_id?.startsWith('bags-') || item.category_id?.startsWith('acc-'))
+    .map(item => ({ ...item, __shared: true }));
 }
 
 export async function getSharedItem(id: string) {
