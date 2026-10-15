@@ -3,7 +3,7 @@ import { useLocation } from 'react-router-dom';
 
 const pages: Record<string, { title: string; description: string }> = {
   '/': { title: 'Magali Berdah — Mode de luxe de seconde main', description: 'Ventes, enchères et lives de pièces de mode et maroquinerie de luxe de seconde main.' },
-  '/catalogue': { title: 'Catalogue luxe de seconde main | Magali Berdah', description: 'Explorez les sacs, vêtements et accessoires de luxe proposés en vente directe ou aux enchères.' },
+  '/catalogue': { title: 'Catalogue luxe de seconde main | Magali Berdah', description: 'Explorez les sacs et accessoires de luxe proposés en vente directe ou aux enchères.' },
   '/lives': { title: 'Lives Whatnot en cours | Magali Berdah', description: 'Retrouvez les lives Whatnot en cours des ambassadeurs validés par Magali Berdah.' },
   '/comment-acheter': { title: 'Comment acheter | Magali Berdah', description: 'Découvrez comment acheter une pièce, participer aux enchères et suivre votre commande.' },
   '/faq': { title: 'Questions fréquentes | Magali Berdah', description: 'Réponses aux questions sur les achats, enchères, livraisons, retours et paiements.' },

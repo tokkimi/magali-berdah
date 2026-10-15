@@ -4,8 +4,6 @@ import { useStore } from '../lib/store';
 
 const CATEGORIES = [
   'Sacs à Main', 'Sacs Bandoulière', 'Pochettes', 'Sacs Backpack',
-  'Robes', 'Tops & Blouses', 'Pantalons & Jeans', 'Vestes & Manteaux', 'Chaussures Femme',
-  'Chemises & Polos', 'Pantalons Homme', 'Costumes', 'Chaussures Homme',
   'Montres', 'Bijoux', 'Ceintures', 'Foulards', 'Lunettes',
 ];
 

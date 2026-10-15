@@ -12,18 +12,17 @@ const CONDITIONS = [
 ];
 
 const STATIC_CATEGORIES = [
-  { id: 'women', name_fr: 'Femme', parent_id: null },
-  { id: 'men', name_fr: 'Homme', parent_id: null },
   { id: 'bags', name_fr: 'Sacs', parent_id: null },
   { id: 'accessories', name_fr: 'Accessoires', parent_id: null },
   { id: 'bags-handbags', name_fr: '└ Sacs à Main', parent_id: 'bags' },
   { id: 'bags-shoulder', name_fr: '└ Sacs Bandoulière', parent_id: 'bags' },
   { id: 'bags-clutch', name_fr: '└ Pochettes', parent_id: 'bags' },
-  { id: 'women-dresses', name_fr: '└ Robes', parent_id: 'women' },
-  { id: 'women-tops', name_fr: '└ Tops & Blouses', parent_id: 'women' },
-  { id: 'women-shoes', name_fr: '└ Chaussures', parent_id: 'women' },
-  { id: 'men-suits', name_fr: '└ Costumes', parent_id: 'men' },
-  { id: 'men-shoes', name_fr: '└ Chaussures', parent_id: 'men' },
+  { id: 'bags-backpack', name_fr: '└ Sacs à Dos', parent_id: 'bags' },
+  { id: 'acc-watches', name_fr: '└ Montres', parent_id: 'accessories' },
+  { id: 'acc-jewelry', name_fr: '└ Bijoux', parent_id: 'accessories' },
+  { id: 'acc-sunglasses', name_fr: '└ Lunettes', parent_id: 'accessories' },
+  { id: 'acc-belts', name_fr: '└ Ceintures', parent_id: 'accessories' },
+  { id: 'acc-scarves', name_fr: '└ Foulards', parent_id: 'accessories' },
 ];
 
 interface PhotoEntry {
