@@ -25,8 +25,10 @@ export default function BagHero() {
         <Link className="premium-cta" to={slide.link}>{en?(index===0?'Find my bag':'Browse auctions'):slide.cta} <ArrowUpRight size={17} /></Link>
       </div>
       <div className="campaign-controls">{slides.map((_, i) => <button key={i} aria-label={`Afficher la sélection ${i + 1}`} aria-pressed={i === index} className={i === index ? 'selected' : ''} onClick={() => setIndex(i)} />)}<button className="pause-slide" onClick={() => setPaused(p => !p)} aria-label={paused ? 'Animer le diaporama' : 'Mettre en pause'}>{paused ? <Play size={13} /> : <Pause size={13} />}</button></div>
+      <button onClick={() => go('direct-items')} style={{ position: 'absolute', bottom: '24px', left: '50%', transform: 'translateX(-50%)', background: 'none', border: 'none', cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px', color: '#fff' }}>
+        <span style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.55rem', letterSpacing: '0.2em', textTransform: 'uppercase' }}>{en ? 'DISCOVER' : 'DÉCOUVRIR'}</span>
+        <svg width="16" height="10" viewBox="0 0 16 10" fill="none"><path d="M1 1l7 7 7-7" stroke="#fff" strokeWidth="1.2"/></svg>
+      </button>
     </section>
-    <nav className="purchase-paths" aria-label="Comment souhaitez-vous acheter ?"><button onClick={() => go('direct-items')}>{en?"Buy now":"Acheter maintenant"} <ArrowUpRight size={17}/></button><button onClick={() => go('auction-items')}>{en?"Bid now":"Enchérir"} <ArrowUpRight size={17}/></button></nav>
-    <nav className="bag-discovery" aria-label="Les sélections"><Link to="/catalogue">{en?"All bags":"Tous les sacs"}</Link><Link to="/catalogue?category=bags-handbags">{en?"Handbags":"Sacs à main"}</Link><Link to="/catalogue?category=bags-shoulder">{en?"Shoulder bags":"Bandoulières"}</Link><Link to="/catalogue?category=bags-clutch">{en?"Clutches":"Pochettes"}</Link><Link to="/catalogue?sort=created_at">{en?"New arrivals":"Nouveautés"}</Link></nav>
   </>;
 }
