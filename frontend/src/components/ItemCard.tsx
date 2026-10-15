@@ -64,119 +64,97 @@ export default function ItemCard({ item }: { item: Item }) {
   const [action, setAction] = useState<'buy' | 'bid' | null>(null);
 
 
+  const [hovered, setHovered] = useState(false);
+
   return (
-    <div className="bag-card-wrap" style={{ textDecoration: 'none', color: 'inherit', display: 'flex', height: '100%' }}>
-      <div className="bag-card" style={{
-        overflow: 'hidden',
-        backgroundColor: '#fff',
-        border: '1px solid #e8e0d8',
-        display: 'flex', flexDirection: 'column', width: '100%',
-      }}>
-        <Link to={`/article/${item.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
-          {/* Image */}
-          <div style={{ position: 'relative', aspectRatio: '3/4', overflow: 'hidden', backgroundColor: '#f5f2ee', flexShrink: 0 }}>
-            <img
-              src={imgUrl(item.photos?.[0])}
-              loading="lazy" decoding="async"
-              alt={item.title}
-              style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.6s ease' }}
-              onError={e => { (e.currentTarget as HTMLImageElement).src = `data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='260'><rect fill='%23f5f2ee' width='200' height='260'/><text x='50%25' y='50%25' font-family='Georgia' font-size='12' fill='%239e8e7e' text-anchor='middle' dominant-baseline='middle'>Photo</text></svg>`; }}
-              onMouseEnter={e => (e.currentTarget.style.transform = 'scale(1.06)')}
-              onMouseLeave={e => (e.currentTarget.style.transform = 'scale(1)')}
-            />
-
-            {/* Badge enchère */}
-            {isAuction && (
-              <div style={{
-                position: 'absolute', top: '12px', left: '0',
-                background: '#1a1a1a', color: '#c9a96e',
-                padding: '4px 10px',
-                fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.5rem', letterSpacing: '0.2em',
-              }}>
-                ENCHÈRE
-              </div>
-            )}
-
-            {/* Favoris */}
-            <button
-              aria-label={faved ? "Retirer des favoris" : "Ajouter aux favoris"}
-              onClick={toggleFav}
-              style={{
-                position: 'absolute', top: '10px', right: '10px',
-                width: '32px', height: '32px',
-                background: 'rgba(255,255,255,0.9)',
-                border: 'none', cursor: 'pointer',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-              }}
-            >
-              <Heart size={14} fill={faved ? '#1a1a1a' : 'none'} color="#1a1a1a" strokeWidth={1.5} />
-            </button>
-
-            {/* Certifié */}
-            {(certifiedIds.has(item.id) || (item as any).certified) && (
-              <div title="Certifié Authentique" style={{
-                position: 'absolute', bottom: '10px', left: '10px',
-                background: '#1a1a1a', color: '#c9a96e',
-                padding: '3px 8px',
-                fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.48rem', letterSpacing: '0.15em',
-              }}>
-                CERTIFIÉ
-              </div>
-            )}
-          </div>
+    <div className="bag-card-wrap" style={{ display: 'flex', flexDirection: 'column' }}>
+      {/* Image block */}
+      <div
+        style={{ position: 'relative', aspectRatio: '3/4', overflow: 'hidden', backgroundColor: '#f2f2f0', cursor: 'pointer' }}
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={() => setHovered(false)}
+      >
+        <Link to={`/article/${item.id}`} style={{ display: 'block', width: '100%', height: '100%' }}>
+          <img
+            src={imgUrl(item.photos?.[0])}
+            loading="lazy" decoding="async"
+            alt={item.title}
+            style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.7s cubic-bezier(.25,.46,.45,.94)', transform: hovered ? 'scale(1.05)' : 'scale(1)' }}
+            onError={e => { (e.currentTarget as HTMLImageElement).src = `data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='260'><rect fill='%23f2f2f0' width='200' height='260'/></svg>`; }}
+          />
         </Link>
 
-        {/* Infos */}
-        <div style={{ padding: '14px 12px 16px', display: 'flex', flexDirection: 'column', flex: 1 }}>
-          <p style={{
-            fontFamily: 'Helvetica Neue, Arial, sans-serif',
-            fontSize: '0.55rem', letterSpacing: '0.18em',
-            color: '#c9a96e', fontWeight: 500, marginBottom: '5px',
-          }}>
-            {item.brand?.toUpperCase()}
-          </p>
-
-          <Link to={`/article/${item.id}`} style={{ textDecoration: 'none', color: 'inherit', flex: 1 }}>
-            <p style={{
-              fontFamily: 'Georgia, serif', fontSize: '0.88rem', fontStyle: 'italic',
-              color: '#1a1a1a', lineHeight: 1.4, marginBottom: '12px',
-              display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden',
-            }}>
-              {item.title}
-            </p>
-          </Link>
-
-          <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginTop: 'auto' }}>
-            <div>
-              {isAuction && (
-                <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.48rem', letterSpacing: '0.15em', color: '#9e8e7e', marginBottom: '2px' }}>
-                  {item.current_bid ? 'OFFRE EN COURS' : 'DÉPART'}
-                </p>
-              )}
-              <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.9rem', color: '#1a1a1a', fontWeight: 400, letterSpacing: '0.02em' }}>
-                {price.toLocaleString('fr-FR')} €
-              </p>
-            </div>
-
-            {isAuction && countdown && countdown !== 'Terminée' && (
-              <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                <Clock size={10} color={isEnding ? '#cc0000' : '#9e8e7e'} />
-                <span style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.58rem', color: isEnding ? '#cc0000' : '#9e8e7e', letterSpacing: '0.05em' }}>
-                  {countdown}
-                </span>
-              </div>
-            )}
-            {isAuction && countdown === 'Terminée' && (
-              <span style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.55rem', color: '#bbb', letterSpacing: '0.1em' }}>TERMINÉE</span>
-            )}
-          </div>
+        {/* Hover overlay CTA */}
+        <div style={{
+          position: 'absolute', inset: 0,
+          background: 'rgba(0,0,0,0.38)',
+          display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-end',
+          padding: '20px',
+          opacity: hovered ? 1 : 0,
+          transition: 'opacity 0.3s ease',
+          pointerEvents: hovered ? 'auto' : 'none',
+        }}>
+          {item.fixed_price && item.fixed_price > 0 && (
+            <button type="button" onClick={() => setAction('buy')}
+              style={{ width: '100%', background: '#fff', border: 'none', padding: '12px', cursor: 'pointer', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.58rem', letterSpacing: '0.22em', color: '#000', marginBottom: '8px' }}>
+              ACHETER
+            </button>
+          )}
+          {isAuction && countdown !== 'Terminée' && (
+            <button type="button" onClick={() => setAction('bid')}
+              style={{ width: '100%', background: '#fff', border: 'none', padding: '12px', cursor: 'pointer', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.58rem', letterSpacing: '0.22em', color: '#000' }}>
+              ENCHÉRIR
+            </button>
+          )}
         </div>
 
-        <div className="card-actions">
-          {item.fixed_price && item.fixed_price > 0 ? <button type="button" onClick={() => setAction('buy')}>Acheter · {item.fixed_price.toLocaleString('fr-FR')} €</button> : null}
-          {isAuction && countdown !== 'Terminée' && <button type="button" onClick={() => setAction('bid')}>Enchérir →</button>}
+        {/* Favori */}
+        <button
+          aria-label={faved ? "Retirer des favoris" : "Ajouter aux favoris"}
+          onClick={toggleFav}
+          style={{ position: 'absolute', top: '12px', right: '12px', background: 'none', border: 'none', cursor: 'pointer', padding: '4px' }}
+        >
+          <Heart size={16} fill={faved ? '#000' : 'none'} color="#000" strokeWidth={1.5} />
+        </button>
+
+        {/* Enchère badge */}
+        {isAuction && (
+          <div style={{ position: 'absolute', top: '12px', left: '0', background: '#000', color: '#c9a96e', padding: '3px 10px', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.45rem', letterSpacing: '0.25em' }}>
+            ENCHÈRE
+          </div>
+        )}
+
+        {/* Certifié */}
+        {(certifiedIds.has(item.id) || (item as any).certified) && (
+          <div style={{ position: 'absolute', bottom: '12px', left: '0', background: '#000', color: '#c9a96e', padding: '3px 10px', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.45rem', letterSpacing: '0.2em' }}>
+            CERTIFIÉ
+          </div>
+        )}
+      </div>
+
+      {/* Infos sous l'image */}
+      <div style={{ paddingTop: '12px' }}>
+        <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.52rem', letterSpacing: '0.22em', color: '#c9a96e', marginBottom: '4px' }}>
+          {item.brand?.toUpperCase()}
+        </p>
+        <Link to={`/article/${item.id}`} style={{ textDecoration: 'none' }}>
+          <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.72rem', color: '#000', lineHeight: 1.4, marginBottom: '6px', letterSpacing: '0.02em', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+            {item.title}
+          </p>
+        </Link>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.78rem', color: '#000', letterSpacing: '0.03em' }}>
+            {price.toLocaleString('fr-FR')} €
+          </p>
+          {isAuction && countdown && countdown !== 'Terminée' && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+              <Clock size={9} color={isEnding ? '#c00' : '#888'} />
+              <span style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.55rem', color: isEnding ? '#c00' : '#888', letterSpacing: '0.05em' }}>{countdown}</span>
+            </div>
+          )}
         </div>
       </div>
+
       {action && <ItemAction item={item} initial={action} onClose={() => setAction(null)} />}
     </div>
   );
