@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { Filter, ChevronDown, X } from 'lucide-react';
+import { X } from 'lucide-react';
 import { api } from '../lib/api';
 import { useT, useStore } from '../lib/store';
 import ItemCard from '../components/ItemCard';
@@ -69,114 +69,68 @@ export default function Catalogue() {
     category && { key: 'category', label: (lang === 'en' ? categories.find(c => c.id === category)?.name_en : categories.find(c => c.id === category)?.name_fr) || category, val: category },
   ].filter(Boolean) as { key: string; label: string; val: string }[];
 
+  const pageTitle = type === 'auction' ? 'ENCHÈRES' : type === 'fixed' ? 'VENTE DIRECTE' : search ? `"${search}"` : 'CATALOGUE';
+
   return (
-    <div style={{ padding: '2rem', maxWidth: '1400px', margin: '0 auto' }}>
-      {/* Page header */}
-      <div style={{ marginBottom: '2rem' }}>
-        <h1 style={{ fontFamily: 'Georgia, serif', fontSize: '1.8rem', fontWeight: 400, color: '#1a1a1a', marginBottom: '0.5rem' }}>
-          {type === 'auction' ? t('auctions') : type === 'fixed' ? t('sales') : search ? `${t('allItems')} "${search}"` : 'Catalogue'}
+    <div style={{ background: '#fff', minHeight: '100vh' }}>
+      {/* Page header — centré YSL */}
+      <div style={{ textAlign: 'center', padding: '2.5rem 1rem 1.5rem' }}>
+        <h1 style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: 'clamp(1rem, 5vw, 1.4rem)', fontWeight: 700, letterSpacing: '0.22em', color: '#1a1a1a', textTransform: 'uppercase', marginBottom: '0.4rem' }}>
+          {pageTitle}
         </h1>
-        <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.8rem', color: '#9e8e7e' }}>
-          {total} {total !== 1 ? t('resultsPlural') : t('results')}
+        <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.65rem', letterSpacing: '0.12em', color: '#999' }}>
+          {total} {total !== 1 ? 'articles' : 'article'}
         </p>
       </div>
 
-      <div style={{ display: 'flex', gap: '2rem' }}>
-        {/* Sidebar filters */}
-        <aside style={{ width: '220px', flexShrink: 0 }} className="hidden md:block">
-          <div style={{ marginBottom: '2rem' }}>
-            <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.65rem', letterSpacing: '0.2em', color: '#9e8e7e', marginBottom: '1rem' }}>{t('typeLabel')}</p>
-            {['', 'fixed', 'auction'].map(v => (
-              <button key={v} onClick={() => setParam('type', v)}
-                style={{ display: 'block', width: '100%', textAlign: 'left', padding: '6px 0', background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.8rem', color: type === v ? '#c9a96e' : '#1a1a1a', fontWeight: type === v ? 600 : 400 }}>
-                {v === '' ? t('allTypes') : v === 'fixed' ? t('sales') : t('auctions')}
-              </button>
-            ))}
-          </div>
+      {/* Filtres en ligne */}
+      <div style={{ display: 'flex', justifyContent: 'center', gap: '0', borderTop: '1px solid #e8e8e8', borderBottom: '1px solid #e8e8e8', marginBottom: '2rem' }}>
+        {['', 'fixed', 'auction'].map(v => (
+          <button key={v} onClick={() => setParam('type', v)}
+            style={{ padding: '12px 20px', background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.6rem', letterSpacing: '0.18em', textTransform: 'uppercase', color: type === v ? '#1a1a1a' : '#999', fontWeight: type === v ? 700 : 400, borderBottom: type === v ? '2px solid #1a1a1a' : '2px solid transparent' }}>
+            {v === '' ? 'TOUT' : v === 'fixed' ? 'VENTE' : 'ENCHÈRES'}
+          </button>
+        ))}
+        <div style={{ flex: 1 }} />
+        <select value={sort} onChange={e => setParam('sort', e.target.value)}
+          style={{ border: 'none', borderLeft: '1px solid #e8e8e8', padding: '12px 16px', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.6rem', letterSpacing: '0.1em', color: '#666', backgroundColor: 'white', cursor: 'pointer', textTransform: 'uppercase' }}>
+          <option value="created_at">RÉCENTS</option>
+          <option value="price_asc">PRIX ↑</option>
+          <option value="price_desc">PRIX ↓</option>
+          <option value="ending">FIN ENCHÈRE</option>
+        </select>
+      </div>
 
-          <div style={{ marginBottom: '2rem' }}>
-            <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.65rem', letterSpacing: '0.2em', color: '#9e8e7e', marginBottom: '1rem' }}>{t('categoriesLabel')}</p>
-            {rootCats.map(cat => (
-              <div key={cat.id}>
-                <button onClick={() => setParam('category', category === cat.id ? '' : cat.id)}
-                  style={{ display: 'block', width: '100%', textAlign: 'left', padding: '6px 0', background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.8rem', color: category === cat.id ? '#c9a96e' : '#1a1a1a', fontWeight: category === cat.id ? 600 : 400 }}>
-                  {lang === 'en' ? cat.name_en : cat.name_fr}
-                </button>
-                {category === cat.id && categories.filter(c => c.parent_id === cat.id).map(sub => (
-                  <button key={sub.id} onClick={() => setParam('category', sub.id)}
-                    style={{ display: 'block', width: '100%', textAlign: 'left', padding: '4px 0 4px 12px', background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.75rem', color: category === sub.id ? '#c9a96e' : '#666' }}>
-                    {lang === 'en' ? sub.name_en : sub.name_fr}
+      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 16px' }}>
+        {loading ? (
+          <div style={{ textAlign: 'center', padding: '4rem', color: '#999', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.75rem', letterSpacing: '0.1em' }}>CHARGEMENT…</div>
+        ) : items.length === 0 ? (
+          <div style={{ textAlign: 'center', padding: '4rem' }}>
+            <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.75rem', letterSpacing: '0.15em', color: '#999', textTransform: 'uppercase' }}>AUCUN ARTICLE TROUVÉ</p>
+          </div>
+        ) : (
+          <>
+            <style>{`
+              .catalogue-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+              .catalogue-grid > *:nth-child(4n+1) { grid-column: 1 / -1; }
+              @media (min-width: 768px) { .catalogue-grid { gap: 16px; } }
+            `}</style>
+            <div className="catalogue-grid">
+              {items.map(item => <ItemCard key={item.id} item={item} />)}
+            </div>
+
+            {total > limit && (
+              <div style={{ display: 'flex', justifyContent: 'center', gap: '0.5rem', marginTop: '3rem', paddingBottom: '3rem' }}>
+                {Array.from({ length: Math.ceil(total / limit) }, (_, i) => i + 1).slice(Math.max(0, page - 3), page + 3).map(p => (
+                  <button key={p} onClick={() => setParam('page', String(p))}
+                    style={{ width: '36px', height: '36px', border: '1px solid', borderColor: p === page ? '#1a1a1a' : '#e0e0e0', backgroundColor: p === page ? '#1a1a1a' : 'white', color: p === page ? 'white' : '#1a1a1a', cursor: 'pointer', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.75rem' }}>
+                    {p}
                   </button>
                 ))}
               </div>
-            ))}
-          </div>
-
-          <div>
-            <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.65rem', letterSpacing: '0.2em', color: '#9e8e7e', marginBottom: '1rem' }}>{t('brandsLabel')}</p>
-            {BRANDS.map(b => (
-              <button key={b} onClick={() => setParam('brand', brand === b ? '' : b)}
-                style={{ display: 'block', width: '100%', textAlign: 'left', padding: '4px 0', background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.78rem', color: brand === b ? '#c9a96e' : '#1a1a1a', fontWeight: brand === b ? 600 : 400 }}>
-                {b}
-              </button>
-            ))}
-          </div>
-        </aside>
-
-        {/* Main content */}
-        <div style={{ flex: 1 }}>
-          {/* Toolbar */}
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '0.75rem' }}>
-            <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-              {activeFilters.map(f => (
-                <span key={f.key} style={{ display: 'flex', alignItems: 'center', gap: '6px', backgroundColor: '#f8f4ef', padding: '4px 10px', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.75rem', border: '1px solid #e8d5b7' }}>
-                  {f.label}
-                  <button onClick={() => setParam(f.key, '')} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#9e8e7e', display: 'flex' }}><X size={12} /></button>
-                </span>
-              ))}
-            </div>
-            <select value={sort} onChange={e => setParam('sort', e.target.value)}
-              style={{ border: '1px solid #e8d5b7', padding: '6px 12px', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.8rem', color: '#1a1a1a', backgroundColor: 'white' }}>
-              <option value="created_at">{t('newest')}</option>
-              <option value="price_asc">{t('priceLow')}</option>
-              <option value="price_desc">{t('priceHigh')}</option>
-              <option value="views">{t('mostViewed')}</option>
-              <option value="ending">{t('endingSoon')}</option>
-            </select>
-          </div>
-
-          {loading ? (
-            <div style={{ textAlign: 'center', padding: '4rem', color: '#9e8e7e', fontFamily: 'Helvetica Neue, Arial, sans-serif' }}>{t('loading')}</div>
-          ) : items.length === 0 ? (
-            <div style={{ textAlign: 'center', padding: '4rem' }}>
-              <p style={{ fontFamily: 'Georgia, serif', fontSize: '1.2rem', color: '#9e8e7e', marginBottom: '0.5rem' }}>{t('noItemsFound')}</p>
-              <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.8rem', color: '#9e8e7e' }}>{t('tryOtherFilters')}</p>
-            </div>
-          ) : (
-            <>
-              <style>{`
-                .catalogue-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-                .catalogue-grid > *:nth-child(4n+1) { grid-column: 1 / -1; }
-                @media (min-width: 768px) { .catalogue-grid { gap: 14px; } }
-              `}</style>
-              <div className="catalogue-grid">
-                {items.map(item => <ItemCard key={item.id} item={item} />)}
-              </div>
-
-              {/* Pagination */}
-              {total > limit && (
-                <div style={{ display: 'flex', justifyContent: 'center', gap: '0.5rem', marginTop: '3rem' }}>
-                  {Array.from({ length: Math.ceil(total / limit) }, (_, i) => i + 1).slice(Math.max(0, page - 3), page + 3).map(p => (
-                    <button key={p} onClick={() => setParam('page', String(p))}
-                      style={{ width: '36px', height: '36px', border: '1px solid', borderColor: p === page ? '#c9a96e' : '#e8d5b7', backgroundColor: p === page ? '#c9a96e' : 'white', color: p === page ? 'white' : '#1a1a1a', cursor: 'pointer', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.8rem' }}>
-                      {p}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </>
-          )}
-        </div>
+            )}
+          </>
+        )}
       </div>
     </div>
   );

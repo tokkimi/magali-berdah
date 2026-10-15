@@ -23,12 +23,14 @@ export default function Galerie() {
   }, []);
 
   return (
-    <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '3rem 5vw 6rem' }}>
-      <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.55rem', letterSpacing: '0.35em', color: '#c9a96e', marginBottom: '6px' }}>MAGALI BERDAH</p>
-      <h1 style={{ fontFamily: 'Georgia, serif', fontSize: 'clamp(1.8rem, 4vw, 3rem)', fontWeight: 400, color: '#1a1a1a', marginBottom: '0.25rem' }}>La Galerie</h1>
-      <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.82rem', color: '#9e8e7e', marginBottom: '2.5rem' }}>
-        La sélection complète — sacs et accessoires de luxe de seconde main.
-      </p>
+    <div style={{ background: '#fff', minHeight: '100vh' }}>
+      <div style={{ textAlign: 'center', padding: '2.5rem 1rem 1.5rem', borderBottom: '1px solid #e8e8e8', marginBottom: '2rem' }}>
+        <h1 style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: 'clamp(1rem, 5vw, 1.4rem)', fontWeight: 700, letterSpacing: '0.22em', color: '#1a1a1a', textTransform: 'uppercase', marginBottom: '0.4rem' }}>LA GALERIE</h1>
+        <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.65rem', letterSpacing: '0.12em', color: '#999' }}>
+          Sacs &amp; accessoires de luxe
+        </p>
+      </div>
+    <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 16px 4rem' }}>
 
       {loading && items.length === 0 ? (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '20px' }}>
@@ -53,6 +55,7 @@ export default function Galerie() {
           )}
         </>
       )}
+    </div>
     </div>
   );
 }
