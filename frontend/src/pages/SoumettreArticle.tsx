@@ -80,7 +80,7 @@ export default function SoumettreArticle() {
         </div>
         <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.6rem', letterSpacing: '0.3em', color: '#c9a96e', marginBottom: '0.5rem' }}>DEMANDE ENVOYÉE</p>
         <h1 style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '1.8rem', fontWeight: 400, color: '#1a1a1a', marginBottom: '1rem' }}>Merci pour votre soumission</h1>
-        <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.88rem', color: '#9e8e7e', lineHeight: 1.7, marginBottom: '2rem' }}>
+        <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.88rem', color: '#666666', lineHeight: 1.7, marginBottom: '2rem' }}>
           Magali Berdah va examiner votre article. Si votre pièce est sélectionnée, vous recevrez un email avec l'adresse à laquelle envoyer votre article pour authentification et mise en vente.
         </p>
         <button onClick={() => { setSubmitted(false); setPhotos([]); setDocs([]); setForm({ name: user?.name || '', email: user?.email || '', brand: '', category: '', condition: 'excellent', isVintage: false, description: '' }); }}
@@ -95,7 +95,7 @@ export default function SoumettreArticle() {
     <div style={{ maxWidth: '700px', margin: '0 auto', padding: '2rem 1.5rem 6rem' }}>
       <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.55rem', letterSpacing: '0.35em', color: '#c9a96e', marginBottom: '4px' }}>VENDRE SUR MAGALI BERDAH</p>
       <h1 style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '1.8rem', fontWeight: 400, color: '#1a1a1a', marginBottom: '0.5rem' }}>Soumettre un article</h1>
-      <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.85rem', color: '#9e8e7e', marginBottom: '2rem', lineHeight: 1.6 }}>
+      <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.85rem', color: '#666666', marginBottom: '2rem', lineHeight: 1.6 }}>
         Envoyez-nous les photos et informations de votre pièce. Si elle est sélectionnée, nous vous contacterons pour organiser l'envoi.
       </p>
 
@@ -119,7 +119,7 @@ export default function SoumettreArticle() {
         {/* Photos */}
         <section style={card}>
           <p style={sectionLabel}>PHOTOS DE L'ARTICLE *</p>
-          <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.75rem', color: '#9e8e7e', marginBottom: '1rem' }}>
+          <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.75rem', color: '#666666', marginBottom: '1rem' }}>
             Ajoutez jusqu'à 8 photos claires (fond neutre, plusieurs angles). La qualité des photos est déterminante.
           </p>
           <label style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', cursor: 'pointer', border: '1.5px dashed #c9a96e', padding: '12px 20px', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.72rem', color: '#c9a96e', letterSpacing: '0.08em', marginBottom: '1rem' }}>
@@ -184,10 +184,10 @@ export default function SoumettreArticle() {
         {/* Documents */}
         <section style={card}>
           <p style={sectionLabel}>PREUVES D'AUTHENTICITÉ (optionnel mais recommandé)</p>
-          <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.75rem', color: '#9e8e7e', marginBottom: '1rem', lineHeight: 1.6 }}>
+          <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.75rem', color: '#666666', marginBottom: '1rem', lineHeight: 1.6 }}>
             Facture d'achat, certificat d'authenticité, carte de garantie... Ces documents augmentent vos chances d'être sélectionné.
           </p>
-          <label style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', cursor: 'pointer', border: '1px solid #e8d5b7', padding: '10px 16px', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.72rem', color: '#9e8e7e', letterSpacing: '0.08em', marginBottom: '0.75rem' }}>
+          <label style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', cursor: 'pointer', border: '1px solid #e8d5b7', padding: '10px 16px', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.72rem', color: '#666666', letterSpacing: '0.08em', marginBottom: '0.75rem' }}>
             <FileText size={14} /> JOINDRE UN DOCUMENT (PDF, JPG, PNG)
             <input type="file" accept=".pdf,.jpg,.jpeg,.png" multiple style={{ display: 'none' }} onChange={handleDocs} />
           </label>
@@ -195,7 +195,7 @@ export default function SoumettreArticle() {
             <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 12px', border: '1px solid #e8d5b7', marginBottom: '6px', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.78rem', color: '#1a1a1a' }}>
               <FileText size={14} color="#c9a96e" />
               {d.name}
-              <button type="button" onClick={() => removeDoc(i)} style={{ marginLeft: 'auto', background: 'none', border: 'none', cursor: 'pointer', color: '#9e8e7e' }}>
+              <button type="button" onClick={() => removeDoc(i)} style={{ marginLeft: 'auto', background: 'none', border: 'none', cursor: 'pointer', color: '#666666' }}>
                 <X size={14} />
               </button>
             </div>
@@ -217,6 +217,6 @@ export default function SoumettreArticle() {
 }
 
 const card: React.CSSProperties = { backgroundColor: 'white', border: '1px solid #e8d5b7', padding: '1.5rem' };
-const sectionLabel: React.CSSProperties = { fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.6rem', letterSpacing: '0.2em', color: '#9e8e7e', marginBottom: '1rem' };
-const labelStyle: React.CSSProperties = { display: 'block', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.65rem', letterSpacing: '0.1em', color: '#9e8e7e', marginBottom: '5px' };
+const sectionLabel: React.CSSProperties = { fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.6rem', letterSpacing: '0.2em', color: '#666666', marginBottom: '1rem' };
+const labelStyle: React.CSSProperties = { display: 'block', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.65rem', letterSpacing: '0.1em', color: '#666666', marginBottom: '5px' };
 const inp: React.CSSProperties = { width: '100%', border: '1px solid #e8d5b7', padding: '9px 12px', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.85rem', color: '#1a1a1a', boxSizing: 'border-box' };

@@ -31,6 +31,8 @@ export default function Header() {
   const t = useT();
   const { user, lang, setLang, logout } = useStore();
   const navigate = useNavigate();
+  const isHome = location.pathname === '/';
+  const iconColor = isHome ? '#fff' : '#1a1a1a';
   const [showAuth, setShowAuth] = useState(false);
   const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -100,7 +102,7 @@ export default function Header() {
         .ysl-icon-btn {
           background: none; border: none; cursor: pointer; padding: 6px;
           display: flex; align-items: center; justify-content: center;
-          color: #fff; line-height: 1;
+          line-height: 1;
           font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
         }
         .ysl-menu-overlay {
@@ -159,11 +161,11 @@ export default function Header() {
         <div className="ysl-header-inner">
           {/* Left: hamburger */}
           <div className="ysl-left">
-            <button className="ysl-icon-btn" aria-label="Menu" onClick={() => setMobileOpen(true)}>
+            <button className="ysl-icon-btn" aria-label="Menu" style={{ color: iconColor }} onClick={() => setMobileOpen(true)}>
               <svg width="22" height="14" viewBox="0 0 22 14" fill="none">
-                <line x1="0" y1="1" x2="22" y2="1" stroke="#fff" strokeWidth="1.5"/>
-                <line x1="0" y1="7" x2="22" y2="7" stroke="#fff" strokeWidth="1.5"/>
-                <line x1="0" y1="13" x2="22" y2="13" stroke="#fff" strokeWidth="1.5"/>
+                <line x1="0" y1="1" x2="22" y2="1" stroke={iconColor} strokeWidth="1.5"/>
+                <line x1="0" y1="7" x2="22" y2="7" stroke={iconColor} strokeWidth="1.5"/>
+                <line x1="0" y1="13" x2="22" y2="13" stroke={iconColor} strokeWidth="1.5"/>
               </svg>
             </button>
           </div>
@@ -177,18 +179,18 @@ export default function Header() {
 
           {/* Right: search + heart + user */}
           <div className="ysl-right">
-            <button className="ysl-icon-btn" aria-label="Rechercher" onClick={() => setShowSearch(s => !s)}>
+            <button className="ysl-icon-btn" aria-label="Rechercher" style={{ color: iconColor }} onClick={() => setShowSearch(s => !s)}>
               {showSearch ? <X size={20} /> : <Search size={20} />}
             </button>
             {user ? (
               <>
-                <Link to="/favoris" className="ysl-icon-btn" aria-label="Favoris"><Heart size={20} /></Link>
-                <button className="ysl-icon-btn" aria-label="Mon profil" onClick={() => navigate('/profil')}>
+                <Link to="/favoris" className="ysl-icon-btn" aria-label="Favoris" style={{ color: iconColor }}><Heart size={20} /></Link>
+                <button className="ysl-icon-btn" aria-label="Mon profil" style={{ color: iconColor }} onClick={() => navigate('/profil')}>
                   {user.avatar ? <img src={user.avatar} alt="" style={{ width: 26, height: 26, borderRadius: '50%', objectFit: 'cover' }} /> : <User size={20} />}
                 </button>
               </>
             ) : (
-              <button className="ysl-icon-btn" aria-label="Connexion" onClick={openLogin}><User size={20} /></button>
+              <button className="ysl-icon-btn" aria-label="Connexion" style={{ color: iconColor }} onClick={openLogin}><User size={20} /></button>
             )}
           </div>
         </div>
