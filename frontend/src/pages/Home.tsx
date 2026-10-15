@@ -81,7 +81,6 @@ function ExclusiveSection() {
   if (open) {
     return (
       <div style={{ backgroundColor: '#0f0f0f' }}>
-        <style>{`.hscroll-excl::-webkit-scrollbar{display:none}`}</style>
         {/* Header */}
         <div style={{ padding: '1.25rem 1rem 0.75rem', display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between' }}>
           <div>
@@ -103,11 +102,12 @@ function ExclusiveSection() {
         </div>
         {/* Scroll */}
         <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch', scrollbarWidth: 'none', padding: '0 1rem 1.5rem' }}>
+          <style>{`.hscroll-excl::-webkit-scrollbar{display:none} .hscroll-excl-card{flex-shrink:0;width:158px;display:flex;flex-direction:column} @media(max-width:479px){.hscroll-excl-card{width:calc(100vw - 2rem)}}`}</style>
           <div className="hscroll-excl" style={{ display: 'flex', gap: '10px', width: 'max-content', alignItems: 'stretch' }}>
             {exclusiveItems.length === 0
               ? [1,2,3].map(i => <SkeletonCard key={i} />)
               : exclusiveItems.map((item: any) => (
-                <div key={item.id} style={{ flexShrink: 0, width: '158px', display: 'flex', flexDirection: 'column' }}>
+                <div key={item.id} className="hscroll-excl-card">
                   <ItemCard item={item} />
                 </div>
               ))
@@ -256,12 +256,12 @@ function HScrollSection({ title, label, link, items, loading, seeAll, seeMore }:
 
       {/* Horizontal scroll */}
       <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch', scrollbarWidth: 'none', msOverflowStyle: 'none', padding: '0 1rem 1.25rem' }}>
-        <style>{`.hscroll::-webkit-scrollbar{display:none}`}</style>
+        <style>{`.hscroll::-webkit-scrollbar{display:none} .hscroll-card{flex-shrink:0;width:158px;display:flex;flex-direction:column} @media(max-width:479px){.hscroll-card{width:calc(100vw - 2rem)}}`}</style>
         <div className="hscroll" style={{ display: 'flex', gap: '10px', width: 'max-content', alignItems: 'stretch' }}>
           {loading
             ? [1,2,3,4].map(i => <SkeletonCard key={i} />)
             : items.map(item => (
-                <div key={item.id} style={{ flexShrink: 0, width: '158px', display: 'flex', flexDirection: 'column' }}>
+                <div key={item.id} className="hscroll-card">
                   <ItemCard item={item} />
                 </div>
               ))
