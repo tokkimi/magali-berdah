@@ -2,7 +2,58 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useT } from '../lib/store';
 import { api } from '../lib/api';
-// social icons inline
+
+const SECTIONS = [
+  {
+    label: 'ACHETER',
+    links: [
+      { label: 'Ventes', to: '/catalogue?type=fixed' },
+      { label: 'Enchères', to: '/catalogue?type=auction' },
+      { label: 'Nouvelles pièces', to: '/catalogue' },
+    ],
+  },
+  {
+    label: 'VENDRE',
+    links: [
+      { label: 'Soumettre un article', to: '/soumettre' },
+      { label: 'Comment ça marche', to: '/pro' },
+    ],
+  },
+  {
+    label: 'INFORMATIONS',
+    links: [
+      { label: 'CGV', to: '/cgv' },
+      { label: 'Politique de confidentialité', to: '/confidentialite' },
+      { label: 'Contact', to: '/contact' },
+      { label: 'À propos', to: '/a-propos' },
+    ],
+  },
+];
+
+function AccordionSection({ label, links }: { label: string; links: { label: string; to: string }[] }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div style={{ borderBottom: '1px solid #2a2a2a' }}>
+      <button
+        onClick={() => setOpen(o => !o)}
+        style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 0', background: 'none', border: 'none', cursor: 'pointer', color: '#c9a96e', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.6rem', letterSpacing: '0.2em' }}>
+        {label}
+        <svg width="10" height="6" viewBox="0 0 10 6" fill="none" style={{ transition: 'transform 0.2s', transform: open ? 'rotate(180deg)' : 'rotate(0deg)', flexShrink: 0 }}>
+          <path d="M1 1l4 4 4-4" stroke="#c9a96e" strokeWidth="1.2"/>
+        </svg>
+      </button>
+      {open && (
+        <div style={{ paddingBottom: '12px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          {links.map(l => (
+            <Link key={l.to} to={l.to} style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.75rem', color: '#888', textDecoration: 'none', letterSpacing: '0.04em' }}>
+              {l.label}
+            </Link>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
 
 export default function Footer() {
   const t = useT();
@@ -20,97 +71,47 @@ export default function Footer() {
   return (
     <footer style={{ backgroundColor: '#1a1a1a', color: '#f8f4ef', marginTop: 0 }}>
       {/* Newsletter */}
-      <div style={{ borderBottom: '1px solid #333', padding: '3rem 2rem', textAlign: 'center' }}>
-        <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '1.2rem', letterSpacing: '0.1em', marginBottom: '0.5rem' }}>
-          {t('newsletter').toUpperCase()}
+      <div style={{ borderBottom: '1px solid #2a2a2a', padding: '2rem 1.25rem', textAlign: 'center' }}>
+        <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.65rem', letterSpacing: '0.2em', marginBottom: '0.4rem' }}>
+          NEWSLETTER
         </p>
-        <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.8rem', color: '#9e8e7e', marginBottom: '1.5rem', letterSpacing: '0.05em' }}>
+        <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.75rem', color: '#666', marginBottom: '1.25rem' }}>
           {t('subscribeNewsletter')}
         </p>
         {subscribed ? (
-          <p style={{ color: '#c9a96e', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.85rem' }}>
-            ✓ {t('subscribeThanks')}
-          </p>
+          <p style={{ color: '#c9a96e', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.8rem' }}>✓ {t('subscribeThanks')}</p>
         ) : (
-          <form onSubmit={handleNewsletter} style={{ display: 'flex', justifyContent: 'center', gap: '0', maxWidth: '400px', margin: '0 auto' }}>
+          <form onSubmit={handleNewsletter} style={{ display: 'flex', maxWidth: '360px', margin: '0 auto' }}>
             <input type="email" value={email} onChange={e => setEmail(e.target.value)} required
               placeholder={t('emailPlaceholder')}
-              style={{ flex: 1, padding: '10px 16px', border: '1px solid #444', backgroundColor: '#222', color: 'white', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.8rem' }} />
-            <button type="submit" className="btn-gold" style={{ flexShrink: 0 }}>{t('subscribe').toUpperCase()}</button>
+              style={{ flex: 1, padding: '10px 14px', border: '1px solid #333', backgroundColor: '#222', color: 'white', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.78rem' }} />
+            <button type="submit" className="btn-gold" style={{ flexShrink: 0, fontSize: '0.6rem', letterSpacing: '0.12em', padding: '0 16px' }}>S'ABONNER</button>
           </form>
         )}
       </div>
 
-      {/* Links */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '2rem', padding: '3rem 4rem' }}>
-        <div>
-          <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '1rem', letterSpacing: '0.3em', marginBottom: '1rem', color: '#c9a96e' }}>MAGALI BERDAH</p>
-          <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.75rem', color: '#666', lineHeight: '1.8' }}>
-            {t('footerDesc')}
-          </p>
-          <div style={{ display: 'flex', gap: '12px', marginTop: '1rem' }}>
-            <a href="#" style={{ color: '#c9a96e', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.75rem' }}>Instagram</a>
-            <a href="#" style={{ color: '#c9a96e', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.75rem' }}>Facebook</a>
-          </div>
-        </div>
-
-        <div>
-          <p style={footLabelStyle}>{t('footerBuy')}</p>
-          {[
-            { label: t('footerSales'), to: '/catalogue?type=fixed' },
-            { label: t('footerAuctions'), to: '/catalogue?type=auction' },
-            { label: t('footerNew'), to: '/catalogue' },
-          ].map(l => (
-            <Link key={l.to} to={l.to} style={footLinkStyle}>{l.label}</Link>
-          ))}
-        </div>
-
-        <div>
-          <p style={footLabelStyle}>VENDRE</p>
-          {[
-            { label: 'Soumettre un article', to: '/soumettre' },
-            { label: 'Comment ça marche', to: '/pro' },
-          ].map(l => (
-            <Link key={l.to} to={l.to} style={footLinkStyle}>{l.label}</Link>
-          ))}
-        </div>
-
-        <div>
-          <p style={footLabelStyle}>{t('footerInfo')}</p>
-          {[
-            { label: t('cgv'), to: '/cgv' },
-            { label: t('privacy'), to: '/confidentialite' },
-            { label: t('contact'), to: '/contact' },
-            { label: t('aboutUs'), to: '/a-propos' },
-          ].map(l => (
-            <Link key={l.to} to={l.to} style={footLinkStyle}>{l.label}</Link>
-          ))}
+      {/* Brand + socials */}
+      <div style={{ padding: '1.5rem 1.25rem 0.5rem' }}>
+        <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.6rem', letterSpacing: '0.3em', color: '#c9a96e', marginBottom: '0.5rem' }}>MAGALI BERDAH</p>
+        <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.72rem', color: '#555', lineHeight: 1.7, marginBottom: '0.75rem' }}>
+          {t('footerDesc')}
+        </p>
+        <div style={{ display: 'flex', gap: '14px' }}>
+          <a href="#" style={{ color: '#c9a96e', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.68rem' }}>Instagram</a>
+          <a href="#" style={{ color: '#c9a96e', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.68rem' }}>Facebook</a>
         </div>
       </div>
 
-      <div style={{ borderTop: '1px solid #333', padding: '1.5rem', textAlign: 'center' }}>
-        <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.7rem', color: '#555', letterSpacing: '0.1em' }}>
-          © 2024 MAGALI BERDAH — SOCIÉTÉ FRANÇAISE · TOUS DROITS RÉSERVÉS
+      {/* Accordion sections */}
+      <div style={{ padding: '0.5rem 1.25rem' }}>
+        {SECTIONS.map(s => <AccordionSection key={s.label} label={s.label} links={s.links} />)}
+      </div>
+
+      <div style={{ borderTop: '1px solid #2a2a2a', padding: '1.25rem', textAlign: 'center' }}>
+        <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.6rem', color: '#444', letterSpacing: '0.1em' }}>
+          © 2024 MAGALI BERDAH — TOUS DROITS RÉSERVÉS
         </p>
       </div>
     </footer>
   );
 }
-
-const footLabelStyle: React.CSSProperties = {
-  fontFamily: 'Helvetica Neue, Arial, sans-serif',
-  fontSize: '0.65rem',
-  letterSpacing: '0.2em',
-  color: '#c9a96e',
-  marginBottom: '0.75rem',
-};
-
-const footLinkStyle: React.CSSProperties = {
-  display: 'block',
-  fontFamily: 'Helvetica Neue, Arial, sans-serif',
-  fontSize: '0.75rem',
-  color: '#888',
-  textDecoration: 'none',
-  marginBottom: '6px',
-  letterSpacing: '0.05em',
-};
