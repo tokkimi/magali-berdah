@@ -24,7 +24,7 @@ export default function Galerie() {
 
   return (
     <div style={{ background: '#fff', minHeight: '100vh' }}>
-      <div style={{ textAlign: 'center', padding: '2rem 1rem 1rem', marginBottom: '1.5rem' }}>
+      <div style={{ textAlign: 'center', padding: '2rem 1rem 1rem', paddingTop: 'calc(44px + 1.5rem)', marginBottom: '1.5rem' }}>
         <h1 style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.75rem', fontWeight: 700, letterSpacing: '0.22em', color: '#1a1a1a', textTransform: 'uppercase', marginBottom: '0.4rem' }}>LA GALERIE</h1>
         <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.65rem', letterSpacing: '0.12em', color: '#999' }}>
           Sacs &amp; accessoires de luxe
