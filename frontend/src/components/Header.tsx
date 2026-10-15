@@ -11,9 +11,7 @@ function getLiveCount(): number {
 }
 
 const MENU_LINKS = [
-  { label: 'LA GALERIE', to: '/galerie' },
-  { label: 'ENCHÈRES', to: '/catalogue?type=auction' },
-  { label: 'VENTE DIRECTE', to: '/catalogue?type=fixed' },
+  { label: 'LA GALERIE', to: '/catalogue' },
   { label: 'VENTE EXCLUSIVE', to: '/vente-exclusive', gold: true },
   { label: 'LIVE', to: '/lives', live: true },
   { label: 'SOUMETTRE UN ARTICLE', to: '/soumettre' },

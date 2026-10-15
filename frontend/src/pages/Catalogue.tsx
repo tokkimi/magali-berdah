@@ -87,7 +87,7 @@ export default function Catalogue() {
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0', marginBottom: '2rem' }}>
         {['', 'fixed', 'auction'].map(v => (
           <button key={v} onClick={() => setParam('type', v)}
-            style={{ padding: '8px 14px', background: 'none', border: 'none', borderBottom: type === v ? '1.5px solid #1a1a1a' : '1.5px solid transparent', cursor: 'pointer', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.58rem', letterSpacing: '0.14em', textTransform: 'uppercase', color: type === v ? '#1a1a1a' : '#bbb', fontWeight: type === v ? 600 : 400 }}>
+            style={{ padding: '6px 12px', background: 'none', border: 'none', borderBottom: type === v ? '1px solid #1a1a1a' : '1px solid transparent', cursor: 'pointer', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.55rem', letterSpacing: '0.14em', textTransform: 'uppercase', color: type === v ? '#1a1a1a' : '#ccc', fontWeight: type === v ? 500 : 300 }}>
             {v === '' ? 'TOUT' : v === 'fixed' ? 'VENTE' : 'ENCHÈRES'}
           </button>
         ))}
