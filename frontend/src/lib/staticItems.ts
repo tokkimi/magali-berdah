@@ -50,7 +50,7 @@ export const STATIC_ITEMS: any[] = [
     description: 'Kelly 28 box calf noir, palladium. Intérieur impeccable, tous accessoires.',
     brand: 'Hermès', category_id: 'bags-handbags', condition: 'very_good',
     size: 'Taille unique', color: 'Noir',
-    photos: ['https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=600&q=80'],
+    photos: ['https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=600&q=80'],
     fixed_price: null, auction_enabled: 1, auction_start_price: 11000, auction_min_price: 9500,
     auction_end_time: d(10), current_bid: null, status: 'active', featured: 1, certified: 1, views: 0,
     shop_name: 'La Boutique Élise', category_name_fr: 'Sacs à Main', category_name_en: 'Handbags',
