@@ -39,10 +39,9 @@ export default function Galerie() {
       ) : (
         <>
           <style>{`
-            .galerie-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
-            @media (min-width: 480px) { .galerie-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; } }
-            @media (min-width: 768px) { .galerie-grid { grid-template-columns: repeat(3, 1fr); gap: 20px; } }
-            @media (min-width: 1100px) { .galerie-grid { grid-template-columns: repeat(4, 1fr); gap: 24px; } }
+            .galerie-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
+            @media (min-width: 768px) { .galerie-grid { grid-template-columns: repeat(4, 1fr); gap: 3px; } }
+            @media (min-width: 1100px) { .galerie-grid { grid-template-columns: repeat(5, 1fr); gap: 4px; } }
           `}</style>
           <div className="galerie-grid">
             {items.map(item => <ItemCard key={item.id} item={item} />)}

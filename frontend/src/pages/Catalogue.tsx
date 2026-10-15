@@ -155,9 +155,9 @@ export default function Catalogue() {
           ) : (
             <>
               <style>{`
-                .catalogue-grid { display: grid; grid-template-columns: 1fr; gap: 0.75rem; }
-                @media (min-width: 480px) { .catalogue-grid { grid-template-columns: repeat(2, 1fr); } }
-                @media (min-width: 900px) { .catalogue-grid { grid-template-columns: repeat(3, 1fr); } }
+                .catalogue-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
+                @media (min-width: 768px) { .catalogue-grid { grid-template-columns: repeat(4, 1fr); gap: 3px; } }
+                @media (min-width: 1100px) { .catalogue-grid { grid-template-columns: repeat(5, 1fr); gap: 4px; } }
               `}</style>
               <div className="catalogue-grid">
                 {items.map(item => <ItemCard key={item.id} item={item} />)}

@@ -70,7 +70,7 @@ export default function ItemCard({ item }: { item: Item }) {
     <div className="bag-card-wrap" style={{ display: 'flex', flexDirection: 'column' }}>
       {/* Image block */}
       <div
-        style={{ position: 'relative', aspectRatio: '3/4', overflow: 'hidden', backgroundColor: '#f2f2f0', cursor: 'pointer' }}
+        style={{ position: 'relative', aspectRatio: '3/4', overflow: 'hidden', backgroundColor: '#f7f7f5', cursor: 'pointer' }}
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
       >
@@ -133,23 +133,23 @@ export default function ItemCard({ item }: { item: Item }) {
       </div>
 
       {/* Infos sous l'image */}
-      <div style={{ paddingTop: '12px' }}>
-        <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.52rem', letterSpacing: '0.22em', color: '#c9a96e', marginBottom: '4px' }}>
-          {item.brand?.toUpperCase()}
+      <div style={{ paddingTop: '8px' }}>
+        <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.48rem', letterSpacing: '0.2em', color: '#c9a96e', marginBottom: '3px', textTransform: 'uppercase' }}>
+          {item.brand}
         </p>
         <Link to={`/article/${item.id}`} style={{ textDecoration: 'none' }}>
-          <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.72rem', color: '#000', lineHeight: 1.4, marginBottom: '6px', letterSpacing: '0.02em', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+          <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.62rem', color: '#000', lineHeight: 1.35, marginBottom: '5px', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
             {item.title}
           </p>
         </Link>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.78rem', color: '#000', letterSpacing: '0.03em' }}>
+          <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.65rem', color: '#000' }}>
             {price.toLocaleString('fr-FR')} €
           </p>
           {isAuction && countdown && countdown !== 'Terminée' && (
-            <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-              <Clock size={9} color={isEnding ? '#c00' : '#888'} />
-              <span style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.55rem', color: isEnding ? '#c00' : '#888', letterSpacing: '0.05em' }}>{countdown}</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '3px' }}>
+              <Clock size={8} color={isEnding ? '#c00' : '#aaa'} />
+              <span style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.48rem', color: isEnding ? '#c00' : '#aaa' }}>{countdown}</span>
             </div>
           )}
         </div>
