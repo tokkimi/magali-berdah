@@ -117,10 +117,11 @@ export default function ItemCard({ item }: { item: Item }) {
           <Heart size={16} fill={faved ? '#000' : 'none'} color="#000" strokeWidth={1.5} />
         </button>
 
-        {/* Enchère badge */}
-        {isAuction && (
-          <div style={{ position: 'absolute', top: '12px', left: '0', background: '#000', color: '#c9a96e', padding: '3px 10px', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.45rem', letterSpacing: '0.25em' }}>
-            ENCHÈRE
+        {/* Décompte enchère sur photo */}
+        {isAuction && countdown && countdown !== 'Terminée' && (
+          <div style={{ position: 'absolute', top: '12px', left: '0', background: '#000', color: '#c9a96e', padding: '3px 10px', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.45rem', letterSpacing: '0.12em', display: 'flex', alignItems: 'center', gap: '4px' }}>
+            <Clock size={8} color="#c9a96e" />
+            {countdown}
           </div>
         )}
 
@@ -145,12 +146,6 @@ export default function ItemCard({ item }: { item: Item }) {
         <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.78rem', fontWeight: 500, color: '#000', marginBottom: '4px' }}>
           {price.toLocaleString('fr-FR')} €
         </p>
-        {isAuction && countdown && countdown !== 'Terminée' && (
-          <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-            <Clock size={9} color={isEnding ? '#c00' : '#aaa'} />
-            <span style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.58rem', color: isEnding ? '#c00' : '#aaa' }}>{countdown}</span>
-          </div>
-        )}
       </div>
 
       {action && <ItemAction item={item} initial={action} onClose={() => setAction(null)} />}
