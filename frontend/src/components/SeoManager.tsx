@@ -8,6 +8,7 @@ const pages: Record<string, { title: string; description: string }> = {
   '/comment-acheter': { title: 'Comment acheter | Magali Berdah', description: 'Découvrez comment acheter une pièce, participer aux enchères et suivre votre commande.' },
   '/faq': { title: 'Questions fréquentes | Magali Berdah', description: 'Réponses aux questions sur les achats, enchères, livraisons, retours et paiements.' },
   '/cgv': { title: 'Conditions générales de vente | Magali Berdah', description: 'Consultez les conditions générales applicables aux ventes et enchères du site Magali Berdah.' },
+  '/galerie': { title: 'La Galerie | Magali Berdah', description: 'La sélection complète de sacs et accessoires de luxe de seconde main.' },
 };
 
 export default function SeoManager() {
