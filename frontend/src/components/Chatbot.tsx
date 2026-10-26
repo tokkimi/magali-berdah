@@ -107,7 +107,11 @@ export default function Chatbot() {
           <div style={{ backgroundColor: '#1a1a1a', padding: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div>
               <p style={{ color: '#c9a96e', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.9rem', letterSpacing: '0.05em' }}>ASSISTANCE MODE & LUXE</p>
-              <p style={{ color: '#666', fontSize: '0.7rem', fontFamily: 'Helvetica Neue, Arial, sans-serif' }}>Réponse immédiate</p>
+              <a href="https://wa.me/33649708097" target="_blank" rel="noopener noreferrer"
+                style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', marginTop: '4px', textDecoration: 'none', color: '#25D366', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.68rem', letterSpacing: '0.04em' }}>
+                <svg viewBox="0 0 32 32" width="14" height="14" fill="none"><path d="M16 2C8.268 2 2 8.268 2 16c0 2.49.654 4.826 1.797 6.844L2 30l7.344-1.766A13.94 13.94 0 0016 30c7.732 0 14-6.268 14-14S23.732 2 16 2z" fill="#25D366"/><path d="M21.8 19.4c-.3-.15-1.77-.874-2.044-.974-.274-.1-.474-.15-.674.15-.2.3-.774.974-.948 1.174-.174.2-.348.224-.648.075-.3-.15-1.267-.467-2.413-1.489-.892-.796-1.494-1.779-1.669-2.079-.174-.3-.018-.462.131-.611.134-.133.3-.348.45-.522.15-.174.2-.3.3-.5.1-.2.05-.374-.025-.524-.075-.15-.674-1.624-.923-2.224-.244-.582-.491-.503-.674-.512l-.574-.01c-.2 0-.524.075-.799.374-.274.3-1.047 1.023-1.047 2.497 0 1.474 1.072 2.898 1.222 3.098.15.2 2.112 3.225 5.118 4.523.715.308 1.273.492 1.708.63.718.228 1.372.196 1.888.119.576-.085 1.77-.723 2.02-1.422.25-.699.25-1.299.175-1.424-.075-.124-.275-.2-.574-.35z" fill="#fff"/></svg>
+                WhatsApp
+              </a>
             </div>
             <button onClick={() => setOpen(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#666' }}><X size={18} /></button>
           </div>

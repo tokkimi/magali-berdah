@@ -11,7 +11,6 @@ import Footer from './components/Footer';
 import BottomNav from './components/BottomNav';
 import CookieBanner from './components/CookieBanner';
 import Chatbot from './components/Chatbot';
-import WhatsAppBubble from './components/WhatsAppBubble';
 import SeoManager from './components/SeoManager';
 
 import Home from './pages/Home';
@@ -66,7 +65,6 @@ function Layout({ children }: { children: React.ReactNode }) {
       <CookieBanner />
       <Chatbot />
       <MyAuctionsBubble />
-      <WhatsAppBubble />
     </div>
   );
 }
