@@ -92,7 +92,7 @@ export default function Footer() {
 
       {/* Brand + socials */}
       <div style={{ padding: '1.5rem 1.25rem 0.5rem' }}>
-        <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.6rem', letterSpacing: '0.3em', color: '#c9a96e', marginBottom: '0.5rem' }}>MAGALI BERDAH</p>
+        <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.6rem', letterSpacing: '0.3em', color: '#c9a96e', marginBottom: '0.5rem' }}>VENDYY'S</p>
         <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.72rem', color: '#555', lineHeight: 1.7, marginBottom: '0.75rem' }}>
           {t('footerDesc')}
         </p>
@@ -113,7 +113,7 @@ export default function Footer() {
 
       <div style={{ borderTop: '1px solid #2a2a2a', padding: '1.25rem', textAlign: 'center' }}>
         <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.6rem', color: '#444', letterSpacing: '0.1em' }}>
-          © 2024 MAGALI BERDAH — TOUS DROITS RÉSERVÉS
+          © 2024 VENDYY'S — TOUS DROITS RÉSERVÉS
         </p>
       </div>
     </footer>

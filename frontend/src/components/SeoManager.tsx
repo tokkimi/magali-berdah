@@ -2,13 +2,13 @@ import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 
 const pages: Record<string, { title: string; description: string }> = {
-  '/': { title: 'Magali Berdah — Mode de luxe de seconde main', description: 'Ventes, enchères et lives de pièces de mode et maroquinerie de luxe de seconde main.' },
-  '/catalogue': { title: 'Catalogue luxe de seconde main | Magali Berdah', description: 'Explorez les sacs et accessoires de luxe proposés en vente directe ou aux enchères.' },
-  '/lives': { title: 'Lives Whatnot en cours | Magali Berdah', description: 'Retrouvez les lives Whatnot en cours des ambassadeurs validés par Magali Berdah.' },
-  '/comment-acheter': { title: 'Comment acheter | Magali Berdah', description: 'Découvrez comment acheter une pièce, participer aux enchères et suivre votre commande.' },
-  '/faq': { title: 'Questions fréquentes | Magali Berdah', description: 'Réponses aux questions sur les achats, enchères, livraisons, retours et paiements.' },
-  '/cgv': { title: 'Conditions générales de vente | Magali Berdah', description: 'Consultez les conditions générales applicables aux ventes et enchères du site Magali Berdah.' },
-  '/galerie': { title: 'La Galerie | Magali Berdah', description: 'La sélection complète de sacs et accessoires de luxe de seconde main.' },
+  '/': { title: 'Vendyy’s — Mode de luxe de seconde main', description: 'Ventes, enchères et lives de pièces de mode et maroquinerie de luxe de seconde main.' },
+  '/catalogue': { title: 'Catalogue luxe de seconde main | Vendyy’s', description: 'Explorez les sacs et accessoires de luxe proposés en vente directe ou aux enchères.' },
+  '/lives': { title: 'Lives Whatnot en cours | Vendyy’s', description: 'Retrouvez les lives Whatnot en cours des ambassadeurs validés par Vendyy’s.' },
+  '/comment-acheter': { title: 'Comment acheter | Vendyy’s', description: 'Découvrez comment acheter une pièce, participer aux enchères et suivre votre commande.' },
+  '/faq': { title: 'Questions fréquentes | Vendyy’s', description: 'Réponses aux questions sur les achats, enchères, livraisons, retours et paiements.' },
+  '/cgv': { title: 'Conditions générales de vente | Vendyy’s', description: 'Consultez les conditions générales applicables aux ventes et enchères du site Vendyy’s.' },
+  '/galerie': { title: 'La Galerie | Vendyy’s', description: 'La sélection complète de sacs et accessoires de luxe de seconde main.' },
 };
 
 export default function SeoManager() {
@@ -23,13 +23,13 @@ export default function SeoManager() {
     const description = document.querySelector<HTMLMetaElement>('meta[name="description"]');
     if (description) description.content = page.description;
     const canonical = document.querySelector<HTMLLinkElement>('link[rel="canonical"]');
-    if (canonical) canonical.href = `https://magali-berdah.vercel.app${location.pathname}`;
+    if (canonical) canonical.href = `https://www.vendyys.com${location.pathname}`;
     const ogTitle = document.querySelector<HTMLMetaElement>('meta[property="og:title"]');
     const ogDescription = document.querySelector<HTMLMetaElement>('meta[property="og:description"]');
     const ogUrl = document.querySelector<HTMLMetaElement>('meta[property="og:url"]');
     if (ogTitle) ogTitle.content = page.title;
     if (ogDescription) ogDescription.content = page.description;
-    if (ogUrl) ogUrl.content = `https://magali-berdah.vercel.app${location.pathname}`;
+    if (ogUrl) ogUrl.content = `https://www.vendyys.com${location.pathname}`;
   }, [location.pathname]);
   return null;
 }

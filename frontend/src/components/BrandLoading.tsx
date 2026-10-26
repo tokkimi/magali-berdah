@@ -10,5 +10,5 @@ export default function BrandLoading() {
   return()=>{stopped=true;clearTimeout(fallback);clearTimeout(closing)};
  },[]);
  if(phase==='hidden')return null;
- return <div className={`brand-loading ${phase}`} role="status" aria-label="Magali Berdah"><img src="/mb-logo.png" alt="Magali Berdah"/><p>{lang==='fr'?'L’EXCEPTION VOUS ATTEND':'SOMETHING EXCEPTIONAL AWAITS'}</p><div className="loading-line"/></div>;
+ return <div className={`brand-loading ${phase}`} role="status" aria-label="Vendyy's"><img src="/mb-logo.png" alt="Vendyy's"/><p>{lang==='fr'?'L\'EXCEPTION VOUS ATTEND':'SOMETHING EXCEPTIONAL AWAITS'}</p><div className="loading-line"/></div>;
 }

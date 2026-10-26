@@ -176,7 +176,7 @@ export default function Header() {
           {/* Center: logo */}
           <div className="ysl-center">
             <Link to="/" style={{ textDecoration: 'none' }}>
-              <img src="/mb-logo.png" alt="Magali Berdah" height="34" width="34" style={{ objectFit: 'contain', display: 'block' }} />
+              <img src="/mb-logo.png" alt="Vendyy's" height="52" width="64" style={{ objectFit: 'contain', display: 'block', filter: isHome ? 'invert(1)' : 'none' }} />
             </Link>
           </div>
 
@@ -216,7 +216,7 @@ export default function Header() {
               <X size={22} />
             </button>
             <Link to="/" style={{ textDecoration: 'none' }} onClick={() => setMobileOpen(false)}>
-              <img src="/mb-logo.png" alt="Magali Berdah" height="42" width="42" style={{ objectFit: 'contain' }} />
+              <img src="/mb-logo.png" alt="Vendyy's" height="42" width="42" style={{ objectFit: 'contain' }} />
             </Link>
             <button className="ysl-icon-btn" onClick={() => setLang(lang === 'fr' ? 'en' : 'fr')}
               style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.7rem', letterSpacing: '0.1em', color: '#666' }}>
