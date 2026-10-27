@@ -18,7 +18,7 @@ const RULES: Array<{ patterns: RegExp; answer: string }> = [
   },
   {
     patterns: /retour|remboursement|rembourser|retourner|satisf/i,
-    answer: 'Vous disposez de 14 jours pour retourner un article si celui-ci ne correspond pas à la description. Contactez-nous à contact@magaliberdah.com pour initier un retour.',
+    answer: 'Vous disposez de 14 jours pour retourner un article si celui-ci ne correspond pas à la description. Contactez-nous à contact@vendyys.com pour initier un retour.',
   },
   {
     patterns: /paiement|payer|carte|virement|securit/i,
@@ -26,7 +26,7 @@ const RULES: Array<{ patterns: RegExp; answer: string }> = [
   },
   {
     patterns: /vente exclusive|exclu|sélection|selection du jour/i,
-    answer: 'La Vente Exclusive est une sélection de pièces d\'exception disponibles quelques heures seulement. Elle ouvre à une heure précise, configurée chaque jour. Consultez la section "✦ EXCLU" pour le compte à rebours.',
+    answer: 'La Vente Exclusive est une sélection de pièces d\'exception disponibles quelques heures seulement. Elle ouvre à une heure précise, configurée chaque jour. Consultez la section "❖ EXCLU" pour le compte à rebours.',
   },
   {
     patterns: /vendre|mettre en vente|consign|déposer|soumettre/i,
@@ -38,7 +38,7 @@ const RULES: Array<{ patterns: RegExp; answer: string }> = [
   },
   {
     patterns: /contact|joindre|email|téléphone|question/i,
-    answer: 'Vous pouvez nous contacter à contact@magaliberdah.com. Nous répondons sous 24h en jours ouvrés.',
+    answer: 'Vous pouvez nous contacter à contact@vendyys.com. Nous répondons sous 24h en jours ouvrés.',
   },
   {
     patterns: /prix|combien|tarif|coût|cout/i,
@@ -58,7 +58,7 @@ const RULES: Array<{ patterns: RegExp; answer: string }> = [
   },
 ];
 
-const DEFAULT = 'Je suis désolée, je n\'ai pas bien compris votre question. Pouvez-vous reformuler ? Vous pouvez aussi nous écrire directement à contact@magaliberdah.com.';
+const DEFAULT = 'Je suis désolée, je n\'ai pas bien compris votre question. Pouvez-vous reformuler ? Vous pouvez aussi nous écrire directement à contact@vendyys.com.';
 
 function getAnswer(text: string): string {
   for (const rule of RULES) {
