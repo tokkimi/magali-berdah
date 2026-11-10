@@ -7,7 +7,7 @@ import BottomNav from '@/components/layout/BottomNav'
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
 
-export const metadata: Metadata = {
+export const metadata: Metadata = { creator: "Alexia Naudy",
   title: 'Dot The Talents – Plateforme de Marketing d\'Influence Internationale',
   description: 'Connectez votre marque aux meilleurs influenceurs du monde. Campagnes d\'influence ciblées, ROI mesurable, talent certifié.',
   keywords: 'marketing influence, influenceurs, marques, campagne influence, micro-influenceurs, macro-influenceurs',

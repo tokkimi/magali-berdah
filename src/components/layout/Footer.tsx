@@ -54,6 +54,7 @@ export default function Footer() {
           <p className="text-[10px]">Made with ❤️ in France</p>
         </div>
       </div>
+      <p style={{ fontSize: "9px", opacity: 0.5, textAlign: "center", margin: 0, padding: "0 0 8px" }}>Made by Alexia Naudy</p>
     </footer>
   )
 }
