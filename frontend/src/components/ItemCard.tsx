@@ -1,5 +1,5 @@
 import ItemAction from './ItemAction';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { Heart, Clock } from 'lucide-react';
 import { useStore } from '../lib/store';
@@ -62,18 +62,41 @@ export default function ItemCard({ item }: { item: Item }) {
   const isAuction = Boolean(item.auction_enabled);
   const isEnding = countdown && countdown !== 'Terminée' && !countdown.includes('j');
   const [action, setAction] = useState<'buy' | 'bid' | null>(null);
-
-
   const [hovered, setHovered] = useState(false);
+  const [swipeX, setSwipeX] = useState(0);
+  const touchStartX = useRef(0);
+
+  const hasProgress = isAuction && item.auction_start_price && item.current_bid && item.current_bid > item.auction_start_price;
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+  };
+  const handleTouchMove = (e: React.TouchEvent) => {
+    const dx = e.touches[0].clientX - touchStartX.current;
+    if (dx > 0 && dx < 100) setSwipeX(dx);
+  };
+  const handleTouchEnd = () => {
+    if (swipeX > 60 && isAuction && countdown !== 'Terminée') setAction('bid');
+    setSwipeX(0);
+  };
 
   return (
-    <div className="bag-card-wrap" style={{ display: 'flex', flexDirection: 'column' }}>
+    <div className="bag-card-wrap" style={{ display: 'flex', flexDirection: 'column', transform: swipeX > 0 ? `translateX(${swipeX * 0.4}px)` : undefined, transition: swipeX === 0 ? 'transform 0.2s ease' : undefined }}>
       {/* Image block */}
       <div
         style={{ position: 'relative', aspectRatio: '3/4', overflow: 'hidden', backgroundColor: '#f7f7f5', cursor: 'pointer' }}
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
       >
+        {/* Swipe hint arrow on mobile */}
+        {isAuction && countdown !== 'Terminée' && swipeX > 10 && (
+          <div style={{ position: 'absolute', inset: 0, background: 'rgba(37,211,102,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 5, pointerEvents: 'none' }}>
+            <span style={{ fontSize: '2rem', color: '#25D366' }}>→ ENCHÉRIR</span>
+          </div>
+        )}
         <Link to={`/article/${item.id}`} style={{ display: 'block', width: '100%', height: '100%' }}>
           <img
             src={imgUrl(item.photos?.[0])}
@@ -146,6 +169,17 @@ export default function ItemCard({ item }: { item: Item }) {
         <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.78rem', fontWeight: 500, color: '#000', marginBottom: '4px' }}>
           {price.toLocaleString('fr-FR')} €
         </p>
+        {hasProgress && (
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '4px' }}>
+            <span style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.6rem', color: '#9e8e7e', textDecoration: 'line-through' }}>
+              Départ {item.auction_start_price!.toLocaleString('fr-FR')} €
+            </span>
+            <span style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.6rem', color: '#c9a96e' }}>→</span>
+            <span style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.6rem', color: '#1a1a1a', fontWeight: 600 }}>
+              {item.current_bid!.toLocaleString('fr-FR')} € actuel
+            </span>
+          </div>
+        )}
       </div>
 
       {action && <ItemAction item={item} initial={action} onClose={() => setAction(null)} />}
