@@ -10,7 +10,6 @@ import ScrollToTop from './components/ScrollToTop';
 import Footer from './components/Footer';
 import BottomNav from './components/BottomNav';
 import CookieBanner from './components/CookieBanner';
-import Chatbot from './components/Chatbot';
 import SeoManager from './components/SeoManager';
 
 import Home from './pages/Home';
@@ -63,7 +62,6 @@ function Layout({ children }: { children: React.ReactNode }) {
       <Footer />
       <BottomNav />
       <CookieBanner />
-      <Chatbot />
       <MyAuctionsBubble />
     </div>
   );
