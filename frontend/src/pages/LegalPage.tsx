@@ -11,7 +11,7 @@ const documents = {
   mentions: {
     title: 'Mentions légales',
     sections: [
-      ['Édition du site', 'VENDYY’S est accessible à l’adresse www.vendyys.com. Contact : contact@vendyys.com. L’identité juridique de l’éditeur, ses coordonnées postales et téléphoniques, son immatriculation et le nom de la direction de la publication restent à confirmer.'],
+      ['Édition du site', 'VENDYY’S est accessible à l’adresse www.vendyys.com. Contact : contact@vendyys.com. Le site est édité par VENDYY’S, société par actions simplifiée au capital de 100 €, dont le siège social est situé au 138 avenue Victor Hugo, 75016 Paris, immatriculée au RCS de Paris sous le numéro 132 440 611. Directrice de la publication : Shauna Berdah, présidente. Le numéro de téléphone professionnel reste à compléter.'],
       ['Hébergement', 'Le site est hébergé par Vercel Inc. Les coordonnées légales de l’hébergeur restent à confirmer.'],
       ['Signalement', 'Pour signaler un contenu, écrivez à contact@vendyys.com avec l’adresse de la page, le motif du signalement et vos coordonnées.'],
     ],
@@ -19,7 +19,7 @@ const documents = {
   sales: {
     title: 'Conditions générales de vente',
     sections: [
-      ['Vendeur et caractéristiques du bien', 'Avant toute commande, consultez l’identité et le statut du vendeur ainsi que les caractéristiques de l’article, son état et les accessoires inclus. Pour une pièce de seconde main, reportez-vous à la description et aux défauts indiqués sur sa fiche.'],
+      ['Vendeur et caractéristiques du bien', 'Le site est exploité par VENDYY’S SAS, 138 avenue Victor Hugo, 75016 Paris, RCS Paris 132 440 611. Avant toute commande, consultez l’identité et le statut du vendeur ainsi que les caractéristiques de l’article, son état et les accessoires inclus. Pour une pièce de seconde main, reportez-vous à la description et aux défauts indiqués sur sa fiche.'],
       ['Prix et paiement', 'L’achat à prix fixe peut se faire sans compte. Vérifiez le montant total en euros, les taxes et les frais applicables avant de payer. Le paiement se fait sur la page sécurisée du prestataire. Les moyens de paiement proposés dépendent de l’article et des options effectivement disponibles.'],
       ['Participation à une enchère', 'Consultez le montant minimal et l’heure de clôture affichés pour l’article. Un compte est requis pour participer. Avant de confirmer votre offre, vérifiez son montant et les modalités de règlement applicables si vous remportez l’enchère. Toute manipulation artificielle des offres est interdite.'],
       ['Livraison et réclamations', 'Les modalités, frais et délais de livraison doivent être communiqués avant la commande. Pour une question sur une commande ou une livraison, écrivez à contact@vendyys.com en joignant la référence de la commande.'],
@@ -30,7 +30,7 @@ const documents = {
   privacy: {
     title: 'Politique de confidentialité',
     sections: [
-      ['Responsable du traitement', 'L’identité et les coordonnées postales du responsable du traitement restent à confirmer. Pour exercer vos droits, écrivez à contact@vendyys.com.'],
+      ['Responsable du traitement', 'VENDYY’S SAS, 138 avenue Victor Hugo, 75016 Paris, est responsable des traitements liés à la gestion du site. Pour exercer vos droits, écrivez à contact@vendyys.com.'],
       ['Données, finalités et bases légales', 'Les coordonnées, données de compte, offres et informations de commande servent à traiter les demandes, administrer le compte et exécuter les achats. Les justificatifs nécessaires à la comptabilité relèvent d’obligations légales. La sécurité du service et la lutte contre la fraude peuvent relever de l’intérêt légitime. Les communications facultatives soumises au consentement peuvent être arrêtées en retirant ce consentement.'],
       ['Destinataires', 'Selon le service utilisé, les données nécessaires peuvent être traitées par les personnes habilitées et les prestataires concernés, notamment Vercel pour l’hébergement, Supabase pour le compte et les données du service, Stripe pour le paiement et le transporteur pour la livraison. Les coordonnées bancaires sont saisies sur l’interface du prestataire de paiement.'],
       ['Conservation et transferts', 'Les données sont conservées selon la durée nécessaire à leur finalité et les obligations applicables. Les durées par catégorie de données, les pays de traitement et les garanties applicables aux éventuels transferts hors de l’Espace économique européen restent à confirmer.'],
