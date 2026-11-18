@@ -7,6 +7,9 @@ const pages: Record<string, { title: string; description: string }> = {
   '/lives': { title: 'Lives Whatnot en cours | Vendyy’s', description: 'Retrouvez les lives Whatnot en cours des ambassadeurs validés par Vendyy’s.' },
   '/comment-acheter': { title: 'Comment acheter | Vendyy’s', description: 'Découvrez comment acheter une pièce, participer aux enchères et suivre votre commande.' },
   '/faq': { title: 'Questions fréquentes | Vendyy’s', description: 'Réponses aux questions sur les achats, enchères, livraisons, retours et paiements.' },
+  '/mentions-legales': { title: 'Mentions légales | Vendyy’s', description: 'Informations sur l’édition et l’hébergement du site Vendyy’s.' },
+  '/confidentialite': { title: 'Politique de confidentialité | Vendyy’s', description: 'Traitement des données personnelles et exercice des droits.' },
+  '/cgu': { title: 'Conditions d’utilisation | Vendyy’s', description: 'Règles d’accès et d’utilisation du site Vendyy’s.' },
   '/cgv': { title: 'Conditions générales de vente | Vendyy’s', description: 'Consultez les conditions générales applicables aux ventes et enchères du site Vendyy’s.' },
   '/galerie': { title: 'La Galerie | Vendyy’s', description: 'La sélection complète de sacs et accessoires de luxe de seconde main.' },
 };

@@ -135,7 +135,7 @@ export default function ItemDetail() {
     const min = (item.current_bid || item.auction_start_price || 0) + 1;
     if (amount < min) { setBidError(`Enchère minimum : ${min.toLocaleString('fr-FR')} €`); return; }
 
-    // Show pre-authorization confirmation before placing bid
+    // Confirm the amount before submitting the bid.
     setPendingBidAmount(amount);
     setShowBidAuth(true);
   };
@@ -186,7 +186,7 @@ export default function ItemDetail() {
     <div style={{ maxWidth: '900px', margin: '0 auto', padding: '1.5rem 1rem 8rem' }}>
       <style>{`@media(max-width:640px){.detail-grid{grid-template-columns:1fr !important; gap:1.5rem !important;}}`}</style>
 
-      {/* Bid pre-authorization modal */}
+      {/* Bid confirmation modal */}
       {showBidAuth && (
         <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.6)', zIndex: 400, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
           <div style={{ backgroundColor: 'white', maxWidth: '440px', width: '100%', padding: '2rem', position: 'relative' }}>
@@ -198,12 +198,11 @@ export default function ItemDetail() {
             </div>
             <h3 style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '1.3rem', fontWeight: 400, textAlign: 'center', marginBottom: '0.75rem' }}>Confirmation d'enchère</h3>
             <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.82rem', color: '#555', textAlign: 'center', lineHeight: 1.6, marginBottom: '1.25rem' }}>
-              Votre carte bancaire sera <strong>pré-autorisée</strong> pour&nbsp;
+              Vous vous apprêtez à proposer&nbsp;
               <strong style={{ color: '#1a1a1a' }}>{pendingBidAmount.toLocaleString('fr-FR')} €</strong>.
-              <br />Cette autorisation est annulée automatiquement si vous ne remportez pas l'enchère. Vous ne serez débité qu'en cas de victoire.
             </p>
             <div style={{ backgroundColor: '#fdf9f4', border: '1px solid #e8d5b7', padding: '12px', marginBottom: '1.25rem', fontSize: '0.75rem', fontFamily: 'Helvetica Neue, Arial, sans-serif', color: '#9e8e7e', lineHeight: 1.5 }}>
-              En confirmant, vous acceptez d'être lié par cette enchère conformément à nos <a href="/cgv" style={{ color: '#c9a96e' }}>CGV</a>. Toute enchère est irrévocable.
+              En confirmant, vous acceptez d'être lié par cette enchère conformément à nos <a href="/cgv" style={{ color: '#c9a96e' }}>CGV</a>.
             </div>
             <div style={{ display: 'flex', gap: '10px' }}>
               <button onClick={() => setShowBidAuth(false)} style={{ flex: 1, padding: '12px', border: '1px solid #e8d5b7', background: 'white', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.8rem', cursor: 'pointer', color: '#9e8e7e' }}>

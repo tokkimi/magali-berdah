@@ -48,7 +48,7 @@ export default function AuthModal({ mode, onClose, onSwitchMode }: Props) {
         <button type="submit" disabled={loading} className="btn-gold" style={{ width: '100%', minHeight: 46 }}>{loading ? 'Chargement…' : mode === 'login' ? 'SE CONNECTER' : 'CRÉER MON COMPTE'}</button>
       </form>
       <p style={{ textAlign: 'center', marginTop: 20, color: '#777', fontSize: 13 }}>{mode === 'login' ? 'Pas encore de compte ? ' : 'Déjà un compte ? '}<button onClick={() => onSwitchMode(mode === 'login' ? 'register' : 'login')} style={{ border: 0, background: 'none', color: '#b8935a', cursor: 'pointer' }}>{mode === 'login' ? 'S’inscrire' : 'Se connecter'}</button></p>
-      {mode === 'register' && <p style={{ textAlign: 'center', color: '#777', fontSize: 11, marginTop: 14 }}>En créant un compte, vous acceptez les <a href="/cgv">CGV</a> et la <a href="/confidentialite">politique de confidentialité</a>.</p>}
+      {mode === 'register' && <p style={{ textAlign: 'center', color: '#777', fontSize: 11, marginTop: 14 }}>En créant un compte, vous acceptez les <a href="/cgu" target="_blank" rel="noreferrer">conditions d’utilisation</a>. Consultez la <a href="/confidentialite" target="_blank" rel="noreferrer">politique de confidentialité</a>.</p>}
     </div>
   </div>;
 }

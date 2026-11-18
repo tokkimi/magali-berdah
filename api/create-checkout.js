@@ -6,7 +6,8 @@ module.exports = function handler(request, response) {
     response.setHeader('Allow','POST');
     return response.status(405).json({error:'Méthode non autorisée.'});
   }
-  if(request.headers.origin && request.headers.origin!=='https://magali-berdah.vercel.app')return response.status(403).json({error:'Origine non autorisée.'});
+  const allowedOrigins = ['https://www.vendyys.com', 'https://vendyys.com', 'https://magali-berdah.vercel.app'];
+  if(request.headers.origin && !allowedOrigins.includes(request.headers.origin))return response.status(403).json({error:'Origine non autorisée.'});
   if(!request.headers['content-type']?.includes('application/json'))return response.status(415).json({error:'Format invalide.'});
   const {itemId,email,method='card'}=request.body||{};
   if(typeof itemId!=='string'||itemId.length>100||typeof email!=='string'||email.length>254||!/^\S+@\S+\.\S+$/.test(email)||!['card','paypal','alma'].includes(method))return response.status(400).json({error:'Informations de commande invalides.'});

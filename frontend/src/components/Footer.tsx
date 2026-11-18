@@ -1,3 +1,4 @@
+import { legalLinks } from '../pages/LegalPage';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useT } from '../lib/store';
@@ -22,8 +23,6 @@ const SECTIONS = [
   {
     label: 'INFORMATIONS',
     links: [
-      { label: 'CGV', to: '/cgv' },
-      { label: 'Politique de confidentialité', to: '/confidentialite' },
       { label: 'Contact', to: '/contact' },
       { label: 'À propos', to: '/a-propos' },
     ],
@@ -96,10 +95,6 @@ export default function Footer() {
         <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.72rem', color: '#555', lineHeight: 1.7, marginBottom: '0.75rem' }}>
           {t('footerDesc')}
         </p>
-        <div style={{ display: 'flex', gap: '14px' }}>
-          <a href="#" style={{ color: '#c9a96e', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.68rem' }}>Instagram</a>
-          <a href="#" style={{ color: '#c9a96e', fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.68rem' }}>Facebook</a>
-        </div>
       </div>
 
       {/* Accordion sections */}
@@ -111,9 +106,12 @@ export default function Footer() {
         ))}
       </div>
 
+      <nav aria-label="Documents juridiques" style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '0.75rem 1.5rem', padding: '1rem' }}>
+        {legalLinks.map(({ label, to }) => <Link key={to} to={to} style={{ color: '#c9a96e', fontSize: '0.8rem' }}>{label}</Link>)}
+      </nav>
       <div style={{ borderTop: '1px solid #2a2a2a', padding: '1.25rem', textAlign: 'center' }}>
         <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.6rem', color: '#444', letterSpacing: '0.1em' }}>
-          © 2024 VENDYY'S — TOUS DROITS RÉSERVÉS
+          © {new Date().getFullYear()} VENDYY'S — TOUS DROITS RÉSERVÉS
         </p>
       </div>
     </footer>
