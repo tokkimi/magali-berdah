@@ -11,7 +11,7 @@ const documents = {
   mentions: {
     title: 'Mentions légales',
     sections: [
-      ['Édition du site', 'VENDYY’S est accessible à l’adresse www.vendyys.com. Contact : contact@vendyys.com. Le site est édité par VENDYY’S, société par actions simplifiée au capital de 100 €, dont le siège social est situé au 138 avenue Victor Hugo, 75016 Paris, immatriculée au RCS de Paris sous le numéro 132 440 611. Directrice de la publication : Shauna Berdah, présidente. Le numéro de téléphone professionnel reste à compléter.'],
+      ['Édition du site', 'VENDYY’S est accessible à l’adresse www.vendyys.com. Contact : contact@vendyys.com. Le site est édité par VENDYY’S, société par actions simplifiée au capital de 100 €, dont le siège social est situé au 138 avenue Victor Hugo, 75016 Paris, immatriculée au RCS de Paris sous le numéro 132 440 611. Directrice de la publication : Shauna Berdah, présidente. Téléphone et WhatsApp : +33 6 49 70 80 97.'],
       ['Hébergement', 'Le site est hébergé par Vercel Inc. Les coordonnées légales de l’hébergeur restent à confirmer.'],
       ['Signalement', 'Pour signaler un contenu, écrivez à contact@vendyys.com avec l’adresse de la page, le motif du signalement et vos coordonnées.'],
     ],
