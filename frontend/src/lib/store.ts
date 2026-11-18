@@ -15,6 +15,9 @@ interface User {
   city?: string;
   country?: string;
   dob?: string;
+  stripe_pm?: string;
+  card_last4?: string;
+  card_brand?: string;
 }
 
 interface Shop {
@@ -103,6 +106,9 @@ export const useStore = create<Store>((set, get) => ({
           verified: profile?.verified || authUser.email_confirmed_at ? 1 : 0,
           phone: profile?.phone || undefined, address: profile?.address || undefined,
           city: profile?.city || undefined, country: profile?.country || 'FR', avatar: profile?.avatar || undefined,
+          stripe_pm: profile?.stripe_pm || undefined,
+          card_last4: profile?.card_last4 || undefined,
+          card_brand: profile?.card_brand || undefined,
         },
         shop: null,
       });
