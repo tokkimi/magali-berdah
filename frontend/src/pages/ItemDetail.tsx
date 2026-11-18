@@ -128,6 +128,7 @@ export default function ItemDetail() {
 
   const handleBid = async () => {
     if (!user) { setBidError('Connectez-vous pour enchérir.'); return; }
+    if (!user.stripe_pm) { setBidError('Enregistrez votre carte bancaire dans Mon Profil avant d’enchérir.'); return; }
     setBidError('');
     const amount = parseFloat(bidAmount);
     if (isNaN(amount) || amount <= 0) { setBidError('Montant invalide'); return; }
@@ -308,7 +309,7 @@ export default function ItemDetail() {
           {item.videos?.length > 0 && (
             <div style={{ marginTop: '1rem', display: 'grid', gap: '10px' }}>
               {item.videos.map((video: string, i: number) => (
-                <video key={video} src={video} controls playsInline preload="metadata" aria-label={`Vidéo de l’article ${i + 1}`} style={{ width: '100%', maxHeight: '520px', background: '#111', borderRadius: '8px' }} />
+                <video key={video} src={video} controls playsInline preload="metadata" aria-label={`Vidéo de l'article ${i + 1}`} style={{ width: '100%', maxHeight: '520px', background: '#111', borderRadius: '8px' }} />
               ))}
             </div>
           )}
@@ -353,13 +354,28 @@ export default function ItemDetail() {
                     <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.7rem', color: '#9e8e7e', marginTop: '2px' }}>
                       {bids.length} offre{bids.length !== 1 ? 's' : ''}
                     </p>
+                    {item.current_bid && item.auction_start_price && item.current_bid > item.auction_start_price && (
+                      <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.65rem', color: '#c9a96e', marginTop: '4px' }}>
+                        Départ {item.auction_start_price.toLocaleString('fr-FR')} € → {item.current_bid.toLocaleString('fr-FR')} € actuel
+                      </p>
+                    )}
                   </div>
                   <div style={{ textAlign: 'right' }}>
                     <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.6rem', color: '#9e8e7e', letterSpacing: '0.1em', marginBottom: '4px' }}>TEMPS RESTANT</p>
                     <Countdown endTime={item.auction_end_time} />
                   </div>
                 </div>
-                {user ? (
+                {user && !user.stripe_pm ? (
+                  <div style={{ background: '#fff8f0', border: '1px solid #c9a96e', borderRadius: '8px', padding: '16px', textAlign: 'center' }}>
+                    <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.85rem', fontWeight: 600, color: '#1a1a1a', marginBottom: '8px' }}>💳 Carte bancaire requise</p>
+                    <p style={{ fontFamily: 'Helvetica Neue, Arial, sans-serif', fontSize: '0.78rem', color: '#5a5a5a', lineHeight: 1.6, marginBottom: '12px' }}>
+                      Enregistrez votre carte dans votre profil pour enchérir. Elle ne sera débitée que si vous gagnez.
+                    </p>
+                    <Link to="/profil" className="btn-gold" style={{ display: 'block', textAlign: 'center', textDecoration: 'none', fontSize: '0.72rem', padding: '12px', letterSpacing: '0.1em' }}>
+                      AJOUTER MA CARTE
+                    </Link>
+                  </div>
+                ) : user ? (
                   <div>
                     <div style={{ display: 'flex', gap: '8px', marginBottom: '6px' }}>
                       <input type="number" value={bidAmount} onChange={e => setBidAmount(e.target.value)}
@@ -498,7 +514,7 @@ export default function ItemDetail() {
           </div>
           {item.entrupy_certificate_url && (
             <a href={item.entrupy_certificate_url} target="_blank" rel="noreferrer" style={{ display:'flex', alignItems:'center', justifyContent:'space-between', gap:'12px', border:'1px solid #e8d5b7', padding:'13px 14px', marginBottom:'1.5rem', color:'#6c542f', textDecoration:'none', fontFamily:'Helvetica Neue, Arial, sans-serif', fontSize:'0.75rem' }}>
-              <span>Certificat d’authenticité Entrupy</span><span>Voir le certificat ↗</span>
+              <span>Certificat d'authenticité Entrupy</span><span>Voir le certificat ↗</span>
             </a>
           )}
 
